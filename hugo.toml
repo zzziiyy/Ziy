@@ -1,6 +1,6 @@
 baseURL = 'https://zzziiyy.github.io/'
 languageCode = 'en-us'
-title = 'ZZ'
+title = 'Beyond World'
 theme = 'anatole'
 summaryLength = 35
 enableRobotsTXT = true
@@ -17,8 +17,8 @@ enableEmoji = true
     style = "monokai"
 
 [params]
-  title = "ZZ"
-  author = "ZZ"
+  title = "Beyond World"
+  author = "Ziy"
   description = "Notes, experiments, and explorations in machine learning."
   profilePicture = "images/profile.jpg"
   keywords = "machine learning, deep learning, data science, python, neural networks"
