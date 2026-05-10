@@ -19,7 +19,7 @@ enableEmoji = true
 [params]
   title = "Beyond World"
   author = "Ziy"
-  description = "Notes, experiments, and explorations in machine learning."
+  description = "Thoughts and explorations in human learning."
   profilePicture = "images/profile.jpg"
   keywords = "machine learning, deep learning, data science, python, neural networks"
   favicon = "favicons/"
@@ -49,12 +49,12 @@ enableEmoji = true
   [[params.socialIcons]]
   icon = "fa-brands fa-linkedin"
   title = "LinkedIn"
-  url = "https://www.linkedin.com/in/ziyun-zhong"
+  url = "https://www.linkedin.com/"
 
   [[params.socialIcons]]
   icon = "fa-solid fa-envelope"
   title = "Email"
-  url = "mailto:ziyunzhong.z@gmail.com"
+  url = "mailto:zzyzzoe@gmail.com"
 
 [[menu.main]]
   name = "Home"
