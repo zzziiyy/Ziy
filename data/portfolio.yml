@@ -1,0 +1,15 @@
+portfolioitems:
+  - title: Web & Tools
+    description: "Things I've built"
+    portfolioitem:
+      - name: Personal Site (this one)
+        link: "https://github.com/zzziiyy/zzziiyy.github.io"
+        linktext: "View on GitHub"
+        description: |
+          Built with Hugo and the Anatole theme. Deployed on GitHub Pages via GitHub Actions. The goal was a minimal, fast, maintainable personal site — a digital garden rather than a portfolio page. This is that.
+        tags:
+          - Hugo
+          - GitHub Pages
+          - Web
+        status: "Live"
+        start: "2025"

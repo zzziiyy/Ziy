@@ -1,0 +1,99 @@
+baseURL = 'https://zzziiyy.github.io/'
+languageCode = 'en-us'
+title = 'ZZ'
+theme = 'anatole'
+summaryLength = 35
+enableRobotsTXT = true
+enableEmoji = true
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = false
+    style = "monokai"
+
+[params]
+  title = "ZZ"
+  author = "ZZ"
+  description = "Notes, experiments, and explorations in machine learning."
+  profilePicture = "images/profile.jpg"
+  keywords = "machine learning, deep learning, data science, python, neural networks"
+  favicon = "favicons/"
+  customCss = []
+  customJs = []
+  mainSections = ["post"]
+  mainSectionsTitle = "Recent Writing"
+  doNotLoadAnimations = false
+  readMore = true
+  reversepagetitle = true
+  singleDateFormat = "Jan 2, 2006"
+  indexDateFormat = "Jan 2006"
+  listDateFormat = "Jan 2, 2006"
+
+  [params.math]
+    enable = true
+    use = "katex"
+
+  [params.mermaid]
+    enable = true
+
+  [[params.socialIcons]]
+  icon = "fa-brands fa-github"
+  title = "GitHub"
+  url = "https://github.com/zzziiyy"
+
+  [[params.socialIcons]]
+  icon = "fa-brands fa-linkedin"
+  title = "LinkedIn"
+  url = "https://www.linkedin.com/in/ziyun-zhong"
+
+  [[params.socialIcons]]
+  icon = "fa-solid fa-envelope"
+  title = "Email"
+  url = "mailto:ziyunzhong.z@gmail.com"
+
+[[menu.main]]
+  name = "Home"
+  identifier = "home"
+  url = "/"
+  weight = 10
+
+[[menu.main]]
+  name = "About"
+  identifier = "about"
+  url = "/about/"
+  weight = 20
+
+[[menu.main]]
+  name = "Projects"
+  identifier = "projects"
+  url = "/portfolio/"
+  weight = 30
+
+[[menu.main]]
+  name = "Notes"
+  identifier = "notes"
+  url = "/notes/"
+  weight = 40
+
+[[menu.main]]
+  name = "Blog"
+  identifier = "blog"
+  url = "/post/"
+  weight = 50
+
+[[menu.main]]
+  name = "Experiments"
+  identifier = "experiments"
+  url = "/experiments/"
+  weight = 60
+
+[[menu.main]]
+  name = "Contact"
+  identifier = "contact"
+  url = "/contact/"
+  weight = 70
