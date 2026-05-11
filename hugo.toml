@@ -2,7 +2,7 @@ baseURL = 'https://zzziiyy.github.io/'
 languageCode = 'en-us'
 title = 'Beyond World'
 theme = 'anatole'
-summaryLength = 35
+summaryLength = 20
 enableRobotsTXT = true
 enableEmoji = true
 
