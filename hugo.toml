@@ -34,6 +34,7 @@ enableEmoji = true
   singleDateFormat = "Jan 2, 2006"
   indexDateFormat = "Jan 2006"
   listDateFormat = "Jan 2, 2006"
+  disableTitleCapitalization = true
 
   [params.math]
     enable = true
