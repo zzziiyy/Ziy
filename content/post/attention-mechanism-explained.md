@@ -1,6 +1,6 @@
 ---
 title: "Attention Mechanisms: The Actual Math"
-date: 2025-04-10
+date: 2026-04-10
 author: "ZZ"
 description: "Working through scaled dot-product attention from first principles — what it computes, why it works, and where people usually get confused."
 tags: ["deep learning", "transformers", "attention", "NLP"]
