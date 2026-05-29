@@ -60,43 +60,31 @@ enableEmoji = true
   url = "mailto:zzyzzoe@gmail.com"
 
 [[menu.main]]
-  name = "Home"
-  identifier = "home"
-  url = "/"
-  weight = 10
-
-[[menu.main]]
   name = "About"
   identifier = "about"
   url = "/about/"
-  weight = 20
+  weight = 10
 
 [[menu.main]]
   name = "Projects"
   identifier = "projects"
   url = "/portfolio/"
-  weight = 30
-
-[[menu.main]]
-  name = "Notes"
-  identifier = "notes"
-  url = "/notes/"
-  weight = 40
+  weight = 20
 
 [[menu.main]]
   name = "Blog"
   identifier = "blog"
   url = "/post/"
-  weight = 50
+  weight = 30
 
 [[menu.main]]
   name = "Experiments"
   identifier = "experiments"
   url = "/experiments/"
-  weight = 60
+  weight = 40
 
 [[menu.main]]
   name = "Contact"
   identifier = "contact"
   url = "/contact/"
-  weight = 70
+  weight = 50
