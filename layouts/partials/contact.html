@@ -1,0 +1,23 @@
+<div class="contact-form">
+  <form class="form-style" method="POST" action="{{ .Site.Params.contactFormAction }}">
+    <input type="hidden" name="_subject" value="New message from Beyond World" />
+    <ul>
+      <li>
+        <label for="name">{{ i18n "name" }}</label>
+        <input class="field-style field-full" type="text" name="name" id="name" placeholder="{{ i18n "name" }}" required>
+      </li>
+      <li>
+        <label for="email">{{ i18n "email" }}</label>
+        <input class="field-style field-full" type="email" id="email" name="email" placeholder="{{ i18n "email" }}" required>
+      </li>
+      <li>
+        <label for="message">{{ i18n "message" }}</label>
+        <textarea class="field-style" name="message" id="message" rows="6" placeholder="{{ i18n "message" }}" required></textarea>
+      </li>
+      <li>
+        <input class="field-style" type="submit" value="{{ i18n "send" }}" />
+      </li>
+    </ul>
+    <input type="text" name="_gotcha" style="display:none" />
+  </form>
+</div>
