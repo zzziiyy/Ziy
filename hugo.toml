@@ -36,12 +36,11 @@ enableEmoji = true
   listDateFormat = "Jan 2, 2006"
   disableTitleCapitalization = true
   disableArchiveTitleStyling = true
+  contactFormAction = "https://formspree.io/f/mbdekkao"
 
   [params.math]
     enable = true
     use = "katex"
-
-  contactFormAction = "https://formspree.io/f/mbdekkao"
 
   [params.mermaid]
     enable = true
