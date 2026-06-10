@@ -21,7 +21,7 @@ enableEmoji = true
   title = "Beyond World"
   author = "Ziy"
   description = "Thoughts and explorations in human learning."
-  profilePicture = "images/profile.jpg"
+  profilePicture = "images/profile.svg"
   keywords = "machine learning, deep learning, data science, python, neural networks"
   favicon = "favicons/"
   customCss = []
@@ -44,20 +44,6 @@ enableEmoji = true
   [params.mermaid]
     enable = true
 
-  [[params.socialIcons]]
-  icon = "fa-brands fa-github"
-  title = "GitHub"
-  url = "https://github.com/zzziiyy"
-
-  [[params.socialIcons]]
-  icon = "fa-brands fa-linkedin"
-  title = "LinkedIn"
-  url = "https://www.linkedin.com/"
-
-  [[params.socialIcons]]
-  icon = "fa-solid fa-envelope"
-  title = "Email"
-  url = "mailto:zzyzzoe@gmail.com"
 
 [[menu.main]]
   name = "About"
@@ -72,15 +58,15 @@ enableEmoji = true
   weight = 20
 
 [[menu.main]]
-  name = "Blog"
-  identifier = "blog"
-  url = "/post/"
+  name = "Research"
+  identifier = "experiments"
+  url = "/experiments/"
   weight = 30
 
 [[menu.main]]
-  name = "Experiments"
-  identifier = "experiments"
-  url = "/experiments/"
+  name = "Blog"
+  identifier = "blog"
+  url = "/post/"
   weight = 40
 
 [[menu.main]]
