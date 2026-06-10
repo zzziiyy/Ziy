@@ -41,6 +41,8 @@ enableEmoji = true
     enable = true
     use = "katex"
 
+  contactFormAction = "https://formspree.io/f/mbdekkao"
+
   [params.mermaid]
     enable = true
 

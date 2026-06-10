@@ -3,6 +3,7 @@ author: "ZZ"
 title: "Contact"
 description: "Get in touch"
 date: 2024-01-01
+contact: true
 ---
 
-You can reach me at [ziyunzhong.z@gmail.com](mailto:ziyunzhong.z@gmail.com).
+Feel free to send me a message.
