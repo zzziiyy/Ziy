@@ -1,5 +1,6 @@
 baseURL = 'https://zzziiyy.github.io/Ziy/'
 languageCode = 'en-us'
+defaultContentLanguage = 'en'
 title = 'Beyond World'
 theme = 'anatole'
 summaryLength = 35
@@ -45,6 +46,50 @@ enableEmoji = true
   [params.mermaid]
     enable = true
 
+
+[languages]
+  [languages.en]
+    languageName = "English"
+    weight = 1
+
+  [languages.zh-cn]
+    languageName = "中文"
+    weight = 2
+    languageCode = 'zh-CN'
+
+    [languages.zh-cn.params]
+      description = "关于机器学习的思考与探索。"
+      mainSectionsTitle = "近期文章"
+
+    [[languages.zh-cn.menu.main]]
+      name = "关于"
+      identifier = "about"
+      url = "/zh-cn/about/"
+      weight = 10
+
+    [[languages.zh-cn.menu.main]]
+      name = "项目"
+      identifier = "projects"
+      url = "/zh-cn/portfolio/"
+      weight = 20
+
+    [[languages.zh-cn.menu.main]]
+      name = "实验"
+      identifier = "experiments"
+      url = "/zh-cn/experiments/"
+      weight = 30
+
+    [[languages.zh-cn.menu.main]]
+      name = "博客"
+      identifier = "blog"
+      url = "/zh-cn/post/"
+      weight = 40
+
+    [[languages.zh-cn.menu.main]]
+      name = "联系"
+      identifier = "contact"
+      url = "/zh-cn/contact/"
+      weight = 50
 
 [[menu.main]]
   name = "About"
