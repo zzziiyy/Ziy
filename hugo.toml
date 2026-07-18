@@ -86,6 +86,12 @@ enableEmoji = true
       weight = 40
 
     [[languages.zh-cn.menu.main]]
+      name = "档案馆"
+      identifier = "archive"
+      url = "/zh-cn/archive/"
+      weight = 45
+
+    [[languages.zh-cn.menu.main]]
       name = "联系"
       identifier = "contact"
       url = "/zh-cn/contact/"
@@ -114,6 +120,12 @@ enableEmoji = true
   identifier = "blog"
   url = "/post/"
   weight = 40
+
+[[menu.main]]
+  name = "Archive"
+  identifier = "archive"
+  url = "/archive/"
+  weight = 45
 
 [[menu.main]]
   name = "Contact"

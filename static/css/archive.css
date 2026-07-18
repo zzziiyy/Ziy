@@ -1,0 +1,895 @@
+/* ============================================================
+   THE LAST ARCHIVE / 最后的档案馆
+   archive.css — self-contained styles for the interactive narrative
+   ============================================================ */
+
+/* ── Custom Properties ─────────────────────────────────────── */
+
+:root {
+  --arc-bg:              #f4f0e8;
+  --arc-text:            #2c2c2c;
+  --arc-text-secondary:  #6b635a;
+  --arc-accent:          #3d5a4a;
+  --arc-border:          #c8c0b0;
+  --arc-label:           #8b8070;
+  --arc-surface:         rgba(255, 255, 255, 0.6);
+  --arc-progress-bg:     #ddd8ce;
+
+  /* Internal tokens */
+  --arc-radius:          3px;
+  --arc-transition-speed: 0.4s;
+  --arc-max-width:       640px;
+  --arc-font-serif:      Georgia, 'Times New Roman', serif;
+  --arc-font-sans:       system-ui, -apple-system, sans-serif;
+  --arc-font-mono:       'Courier New', Courier, monospace;
+}
+
+.theme--dark {
+  --arc-bg:              transparent;
+  --arc-text:            #e8e4dc;
+  --arc-text-secondary:  #a09888;
+  --arc-accent:          #7aaa8a;
+  --arc-border:          #3a3830;
+  --arc-label:           #7a7268;
+  --arc-surface:         rgba(30, 28, 24, 0.6);
+  --arc-progress-bg:     #2a2820;
+}
+
+/* ── Reset / Base ──────────────────────────────────────────── */
+
+#archive-app *,
+#archive-app *::before,
+#archive-app *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+#archive-app {
+  background-color: var(--arc-bg);
+  color: var(--arc-text);
+  font-family: var(--arc-font-sans);
+  font-size: 1rem;
+  line-height: 1.75;
+  min-height: 100vh;
+  width: 100%;
+  padding: 0;
+  transition: background-color var(--arc-transition-speed) ease,
+              color var(--arc-transition-speed) ease;
+}
+
+/* ── Shell ─────────────────────────────────────────────────── */
+
+.arc-shell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 2rem 1rem 4rem;
+}
+
+.arc-content {
+  width: 100%;
+  max-width: var(--arc-max-width);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Progress Bar ──────────────────────────────────────────── */
+
+.arc-progress-wrap {
+  width: 100%;
+  max-width: var(--arc-max-width);
+  margin-bottom: 0.5rem;
+}
+
+.arc-progress-bar-bg {
+  width: 100%;
+  height: 2px;
+  background: var(--arc-progress-bg);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.arc-progress-bar-fill {
+  height: 100%;
+  background: var(--arc-accent);
+  border-radius: 1px;
+  transition: width 0.5s ease;
+}
+
+/* ── Labels / Sequence ─────────────────────────────────────── */
+
+.arc-label {
+  font-family: var(--arc-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  opacity: 0.6;
+  color: var(--arc-label);
+  text-transform: uppercase;
+  line-height: 1.4;
+}
+
+.arc-act-label {
+  font-family: var(--arc-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--arc-accent);
+  opacity: 0.8;
+  margin-bottom: 0.25rem;
+}
+
+/* ── Question Narrative ────────────────────────────────────── */
+
+.arc-question-text {
+  font-family: var(--arc-font-serif);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--arc-text);
+  margin-top: 0.75rem;
+}
+
+.arc-question-note {
+  font-family: var(--arc-font-sans);
+  font-size: 0.85rem;
+  color: var(--arc-text-secondary);
+  margin-top: 0.5rem;
+  font-style: italic;
+}
+
+/* ── Choice Cards ──────────────────────────────────────────── */
+
+.arc-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 0.5rem;
+}
+
+.arc-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border: 1px solid var(--arc-border);
+  border-radius: var(--arc-radius);
+  background: var(--arc-surface);
+  cursor: pointer;
+  text-align: left;
+  color: var(--arc-text);
+  font-family: var(--arc-font-sans);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  min-height: 44px;
+  transition:
+    border-color var(--arc-transition-speed) ease,
+    background-color var(--arc-transition-speed) ease,
+    opacity 0.2s ease;
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.arc-choice:hover {
+  border-color: var(--arc-accent);
+  background: var(--arc-surface);
+  opacity: 0.9;
+}
+
+.arc-choice:focus-visible {
+  outline: 2px solid var(--arc-accent);
+  outline-offset: 2px;
+}
+
+.arc-choice.arc-selected {
+  border-color: var(--arc-accent);
+  background: color-mix(in srgb, var(--arc-accent) 8%, var(--arc-surface));
+}
+
+/* Fallback for browsers without color-mix */
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .arc-choice.arc-selected {
+    background: var(--arc-surface);
+    box-shadow: inset 3px 0 0 var(--arc-accent);
+  }
+}
+
+.arc-choice-key {
+  font-family: var(--arc-font-mono);
+  font-size: 0.75rem;
+  opacity: 0.5;
+  flex-shrink: 0;
+  padding-top: 0.1em;
+  min-width: 1rem;
+  letter-spacing: 0.05em;
+}
+
+.arc-choice-text {
+  flex: 1;
+}
+
+/* ── Navigation ────────────────────────────────────────────── */
+
+.arc-nav {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.arc-btn {
+  padding: 0.6rem 1.25rem;
+  border: 1px solid var(--arc-border);
+  border-radius: var(--arc-radius);
+  background: transparent;
+  color: var(--arc-text);
+  font-family: var(--arc-font-sans);
+  font-size: 0.9rem;
+  cursor: pointer;
+  min-height: 44px;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.arc-btn:hover {
+  border-color: var(--arc-accent);
+  color: var(--arc-accent);
+}
+
+.arc-btn:focus-visible {
+  outline: 2px solid var(--arc-accent);
+  outline-offset: 2px;
+}
+
+.arc-btn--primary {
+  background: var(--arc-accent);
+  border-color: var(--arc-accent);
+  color: var(--arc-bg);
+}
+
+.arc-btn--primary:hover {
+  opacity: 0.85;
+  color: var(--arc-bg);
+}
+
+.arc-btn--ghost {
+  border-color: transparent;
+  opacity: 0.6;
+}
+
+.arc-btn--ghost:hover {
+  opacity: 1;
+  border-color: var(--arc-border);
+}
+
+/* ── Fade Animation ────────────────────────────────────────── */
+
+.arc-fade-in {
+  animation: arcFadeIn var(--arc-transition-speed) ease forwards;
+}
+
+@keyframes arcFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.arc-fade-out {
+  animation: arcFadeOut 0.25s ease forwards;
+}
+
+@keyframes arcFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* ── Intro Screen ──────────────────────────────────────────── */
+
+.arc-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-top: 2rem;
+}
+
+.arc-intro-title {
+  font-family: var(--arc-font-serif);
+  font-size: 1.8rem;
+  font-weight: normal;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  color: var(--arc-text);
+}
+
+.arc-intro-title .arc-intro-subtitle {
+  display: block;
+  font-size: 1rem;
+  opacity: 0.55;
+  font-family: var(--arc-font-mono);
+  letter-spacing: 0.08em;
+  margin-top: 0.35rem;
+}
+
+.arc-intro-body {
+  font-family: var(--arc-font-serif);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--arc-text-secondary);
+}
+
+.arc-intro-meta {
+  font-family: var(--arc-font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  opacity: 0.5;
+  color: var(--arc-label);
+}
+
+/* ── Ranking UI ────────────────────────────────────────────── */
+
+.arc-ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  user-select: none;
+}
+
+.arc-rank-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--arc-border);
+  border-radius: var(--arc-radius);
+  background: var(--arc-surface);
+  cursor: grab;
+  min-height: 52px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.arc-rank-item:active {
+  cursor: grabbing;
+}
+
+.arc-rank-item.arc-dragging {
+  opacity: 0.5;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border-color: var(--arc-accent);
+}
+
+.arc-rank-item.arc-drag-over {
+  border-color: var(--arc-accent);
+  background: color-mix(in srgb, var(--arc-accent) 6%, var(--arc-surface));
+}
+
+.arc-rank-handle {
+  color: var(--arc-label);
+  opacity: 0.5;
+  font-size: 1rem;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.arc-rank-pos {
+  font-family: var(--arc-font-mono);
+  font-size: 0.7rem;
+  opacity: 0.45;
+  flex-shrink: 0;
+  width: 1.2rem;
+  text-align: center;
+}
+
+.arc-rank-text {
+  flex: 1;
+  font-family: var(--arc-font-sans);
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--arc-text);
+}
+
+.arc-rank-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.arc-rank-arrow {
+  background: transparent;
+  border: none;
+  color: var(--arc-text-secondary);
+  cursor: pointer;
+  padding: 0.1rem 0.3rem;
+  font-size: 0.8rem;
+  line-height: 1;
+  border-radius: 2px;
+  transition: color 0.15s, background 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 24px;
+  min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arc-rank-arrow:hover {
+  color: var(--arc-accent);
+  background: color-mix(in srgb, var(--arc-accent) 10%, transparent);
+}
+
+.arc-rank-arrow:focus-visible {
+  outline: 2px solid var(--arc-accent);
+  outline-offset: 1px;
+}
+
+.arc-rank-arrow:disabled {
+  opacity: 0.2;
+  cursor: default;
+}
+
+/* ── Capacity / Allocation UI ──────────────────────────────── */
+
+.arc-capacity-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 0.75rem;
+}
+
+.arc-capacity-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.arc-capacity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.arc-capacity-label {
+  font-family: var(--arc-font-sans);
+  font-size: 0.95rem;
+  color: var(--arc-text);
+}
+
+.arc-capacity-value {
+  font-family: var(--arc-font-mono);
+  font-size: 0.8rem;
+  color: var(--arc-accent);
+  min-width: 3rem;
+  text-align: right;
+}
+
+.arc-capacity-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--arc-progress-bg);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+
+.arc-capacity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--arc-accent);
+  cursor: pointer;
+  border: 2px solid var(--arc-bg);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  transition: transform 0.15s ease;
+}
+
+.arc-capacity-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--arc-accent);
+  cursor: pointer;
+  border: 2px solid var(--arc-bg);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.arc-capacity-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--arc-accent) 30%, transparent);
+}
+
+.arc-capacity-remaining {
+  font-family: var(--arc-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--arc-text-secondary);
+  margin-top: 0.5rem;
+  opacity: 0.7;
+}
+
+.arc-capacity-remaining.arc-warn {
+  color: #9a6b3a;
+  opacity: 1;
+}
+
+/* ── Text Input (Q8) ───────────────────────────────────────── */
+
+.arc-word-wrap {
+  margin-top: 0.75rem;
+}
+
+.arc-word-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--arc-border);
+  border-radius: var(--arc-radius);
+  background: var(--arc-surface);
+  color: var(--arc-text);
+  font-family: var(--arc-font-serif);
+  font-size: 1.1rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 44px;
+}
+
+.arc-word-input::placeholder {
+  color: var(--arc-text-secondary);
+  opacity: 0.55;
+  font-style: italic;
+}
+
+.arc-word-input:focus {
+  border-color: var(--arc-accent);
+}
+
+/* ── Result Screen ─────────────────────────────────────────── */
+
+.arc-result {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-top: 1rem;
+}
+
+.arc-result-header {
+  border-bottom: 1px solid var(--arc-border);
+  padding-bottom: 1.5rem;
+}
+
+.arc-archetype-label {
+  font-family: var(--arc-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  opacity: 0.5;
+  text-transform: uppercase;
+  color: var(--arc-label);
+  margin-bottom: 0.5rem;
+}
+
+.arc-archetype-title {
+  font-family: var(--arc-font-serif);
+  font-size: 1.8rem;
+  font-weight: normal;
+  line-height: 1.25;
+  color: var(--arc-text);
+  margin-bottom: 0.875rem;
+}
+
+.arc-archetype-quote {
+  font-family: var(--arc-font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--arc-text-secondary);
+  line-height: 1.7;
+  border-left: 2px solid var(--arc-accent);
+  padding-left: 1rem;
+}
+
+/* ── Result Sections ───────────────────────────────────────── */
+
+.arc-result-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.arc-result-section-label {
+  font-family: var(--arc-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--arc-accent);
+  opacity: 0.75;
+}
+
+.arc-result-body {
+  font-family: var(--arc-font-serif);
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--arc-text);
+}
+
+.arc-result-meta-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 1rem;
+  margin-top: 0.25rem;
+}
+
+.arc-result-meta-key {
+  font-family: var(--arc-font-mono);
+  font-size: 0.75rem;
+  opacity: 0.55;
+  color: var(--arc-label);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-top: 0.1em;
+}
+
+.arc-result-meta-val {
+  font-family: var(--arc-font-sans);
+  font-size: 0.9rem;
+  color: var(--arc-text-secondary);
+  line-height: 1.55;
+}
+
+/* Word recorded */
+.arc-word-recorded {
+  font-family: var(--arc-font-serif);
+  font-size: 0.95rem;
+  color: var(--arc-text-secondary);
+  font-style: italic;
+}
+
+.arc-word-recorded span {
+  color: var(--arc-text);
+  font-style: normal;
+  font-size: 1.05rem;
+}
+
+/* ── Radar Chart ───────────────────────────────────────────── */
+
+.arc-radar-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem 0;
+}
+
+.arc-radar-svg {
+  max-width: 280px;
+  width: 100%;
+  height: auto;
+}
+
+.arc-radar-grid {
+  fill: none;
+  stroke: var(--arc-border);
+  stroke-width: 1;
+  opacity: 0.6;
+}
+
+.arc-radar-shape {
+  fill: color-mix(in srgb, var(--arc-accent) 20%, transparent);
+  stroke: var(--arc-accent);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+/* Fallback for no color-mix */
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .arc-radar-shape {
+    fill: rgba(61, 90, 74, 0.2);
+  }
+  .theme--dark .arc-radar-shape {
+    fill: rgba(122, 170, 138, 0.2);
+  }
+}
+
+.arc-radar-axis {
+  stroke: var(--arc-border);
+  stroke-width: 1;
+  opacity: 0.4;
+}
+
+.arc-radar-label {
+  font-family: var(--arc-font-mono);
+  font-size: 9px;
+  fill: var(--arc-label);
+  letter-spacing: 0.06em;
+  text-anchor: middle;
+}
+
+.arc-radar-dot {
+  fill: var(--arc-accent);
+}
+
+/* ── Cost Section ──────────────────────────────────────────── */
+
+.arc-cost-box {
+  padding: 1rem 1.125rem;
+  border: 1px solid var(--arc-border);
+  border-radius: var(--arc-radius);
+  background: var(--arc-surface);
+}
+
+.arc-cost-text {
+  font-family: var(--arc-font-serif);
+  font-size: 0.975rem;
+  line-height: 1.75;
+  color: var(--arc-text-secondary);
+  font-style: italic;
+}
+
+/* ── Ending Section ────────────────────────────────────────── */
+
+.arc-ending-text {
+  font-family: var(--arc-font-serif);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--arc-text);
+}
+
+/* ── Result Actions ────────────────────────────────────────── */
+
+.arc-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.625rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--arc-border);
+}
+
+/* ── Act Announcement ──────────────────────────────────────── */
+
+.arc-act-announce {
+  text-align: center;
+  padding: 2.5rem 0 1.5rem;
+}
+
+.arc-act-announce-number {
+  font-family: var(--arc-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.45;
+  margin-bottom: 0.5rem;
+}
+
+.arc-act-announce-name {
+  font-family: var(--arc-font-serif);
+  font-size: 1.6rem;
+  font-weight: normal;
+  color: var(--arc-text);
+}
+
+/* ── Divider ───────────────────────────────────────────────── */
+
+.arc-divider {
+  border: none;
+  border-top: 1px solid var(--arc-border);
+  opacity: 0.5;
+  margin: 0.25rem 0;
+}
+
+/* ── Back button note ──────────────────────────────────────── */
+
+.arc-back-note {
+  font-family: var(--arc-font-mono);
+  font-size: 0.72rem;
+  opacity: 0.4;
+  letter-spacing: 0.06em;
+}
+
+/* ── Mobile adjustments ────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  .arc-shell {
+    padding: 1.25rem 0.875rem 3rem;
+  }
+
+  .arc-intro-title {
+    font-size: 1.45rem;
+  }
+
+  .arc-archetype-title {
+    font-size: 1.45rem;
+  }
+
+  .arc-choice {
+    padding: 0.75rem 0.875rem;
+  }
+
+  .arc-result-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .arc-result-meta-key {
+    margin-top: 0.5rem;
+  }
+
+  .arc-result-actions {
+    flex-direction: column;
+  }
+
+  .arc-result-actions .arc-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+/* ── Processing Interstitial ───────────────────────────────── */
+
+.arc-processing-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 40vh;
+  text-align: center;
+  gap: 1.5rem;
+  padding: 3rem 0;
+}
+
+.arc-processing-text {
+  font-family: var(--arc-font-serif);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--arc-text-secondary);
+  animation: arcPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes arcPulse {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 1; }
+}
+
+.arc-processing-rule {
+  width: 40px;
+  height: 1px;
+  background: var(--arc-accent);
+  opacity: 0.4;
+}
+
+/* ── Reduced Motion ────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  #archive-app *,
+  #archive-app *::before,
+  #archive-app *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  .arc-progress-bar-fill {
+    transition: none;
+  }
+}

@@ -1,0 +1,9 @@
+{{ define "main" }}
+<link rel="stylesheet" href="{{ "css/archive.css" | relURL }}">
+<div id="archive-app" aria-live="polite" aria-atomic="false"></div>
+<script>
+  window.ARCHIVE_LANG = '{{ .Site.Language.Lang }}';
+  window.ARCHIVE_SITE_HOME = '{{ "/" | relLangURL }}';
+</script>
+<script src="{{ "js/archive.js" | relURL }}"></script>
+{{ end }}
