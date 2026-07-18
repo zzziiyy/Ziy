@@ -8,8 +8,7 @@ author: "ZZ"
 A quiet place for unfinished thoughts, small experiments, and things that grow.
 
 <style>
-.post__content { display: flex; flex-direction: column; min-height: calc(100vh - 8rem); }
-.garden-fill { margin-top: auto; padding-top: 2rem; }
+.garden-fill { margin-top: 3rem; }
 </style>
 
 <div class="garden-fill">

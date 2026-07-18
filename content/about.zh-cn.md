@@ -8,8 +8,7 @@ author: "ZZ"
 一处安静的地方，放着未完成的思考，小小的实验，以及那些还在生长的事物。
 
 <style>
-.post__content { display: flex; flex-direction: column; min-height: calc(100vh - 8rem); }
-.garden-fill { margin-top: auto; padding-top: 2rem; }
+.garden-fill { margin-top: 3rem; }
 </style>
 
 <div class="garden-fill">

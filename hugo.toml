@@ -21,7 +21,7 @@ enableEmoji = true
   contentratio = 0.72
   title = "Beyond World"
   author = "Ziy's Garden"
-  description = "A quiet place for unfinished thoughts,\nsmall experiments, and things that grow."
+  description = ""
   profilePicture = "images/soul_avatar.png"
   keywords = "machine learning, deep learning, data science, python, neural networks"
   favicon = "favicons/"
@@ -58,7 +58,7 @@ enableEmoji = true
     languageCode = 'zh-CN'
 
     [languages.zh-cn.params]
-      description = "关于机器学习的思考与探索。"
+      description = ""
       mainSectionsTitle = "近期文章"
 
     [[languages.zh-cn.menu.main]]
