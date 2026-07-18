@@ -15,173 +15,154 @@ Things here range from technical deep-dives and experiments to reflections and h
 </style>
 
 <div class="garden-fill">
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 350" fill="none" style="width:100%;display:block;opacity:0.42;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 295" fill="none" style="width:100%;display:block;opacity:0.44;">
   <g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
 
-    <!-- ====== MAIN HORIZONTAL VINE ====== -->
-    <!-- Left half of vine: center (340,175) curving to left terminal (52,170) -->
-    <path stroke-width="1.2" d="M340,175 C308,167 280,183 248,173 C220,164 197,179 168,173 C142,168 114,181 86,173 C70,168 58,173 52,170"/>
-    <!-- Left terminal C-scroll -->
-    <path stroke-width="1.1" d="M52,170 C36,168 25,157 30,146 C35,135 49,137 50,146 C51,153 44,157 40,154"/>
-    <!-- Right half of vine (mirror) -->
-    <path stroke-width="1.2" d="M420,175 C452,167 480,183 512,173 C540,164 563,179 592,173 C618,168 646,181 674,173 C690,168 702,173 708,170"/>
-    <!-- Right terminal C-scroll -->
-    <path stroke-width="1.1" d="M708,170 C724,168 735,157 730,146 C725,135 711,137 710,146 C709,153 716,157 720,154"/>
+    <!-- ═══ MAIN VINE ═══ wanders from lower-left across to upper-right -->
+    <path stroke-width="1.5" d="M18,274 C48,254 80,268 112,250 C144,232 148,248 184,240 C220,232 238,248 274,238 C310,228 328,244 366,236 C404,228 420,242 458,234 C496,226 512,240 550,232 C588,224 606,238 644,228 C682,218 700,232 736,222"/>
 
-    <!-- ====== UPPER BRANCHES (LEFT SIDE) ====== -->
-    <!-- Branch 1 up: from vine at x=248 -->
-    <path stroke-width="1" d="M248,173 C245,159 243,143 246,128"/>
-    <!-- Leaf -->
-    <path stroke-width="0.9" d="M246,128 C239,120 237,108 246,101 C255,108 253,120 246,128 Z"/>
-    <line stroke-width="0.6" x1="246" y1="101" x2="246" y2="128"/>
-    <!-- Small flower above leaf -->
-    <g transform="translate(246,96)">
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(60)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(120)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(180)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(240)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(300)"/>
+    <!-- ═══ BRANCH 1 → LARGE PEONY (lower-left area) ═══ -->
+    <path stroke-width="1.2" d="M112,250 C104,240 96,228 92,214"/>
+    <path stroke-width="1" d="M100,236 C92,228 84,224 76,228"/><!-- side spur -->
+
+    <!-- Large peony at (92, 210) — 3 rings of petals, organic angles -->
+    <g transform="translate(92,210)">
+      <!-- Outer petals: 7, each slightly different -->
+      <path stroke-width="1.2" d="M0,0 C-4,-12 -14,-30 0,-38 C14,-30 4,-12 0,0"/>
+      <path stroke-width="1.2" d="M0,0 C-4,-12 -14,-30 0,-38 C14,-30 4,-12 0,0" transform="rotate(50)"/>
+      <path stroke-width="1.2" d="M0,0 C-3,-13 -12,-30 1,-37 C15,-29 5,-12 0,0" transform="rotate(102)"/>
+      <path stroke-width="1.2" d="M0,0 C-5,-11 -15,-30 0,-38 C15,-30 5,-12 0,0" transform="rotate(156)"/>
+      <path stroke-width="1.2" d="M0,0 C-4,-12 -14,-30 0,-38 C14,-30 4,-12 0,0" transform="rotate(208)"/>
+      <path stroke-width="1.2" d="M0,0 C-5,-11 -13,-29 0,-37 C14,-29 5,-11 0,0" transform="rotate(258)"/>
+      <path stroke-width="1.2" d="M0,0 C-4,-12 -14,-30 0,-38 C14,-30 4,-12 0,0" transform="rotate(308)"/>
+      <!-- Middle ring: 6 petals, shorter -->
+      <path stroke-width="1" d="M0,0 C-3,-8 -10,-20 0,-25 C10,-20 3,-8 0,0" transform="rotate(25)"/>
+      <path stroke-width="1" d="M0,0 C-3,-8 -10,-20 0,-25 C10,-20 3,-8 0,0" transform="rotate(85)"/>
+      <path stroke-width="1" d="M0,0 C-2,-8 -9,-20 1,-25 C10,-19 3,-8 0,0" transform="rotate(130)"/>
+      <path stroke-width="1" d="M0,0 C-3,-8 -10,-20 0,-25 C10,-20 3,-8 0,0" transform="rotate(182)"/>
+      <path stroke-width="1" d="M0,0 C-3,-8 -10,-20 0,-25 C10,-20 3,-8 0,0" transform="rotate(233)"/>
+      <path stroke-width="1" d="M0,0 C-3,-8 -10,-20 0,-25 C10,-20 3,-8 0,0" transform="rotate(280)"/>
+      <!-- Inner ring: 5 petals -->
+      <path stroke-width="0.85" d="M0,0 C-2,-5 -7,-13 0,-16 C7,-13 2,-5 0,0"/>
+      <path stroke-width="0.85" d="M0,0 C-2,-5 -7,-13 0,-16 C7,-13 2,-5 0,0" transform="rotate(70)"/>
+      <path stroke-width="0.85" d="M0,0 C-2,-5 -7,-13 0,-16 C7,-13 2,-5 0,0" transform="rotate(144)"/>
+      <path stroke-width="0.85" d="M0,0 C-2,-5 -7,-13 0,-16 C7,-13 2,-5 0,0" transform="rotate(214)"/>
+      <path stroke-width="0.85" d="M0,0 C-2,-5 -7,-13 0,-16 C7,-13 2,-5 0,0" transform="rotate(286)"/>
+      <circle r="7" stroke-width="1"/>
       <circle r="3.5" stroke-width="0.8"/>
     </g>
 
-    <!-- Branch 2 up: from vine at x=168 -->
-    <path stroke-width="1" d="M168,173 C164,157 162,138 166,120"/>
-    <!-- Leaf pair at this branch -->
-    <path stroke-width="0.9" d="M166,135 C158,128 152,132 151,140 C159,141 164,137 166,135 Z"/>
-    <path stroke-width="0.9" d="M166,135 C174,128 180,132 181,140 C173,141 168,137 166,135 Z"/>
-    <!-- Leaf tip -->
-    <path stroke-width="0.9" d="M166,120 C159,112 157,100 166,93 C175,100 173,112 166,120 Z"/>
-    <line stroke-width="0.6" x1="166" y1="93" x2="166" y2="120"/>
+    <!-- Bud beside peony (from the side spur at 76,228) -->
+    <path stroke-width="1" d="M76,228 C70,218 68,206 75,198 C82,206 80,218 76,228"/>
+    <path stroke-width="0.8" d="M76,228 C68,224 65,229 68,235"/>
+    <path stroke-width="0.8" d="M76,228 C84,224 87,229 84,235"/>
+    <!-- tiny leaf on bud stem -->
+    <path stroke-width="0.85" d="M74,216 C65,210 61,200 68,194 C76,200 76,210 74,216 Z"/>
+    <line stroke-width="0.5" x1="68" y1="194" x2="74" y2="216"/>
 
-    <!-- Branch 3 up: from vine at x=86 -->
-    <path stroke-width="1" d="M86,173 C83,159 81,143 84,128"/>
-    <!-- Leaf -->
-    <path stroke-width="0.9" d="M84,128 C77,120 75,108 84,101 C93,108 91,120 84,128 Z"/>
-    <line stroke-width="0.6" x1="84" y1="101" x2="84" y2="128"/>
-    <!-- Small flower -->
-    <g transform="translate(84,96)">
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(60)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(120)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(180)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(240)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(300)"/>
-      <circle r="3.5" stroke-width="0.8"/>
+    <!-- Leaves flanking peony -->
+    <path stroke-width="1" d="M78,238 C66,226 62,208 72,200 C84,208 86,226 78,238 Z"/>
+    <line stroke-width="0.55" x1="72" y1="200" x2="78" y2="238"/>
+    <path stroke-width="0.45" d="M75,220 C67,216 65,218"/><path stroke-width="0.45" d="M76,230 C68,226 66,228"/>
+    <path stroke-width="1" d="M110,248 C122,236 126,218 116,210 C104,218 102,236 110,248 Z"/>
+    <line stroke-width="0.55" x1="116" y1="210" x2="110" y2="248"/>
+    <path stroke-width="0.45" d="M113,230 C121,226 123,228"/>
+    <!-- Small leaf on main vine near x=148 -->
+    <path stroke-width="0.95" d="M150,246 C160,234 164,218 154,212 C144,218 142,234 150,246 Z"/>
+    <line stroke-width="0.5" x1="154" y1="212" x2="150" y2="246"/>
+
+    <!-- ═══ BRANCH 2 → FIVE-PETAL FLOWER (mid-left area) ═══ -->
+    <path stroke-width="1.1" d="M274,238 C270,224 268,208 274,194"/>
+    <!-- small side leaf on this branch -->
+    <path stroke-width="0.9" d="M272,220 C262,212 258,200 266,194 C274,200 276,212 272,220 Z"/>
+    <line stroke-width="0.5" x1="266" y1="194" x2="272" y2="220"/>
+
+    <!-- Five-petal flower at (274,190), tilted naturally -->
+    <g transform="translate(274,190) rotate(22)">
+      <path stroke-width="1.1" d="M0,0 C-5,-9 -14,-24 0,-30 C14,-24 5,-9 0,0"/>
+      <path stroke-width="1.1" d="M0,0 C-5,-9 -14,-24 0,-30 C14,-24 5,-9 0,0" transform="rotate(72)"/>
+      <path stroke-width="1.1" d="M0,0 C-4,-9 -13,-24 0,-30 C14,-24 5,-9 0,0" transform="rotate(144)"/>
+      <path stroke-width="1.1" d="M0,0 C-5,-9 -14,-24 0,-30 C14,-24 5,-9 0,0" transform="rotate(216)"/>
+      <path stroke-width="1.1" d="M0,0 C-5,-8 -14,-23 0,-30 C14,-24 5,-9 0,0" transform="rotate(288)"/>
+      <!-- inner detail ring -->
+      <path stroke-width="0.8" d="M0,0 C-2,-5 -8,-14 0,-17 C8,-14 2,-5 0,0" transform="rotate(36)"/>
+      <path stroke-width="0.8" d="M0,0 C-2,-5 -8,-14 0,-17 C8,-14 2,-5 0,0" transform="rotate(108)"/>
+      <path stroke-width="0.8" d="M0,0 C-2,-5 -8,-14 0,-17 C8,-14 2,-5 0,0" transform="rotate(180)"/>
+      <path stroke-width="0.8" d="M0,0 C-2,-5 -8,-14 0,-17 C8,-14 2,-5 0,0" transform="rotate(252)"/>
+      <path stroke-width="0.8" d="M0,0 C-2,-5 -8,-14 0,-17 C8,-14 2,-5 0,0" transform="rotate(324)"/>
+      <circle r="5.5" stroke-width="0.95"/>
+      <circle r="2.5" stroke-width="0.75"/>
     </g>
 
-    <!-- ====== LOWER BRANCHES (LEFT SIDE) ====== -->
-    <!-- Branch down from x=310 -->
-    <path stroke-width="1" d="M310,175 C307,191 305,208 308,224"/>
-    <path stroke-width="0.9" d="M308,224 C301,232 299,244 308,251 C317,244 315,232 308,224 Z"/>
-    <line stroke-width="0.6" x1="308" y1="224" x2="308" y2="251"/>
-    <!-- Side leaf on this branch -->
-    <path stroke-width="0.8" d="M307,210 C299,205 293,208 291,215 C299,216 304,212 307,210 Z"/>
+    <!-- Leaves near the five-petal flower -->
+    <path stroke-width="0.95" d="M284,232 C294,220 298,204 288,198 C278,204 276,220 284,232 Z"/>
+    <line stroke-width="0.5" x1="288" y1="198" x2="284" y2="232"/>
+    <path stroke-width="0.45" d="M287,216 C295,212 297,214"/>
+    <path stroke-width="0.95" d="M260,236 C248,224 244,208 254,202 C264,208 266,224 260,236 Z"/>
+    <line stroke-width="0.5" x1="254" y1="202" x2="260" y2="236"/>
 
-    <!-- Branch down from x=200 -->
-    <path stroke-width="1" d="M200,175 C197,192 195,210 198,228"/>
-    <!-- Leaf pair -->
-    <path stroke-width="0.9" d="M198,214 C190,207 184,210 183,218 C191,219 196,215 198,214 Z"/>
-    <path stroke-width="0.9" d="M198,214 C206,207 212,210 213,218 C205,219 200,215 198,214 Z"/>
-    <!-- Tip leaf -->
-    <path stroke-width="0.9" d="M198,228 C191,236 189,248 198,255 C207,248 205,236 198,228 Z"/>
-    <line stroke-width="0.6" x1="198" y1="228" x2="198" y2="255"/>
+    <!-- Tendril from vine at ~x=328 -->
+    <path stroke-width="0.8" d="M330,242 C322,230 318,218 326,210 C332,204 338,208 336,214 C334,218 328,218 328,214"/>
 
-    <!-- Branch down from x=120 -->
-    <path stroke-width="1" d="M120,173 C117,189 115,206 118,222"/>
-    <path stroke-width="0.9" d="M118,222 C111,230 109,242 118,249 C127,242 125,230 118,222 Z"/>
-    <line stroke-width="0.6" x1="118" y1="222" x2="118" y2="249"/>
+    <!-- Mid-vine leaves x=366, x=420 -->
+    <path stroke-width="0.95" d="M368,234 C378,222 382,206 372,200 C362,206 360,222 368,234 Z"/>
+    <line stroke-width="0.5" x1="372" y1="200" x2="368" y2="234"/>
+    <path stroke-width="0.9" d="M422,232 C412,220 410,204 420,198 C430,204 432,220 422,232 Z"/>
+    <line stroke-width="0.5" x1="420" y1="198" x2="422" y2="232"/>
 
-    <!-- ====== RIGHT SIDE BRANCHES (mirror) ====== -->
-    <!-- Upper right branches -->
-    <path stroke-width="1" d="M512,173 C515,159 517,143 514,128"/>
-    <path stroke-width="0.9" d="M514,128 C521,120 523,108 514,101 C505,108 507,120 514,128 Z"/>
-    <line stroke-width="0.6" x1="514" y1="101" x2="514" y2="128"/>
-    <g transform="translate(514,96)">
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(60)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(120)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(180)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(240)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(300)"/>
-      <circle r="3.5" stroke-width="0.8"/>
+    <!-- ═══ BRANCH 3 → SMALL OPEN FLOWER cluster (right-center) ═══ -->
+    <path stroke-width="1.1" d="M550,232 C546,218 544,202 550,188"/>
+    <!-- sub-branch going left -->
+    <path stroke-width="0.9" d="M548,208 C538,200 528,200 524,208"/>
+
+    <!-- Six-petal open flower at (550,184), slightly off-axis -->
+    <g transform="translate(550,184) rotate(-15)">
+      <path stroke-width="1" d="M0,0 C-4,-8 -12,-20 0,-26 C12,-20 4,-8 0,0"/>
+      <path stroke-width="1" d="M0,0 C-4,-8 -12,-20 0,-26 C12,-20 4,-8 0,0" transform="rotate(58)"/>
+      <path stroke-width="1" d="M0,0 C-3,-8 -11,-20 0,-26 C12,-20 4,-8 0,0" transform="rotate(118)"/>
+      <path stroke-width="1" d="M0,0 C-4,-8 -12,-20 0,-26 C12,-20 4,-8 0,0" transform="rotate(178)"/>
+      <path stroke-width="1" d="M0,0 C-4,-8 -12,-20 0,-26 C12,-20 4,-8 0,0" transform="rotate(238)"/>
+      <path stroke-width="1" d="M0,0 C-3,-8 -11,-20 0,-26 C12,-20 4,-8 0,0" transform="rotate(298)"/>
+      <circle r="5" stroke-width="0.9"/>
+      <circle r="2" stroke-width="0.7" fill="currentColor"/>
     </g>
 
-    <path stroke-width="1" d="M592,173 C596,157 598,138 594,120"/>
-    <path stroke-width="0.9" d="M594,135 C602,128 608,132 609,140 C601,141 596,137 594,135 Z"/>
-    <path stroke-width="0.9" d="M594,135 C586,128 580,132 579,140 C587,141 592,137 594,135 Z"/>
-    <path stroke-width="0.9" d="M594,120 C601,112 603,100 594,93 C585,100 587,112 594,120 Z"/>
-    <line stroke-width="0.6" x1="594" y1="93" x2="594" y2="120"/>
-
-    <path stroke-width="1" d="M674,173 C677,159 679,143 676,128"/>
-    <path stroke-width="0.9" d="M676,128 C683,120 685,108 676,101 C667,108 669,120 676,128 Z"/>
-    <line stroke-width="0.6" x1="676" y1="101" x2="676" y2="128"/>
-    <g transform="translate(676,96)">
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(60)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(120)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(180)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(240)"/>
-      <path stroke-width="0.8" d="M0,0 C2,-5 7,-10 0,-13 C-7,-10 -2,-5 0,0" transform="rotate(300)"/>
-      <circle r="3.5" stroke-width="0.8"/>
-    </g>
-
-    <!-- Lower right branches -->
-    <path stroke-width="1" d="M450,175 C453,191 455,208 452,224"/>
-    <path stroke-width="0.9" d="M452,224 C459,232 461,244 452,251 C443,244 445,232 452,224 Z"/>
-    <line stroke-width="0.6" x1="452" y1="224" x2="452" y2="251"/>
-    <path stroke-width="0.8" d="M453,210 C461,205 467,208 469,215 C461,216 456,212 453,210 Z"/>
-
-    <path stroke-width="1" d="M560,175 C563,192 565,210 562,228"/>
-    <path stroke-width="0.9" d="M562,214 C570,207 576,210 577,218 C569,219 564,215 562,214 Z"/>
-    <path stroke-width="0.9" d="M562,214 C554,207 548,210 547,218 C555,219 560,215 562,214 Z"/>
-    <path stroke-width="0.9" d="M562,228 C569,236 571,248 562,255 C553,248 555,236 562,228 Z"/>
-    <line stroke-width="0.6" x1="562" y1="228" x2="562" y2="255"/>
-
-    <path stroke-width="1" d="M640,173 C643,189 645,206 642,222"/>
-    <path stroke-width="0.9" d="M642,222 C649,230 651,242 642,249 C633,242 635,230 642,222 Z"/>
-    <line stroke-width="0.6" x1="642" y1="222" x2="642" y2="249"/>
-
-    <!-- ====== CENTRAL ROSE ====== -->
-    <g transform="translate(380,175)">
-      <!-- Outer petals (8) -->
-      <path stroke-width="1.1" d="M0,0 C5,-10 18,-26 0,-34 C-18,-26 -5,-10 0,0"/>
-      <path stroke-width="1.1" d="M0,0 C5,-10 18,-26 0,-34 C-18,-26 -5,-10 0,0" transform="rotate(45)"/>
-      <path stroke-width="1.1" d="M0,0 C5,-10 18,-26 0,-34 C-18,-26 -5,-10 0,0" transform="rotate(90)"/>
-      <path stroke-width="1.1" d="M0,0 C5,-10 18,-26 0,-34 C-18,-26 -5,-10 0,0" transform="rotate(135)"/>
-      <path stroke-width="1.1" d="M0,0 C5,-10 18,-26 0,-34 C-18,-26 -5,-10 0,0" transform="rotate(180)"/>
-      <path stroke-width="1.1" d="M0,0 C5,-10 18,-26 0,-34 C-18,-26 -5,-10 0,0" transform="rotate(225)"/>
-      <path stroke-width="1.1" d="M0,0 C5,-10 18,-26 0,-34 C-18,-26 -5,-10 0,0" transform="rotate(270)"/>
-      <path stroke-width="1.1" d="M0,0 C5,-10 18,-26 0,-34 C-18,-26 -5,-10 0,0" transform="rotate(315)"/>
-      <!-- Inner petals (8) -->
-      <path stroke-width="0.9" d="M0,0 C3,-6 12,-16 0,-21 C-12,-16 -3,-6 0,0" transform="rotate(22.5)"/>
-      <path stroke-width="0.9" d="M0,0 C3,-6 12,-16 0,-21 C-12,-16 -3,-6 0,0" transform="rotate(67.5)"/>
-      <path stroke-width="0.9" d="M0,0 C3,-6 12,-16 0,-21 C-12,-16 -3,-6 0,0" transform="rotate(112.5)"/>
-      <path stroke-width="0.9" d="M0,0 C3,-6 12,-16 0,-21 C-12,-16 -3,-6 0,0" transform="rotate(157.5)"/>
-      <path stroke-width="0.9" d="M0,0 C3,-6 12,-16 0,-21 C-12,-16 -3,-6 0,0" transform="rotate(202.5)"/>
-      <path stroke-width="0.9" d="M0,0 C3,-6 12,-16 0,-21 C-12,-16 -3,-6 0,0" transform="rotate(247.5)"/>
-      <path stroke-width="0.9" d="M0,0 C3,-6 12,-16 0,-21 C-12,-16 -3,-6 0,0" transform="rotate(292.5)"/>
-      <path stroke-width="0.9" d="M0,0 C3,-6 12,-16 0,-21 C-12,-16 -3,-6 0,0" transform="rotate(337.5)"/>
-      <!-- Innermost ring -->
-      <path stroke-width="0.7" d="M0,0 C2,-4 8,-10 0,-13 C-8,-10 -2,-4 0,0"/>
-      <path stroke-width="0.7" d="M0,0 C2,-4 8,-10 0,-13 C-8,-10 -2,-4 0,0" transform="rotate(45)"/>
-      <path stroke-width="0.7" d="M0,0 C2,-4 8,-10 0,-13 C-8,-10 -2,-4 0,0" transform="rotate(90)"/>
-      <path stroke-width="0.7" d="M0,0 C2,-4 8,-10 0,-13 C-8,-10 -2,-4 0,0" transform="rotate(135)"/>
-      <path stroke-width="0.7" d="M0,0 C2,-4 8,-10 0,-13 C-8,-10 -2,-4 0,0" transform="rotate(180)"/>
-      <path stroke-width="0.7" d="M0,0 C2,-4 8,-10 0,-13 C-8,-10 -2,-4 0,0" transform="rotate(225)"/>
-      <path stroke-width="0.7" d="M0,0 C2,-4 8,-10 0,-13 C-8,-10 -2,-4 0,0" transform="rotate(270)"/>
-      <path stroke-width="0.7" d="M0,0 C2,-4 8,-10 0,-13 C-8,-10 -2,-4 0,0" transform="rotate(315)"/>
-      <!-- Center circles -->
-      <circle r="8" stroke-width="1"/>
+    <!-- Smaller flower from sub-branch at (524,208) -->
+    <g transform="translate(524,204)">
+      <path stroke-width="0.85" d="M0,0 C-3,-6 -9,-15 0,-19 C9,-15 3,-6 0,0"/>
+      <path stroke-width="0.85" d="M0,0 C-3,-6 -9,-15 0,-19 C9,-15 3,-6 0,0" transform="rotate(72)"/>
+      <path stroke-width="0.85" d="M0,0 C-2,-6 -8,-15 0,-19 C9,-15 3,-6 0,0" transform="rotate(144)"/>
+      <path stroke-width="0.85" d="M0,0 C-3,-6 -9,-15 0,-19 C9,-15 3,-6 0,0" transform="rotate(216)"/>
+      <path stroke-width="0.85" d="M0,0 C-3,-6 -9,-15 0,-19 C9,-15 3,-6 0,0" transform="rotate(288)"/>
       <circle r="4" stroke-width="0.8"/>
-      <!-- Sepal leaves framing rose -->
-      <path stroke-width="0.9" d="M0,0 C-8,6 -22,4 -28,-4 C-20,-8 -10,-6 0,0 Z"/>
-      <path stroke-width="0.9" d="M0,0 C8,6 22,4 28,-4 C20,-8 10,-6 0,0 Z"/>
     </g>
 
-    <!-- Decorative C-curl flourishes flanking the central rose -->
-    <path stroke-width="1" d="M344,175 C330,168 320,173 318,182 C316,191 324,198 334,195 C342,192 346,184 343,178"/>
-    <path stroke-width="1" d="M416,175 C430,168 440,173 442,182 C444,191 436,198 426,195 C418,192 414,184 417,178"/>
+    <!-- Leaves near the six-petal flower cluster -->
+    <path stroke-width="0.95" d="M560,226 C570,214 574,198 564,192 C554,198 552,214 560,226 Z"/>
+    <line stroke-width="0.5" x1="564" y1="192" x2="560" y2="226"/>
+    <path stroke-width="0.45" d="M563,210 C571,206 573,208"/>
+    <path stroke-width="0.9" d="M536,214 C526,204 524,190 534,184 C544,190 546,204 536,214 Z"/>
+    <line stroke-width="0.5" x1="534" y1="184" x2="536" y2="214"/>
+
+    <!-- Leaf at x=606 -->
+    <path stroke-width="0.9" d="M608,226 C618,214 622,198 612,192 C602,198 600,214 608,226 Z"/>
+    <line stroke-width="0.5" x1="612" y1="192" x2="608" y2="226"/>
+
+    <!-- ═══ VINE END — bud and tendril (far right) ═══ -->
+    <!-- Bud from vine at ~(644,228) -->
+    <path stroke-width="1.05" d="M644,228 C638,216 636,202 644,192 C652,202 650,216 644,228"/>
+    <!-- Sepals -->
+    <path stroke-width="0.8" d="M644,228 C636,223 633,228 636,234"/>
+    <path stroke-width="0.8" d="M644,228 C652,223 655,228 652,234"/>
+    <!-- Leaf beside bud -->
+    <path stroke-width="0.9" d="M656,224 C666,212 670,196 660,190 C650,196 648,212 656,224 Z"/>
+    <line stroke-width="0.5" x1="660" y1="190" x2="656" y2="224"/>
+
+    <!-- Tendril at vine end (736,222) -->
+    <path stroke-width="0.85" d="M736,222 C744,210 750,198 744,188 C738,180 730,184 732,190 C734,196 740,196 740,190"/>
+    <!-- small leaf near end -->
+    <path stroke-width="0.85" d="M718,226 C728,216 732,200 722,194 C712,200 710,216 718,226 Z"/>
+    <line stroke-width="0.5" x1="722" y1="194" x2="718" y2="226"/>
 
   </g>
 </svg>
