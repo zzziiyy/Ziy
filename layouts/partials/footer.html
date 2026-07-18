@@ -1,15 +1,17 @@
 <footer class="footer footer__{{ .footerClassModifier }}">
   <ul class="footer__list">
-    <li class="footer__item">
-      &copy;
-      {{ if isset .context.Site.Params "copyright" }}
-        {{ replace .context.Site.Params.copyright "{{ YEAR }}" (now.Format "2006") | markdownify }}
-      {{ else }}
-        {{ .context.Site.Params.author }}
-        {{ now.Format "2006" }}
-      {{ end }}
+    <li class="footer__item" style="display:flex;flex-direction:column;align-items:center;gap:0.3em;">
+      <span>
+        &copy;
+        {{ if isset .context.Site.Params "copyright" }}
+          {{ replace .context.Site.Params.copyright "{{ YEAR }}" (now.Format "2006") | markdownify }}
+        {{ else }}
+          {{ .context.Site.Params.author }}
+          {{ now.Format "2006" }}
+        {{ end }}
+      </span>
+      <span style="letter-spacing:0.1em;opacity:0.7;">──── ❦ ────</span>
     </li>
-    <li class="footer__item" style="letter-spacing:0.1em;opacity:0.7;">──── ❦ ────</li>
     {{ range .context.Site.Menus.footer }}
       <li class="footer__item">
         <a
