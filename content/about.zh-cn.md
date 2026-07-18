@@ -5,9 +5,7 @@ date: 2024-01-01
 author: "ZZ"
 ---
 
-一座关于人类与机器学习研究、心智探索、思考与创造的个人花园。
-
-内容涵盖技术深潜与实验，也有随想与未成形的念头，写作的动力是好奇，而非追求完整。
+一处安静的地方，放着未完成的思考，小小的实验，以及那些还在生长的事物。
 
 <style>
 .post__content { display: flex; flex-direction: column; min-height: calc(100vh - 8rem); }
