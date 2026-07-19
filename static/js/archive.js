@@ -2432,7 +2432,9 @@
     botBot.innerHTML = SCENE_BGS['letter-bottom'];
     dossier.appendChild(botBot);
 
-    root.appendChild(dossier);
+    var wrapper = el('div', { className: 'arc-result-wrapper' });
+    wrapper.appendChild(dossier);
+    root.appendChild(wrapper);
   }
 
 

@@ -1689,9 +1689,17 @@
 
 /* ── KEEPER RECORD (RESULT) ─────────────────────────────────── */
 /* Paper-document aesthetic — light background, ink text */
+.arc-result-wrapper {
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
 .arc-dossier {
-  width: min(680px, calc(100% - 2rem));
-  margin: 2.5rem auto 5rem;
+  width: min(680px, 100%);
+  margin: 0;
   min-height: auto;
   background:
     repeating-linear-gradient(91deg, transparent, transparent 3px, rgba(110,85,45,0.012) 4px),
