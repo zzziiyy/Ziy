@@ -1327,7 +1327,7 @@
     var textP = el('p', { className: 'arc-narrative-text' });
     textP.textContent = li === 1 ? q.zh.text : q.en.text;
     narrative.appendChild(textP);
-    container.appendChild(narrative);
+    container.insertBefore(narrative, container.firstChild);
   }
 
   /* ──────────────────────────────────────────────────────────
@@ -1398,7 +1398,7 @@
     var textP = el('p', { className: 'arc-narrative-text' });
     textP.textContent = li === 1 ? q.zh.text : q.en.text;
     narrative.appendChild(textP);
-    container.appendChild(narrative);
+    container.insertBefore(narrative, container.firstChild);
   }
 
   /* ──────────────────────────────────────────────────────────
@@ -1508,7 +1508,7 @@
     var actDiv = el('div', { className: 'arc-narrative-act' });
     actDiv.textContent = act.label + ' — ' + (li === 1 ? act.zh : act.en);
     narrative.appendChild(actDiv);
-    container.appendChild(narrative);
+    container.insertBefore(narrative, container.firstChild);
   }
 
   /* ──────────────────────────────────────────────────────────
@@ -1661,7 +1661,7 @@
     var textP = el('p', { className: 'arc-narrative-text' });
     textP.textContent = li === 1 ? q.zh.text : q.en.text;
     narrative.appendChild(textP);
-    container.appendChild(narrative);
+    container.insertBefore(narrative, container.firstChild);
   }
 
   /* ──────────────────────────────────────────────────────────
@@ -1789,7 +1789,7 @@
     var textP = el('p', { className: 'arc-narrative-text' });
     textP.textContent = li === 1 ? q.zh.text : q.en.text;
     narrative.appendChild(textP);
-    container.appendChild(narrative);
+    container.insertBefore(narrative, container.firstChild);
   }
 
   /* ──────────────────────────────────────────────────────────
@@ -1877,7 +1877,7 @@
     var noteP = el('p', { className: 'arc-narrative-text' });
     noteP.textContent = li === 1 ? q.zh.note : q.en.note;
     narrative.appendChild(noteP);
-    container.appendChild(narrative);
+    container.insertBefore(narrative, container.firstChild);
   }
 
   /* ──────────────────────────────────────────────────────────
@@ -1950,7 +1950,7 @@
     var actDiv = el('div', { className: 'arc-narrative-act' });
     actDiv.textContent = act.label + ' — ' + (li === 1 ? act.zh : act.en);
     narrative.appendChild(actDiv);
-    container.appendChild(narrative);
+    container.insertBefore(narrative, container.firstChild);
   }
 
   /* ──────────────────────────────────────────────────────────
@@ -2025,7 +2025,7 @@
     var textP = el('p', { className: 'arc-narrative-text' });
     textP.textContent = li === 1 ? q.zh.text : q.en.text;
     narrative.appendChild(textP);
-    container.appendChild(narrative);
+    container.insertBefore(narrative, container.firstChild);
   }
 
   /* ──────────────────────────────────────────────────────────

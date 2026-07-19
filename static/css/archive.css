@@ -179,9 +179,9 @@
 .arc-scene.env-intake {
   background:
     radial-gradient(ellipse 55% 70% at 22% 35%,
-      rgba(184,132,58,0.07) 0%, transparent 55%),
+      rgba(184,132,58,0.22) 0%, transparent 55%),
     radial-gradient(ellipse 40% 55% at 70% 65%,
-      rgba(184,132,58,0.04) 0%, transparent 45%),
+      rgba(184,132,58,0.12) 0%, transparent 45%),
     var(--arc-void);
 }
 
@@ -189,9 +189,9 @@
 .arc-scene.env-classify {
   background:
     linear-gradient(to bottom,
-      rgba(170,190,185,0.045) 0%, transparent 24%),
+      rgba(170,190,185,0.15) 0%, transparent 24%),
     radial-gradient(ellipse 90% 25% at 50% 0%,
-      rgba(170,190,185,0.03) 0%, transparent 100%),
+      rgba(170,190,185,0.1) 0%, transparent 100%),
     var(--arc-void);
 }
 
@@ -199,7 +199,7 @@
 .arc-scene.env-sealed {
   background:
     radial-gradient(ellipse 65% 75% at 30% 42%,
-      rgba(184,132,58,0.065) 0%, transparent 58%),
+      rgba(184,132,58,0.2) 0%, transparent 58%),
     linear-gradient(to bottom,
       var(--arc-surface) 0%, var(--arc-void) 70%);
 }
@@ -208,9 +208,9 @@
 .arc-scene.env-restricted {
   background:
     linear-gradient(to bottom,
-      rgba(80,40,30,0.12) 0%, transparent 28%),
+      rgba(80,40,30,0.35) 0%, transparent 28%),
     radial-gradient(ellipse 50% 40% at 50% 10%,
-      rgba(100,50,35,0.06) 0%, transparent 100%),
+      rgba(100,50,35,0.18) 0%, transparent 100%),
     var(--arc-void);
 }
 
@@ -218,9 +218,9 @@
 .arc-scene.env-maps {
   background:
     radial-gradient(ellipse 45% 55% at 50% 75%,
-      rgba(184,132,58,0.08) 0%, transparent 50%),
+      rgba(184,132,58,0.25) 0%, transparent 50%),
     radial-gradient(ellipse 70% 30% at 50% 100%,
-      rgba(184,132,58,0.04) 0%, transparent 100%),
+      rgba(184,132,58,0.12) 0%, transparent 100%),
     var(--arc-void);
 }
 
@@ -228,9 +228,9 @@
 .arc-scene.env-storage {
   background:
     radial-gradient(ellipse 35% 80% at 15% 50%,
-      rgba(184,132,58,0.045) 0%, transparent 45%),
+      rgba(184,132,58,0.14) 0%, transparent 45%),
     radial-gradient(ellipse 35% 80% at 85% 50%,
-      rgba(184,132,58,0.03) 0%, transparent 45%),
+      rgba(184,132,58,0.1) 0%, transparent 45%),
     linear-gradient(to bottom,
       var(--arc-void) 0%, var(--arc-surface) 45%, var(--arc-void) 100%);
 }
@@ -239,9 +239,9 @@
 .arc-scene.env-memory {
   background:
     radial-gradient(ellipse 80% 90% at 50% -5%,
-      rgba(155,185,175,0.05) 0%, transparent 55%),
+      rgba(155,185,175,0.16) 0%, transparent 55%),
     radial-gradient(ellipse 60% 40% at 50% 0%,
-      rgba(61,82,64,0.06) 0%, transparent 60%),
+      rgba(61,82,64,0.18) 0%, transparent 60%),
     var(--arc-void);
 }
 
@@ -249,9 +249,9 @@
 .arc-scene.env-restore {
   background:
     radial-gradient(ellipse 60% 60% at 50% 25%,
-      rgba(184,132,58,0.09) 0%, transparent 52%),
+      rgba(184,132,58,0.28) 0%, transparent 52%),
     linear-gradient(to bottom,
-      rgba(184,132,58,0.03) 0%, transparent 35%),
+      rgba(184,132,58,0.1) 0%, transparent 35%),
     var(--arc-void);
 }
 
@@ -259,11 +259,11 @@
 .arc-scene.env-terminal {
   background:
     radial-gradient(ellipse 45% 45% at 50% 55%,
-      rgba(61,82,64,0.1) 0%, transparent 58%),
+      rgba(61,82,64,0.32) 0%, transparent 58%),
     radial-gradient(ellipse 30% 20% at 50% 100%,
-      rgba(184,132,58,0.05) 0%, transparent 100%),
+      rgba(184,132,58,0.16) 0%, transparent 100%),
     linear-gradient(to bottom,
-      rgba(6,8,7,0.3) 0%, transparent 18%),
+      rgba(6,8,7,0.5) 0%, transparent 18%),
     var(--arc-void);
 }
 
@@ -271,9 +271,9 @@
 .arc-scene.env-overflow {
   background:
     radial-gradient(ellipse 50% 65% at 18% 62%,
-      rgba(184,132,58,0.055) 0%, transparent 48%),
+      rgba(184,132,58,0.18) 0%, transparent 48%),
     radial-gradient(ellipse 45% 45% at 78% 28%,
-      rgba(155,185,175,0.03) 0%, transparent 42%),
+      rgba(155,185,175,0.1) 0%, transparent 42%),
     var(--arc-void);
 }
 
@@ -281,7 +281,7 @@
 .arc-scene.env-binding {
   background:
     radial-gradient(ellipse 50% 60% at 42% 40%,
-      rgba(184,132,58,0.07) 0%, transparent 50%),
+      rgba(184,132,58,0.22) 0%, transparent 50%),
     var(--arc-void);
 }
 
@@ -289,11 +289,11 @@
 .arc-scene.env-core {
   background:
     radial-gradient(ellipse 70% 70% at 50% 35%,
-      rgba(155,185,175,0.055) 0%, transparent 55%),
+      rgba(155,185,175,0.18) 0%, transparent 55%),
     radial-gradient(ellipse 55% 35% at 50% 100%,
-      rgba(184,132,58,0.07) 0%, transparent 55%),
+      rgba(184,132,58,0.22) 0%, transparent 55%),
     radial-gradient(ellipse 40% 60% at 50% 50%,
-      rgba(61,82,64,0.04) 0%, transparent 60%),
+      rgba(61,82,64,0.14) 0%, transparent 60%),
     var(--arc-void);
 }
 
@@ -316,33 +316,33 @@
 }
 
 /* ── NARRATIVE PANEL ────────────────────────────────────────── */
+/* Narrative is now at the TOP of each scene — instruction before choices */
 .arc-narrative {
   position: relative;
   z-index: 10;
-  padding: 1.1rem 1.5rem 1.5rem;
-  background: linear-gradient(to top,
-    rgba(8,10,9,0.96) 0%,
-    rgba(8,10,9,0.82) 100%);
-  border-top: 1px solid rgba(160,168,164,0.07);
+  padding: 1.25rem 1.75rem 1.1rem;
+  background: rgba(8,10,9,0.92);
+  border-bottom: 1px solid rgba(160,168,164,0.08);
+  flex-shrink: 0;
 }
 
 .arc-narrative-act {
   font-family: var(--arc-mono);
-  font-size: 0.54rem;
-  letter-spacing: 0.22em;
+  font-size: 0.52rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--arc-pale);
-  opacity: 0.42;
-  margin-bottom: 0.35rem;
+  opacity: 0.38;
+  margin-bottom: 0.4rem;
 }
 
 .arc-narrative-text {
   font-family: var(--arc-serif);
-  font-size: 0.88rem;
-  line-height: 1.72;
+  font-size: 0.95rem;
+  line-height: 1.68;
   color: var(--arc-paper);
-  opacity: 0.8;
-  max-width: 580px;
+  opacity: 0.88;
+  max-width: 640px;
 }
 
 /* ── CONSEQUENCE OVERLAY ────────────────────────────────────── */
@@ -620,37 +620,39 @@
 }
 
 .arc-obj svg {
-  width: 56px;
-  height: 56px;
+  width: 88px;
+  height: 88px;
   color: var(--arc-paper);
-  opacity: 0.42;
-  transition: opacity 0.28s ease, filter 0.28s ease;
-  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
+  opacity: 0.72;
+  transition: opacity 0.25s ease, filter 0.25s ease;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.55));
 }
 
 .arc-obj:hover svg,
 .arc-obj:focus svg {
-  opacity: 0.85;
-  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5))
-          drop-shadow(0 0 14px rgba(184,132,58,0.3));
+  opacity: 0.95;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.55))
+          drop-shadow(0 0 20px rgba(184,132,58,0.42));
 }
 
+/* Labels always visible — this is UI, not a hidden-object game */
 .arc-obj-label {
   font-family: var(--arc-mono);
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--arc-pale);
-  opacity: 0;
-  transition: opacity 0.2s ease;
+  opacity: 0.72;
+  transition: opacity 0.2s ease, color 0.2s ease;
   text-align: center;
-  max-width: 110px;
-  line-height: 1.4;
+  max-width: 130px;
+  line-height: 1.5;
 }
 
 .arc-obj:hover .arc-obj-label,
 .arc-obj:focus .arc-obj-label {
-  opacity: 0.75;
+  opacity: 1;
+  color: var(--arc-paper);
 }
 
 .arc-obj-key {
@@ -658,23 +660,24 @@
   top: 2px;
   left: 5px;
   font-family: var(--arc-mono);
-  font-size: 0.55rem;
-  color: var(--arc-amber);
-  opacity: 0.45;
+  font-size: 0.52rem;
+  color: var(--arc-tungsten);
+  opacity: 0.4;
 }
 
 .arc-obj--selected svg {
   opacity: 1;
-  filter: drop-shadow(0 0 16px var(--arc-amber));
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.55))
+          drop-shadow(0 0 22px rgba(184,132,58,0.5));
 }
 
 .arc-obj--selected .arc-obj-label {
   opacity: 1;
-  color: var(--arc-amber);
+  color: var(--arc-tungsten);
 }
 
 .arc-obj--faded {
-  opacity: 0.1;
+  opacity: 0.08;
   pointer-events: none;
 }
 
