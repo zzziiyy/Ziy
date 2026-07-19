@@ -2373,6 +2373,16 @@
     });
     body.appendChild(tracesDiv);
 
+    // Letter signature
+    var sig = el('div', { className: 'arc-dossier-signature' });
+    var sigName = el('div', { className: 'arc-dossier-sig-name' });
+    sigName.textContent = li === 1 ? '档案馆' : 'The Archive';
+    var sigTitle = el('div', { className: 'arc-dossier-sig-title' });
+    sigTitle.textContent = li === 1 ? '保管者办公室 · 1971' : "Keeper's Office  ·  Est. 1971";
+    sig.appendChild(sigName);
+    sig.appendChild(sigTitle);
+    body.appendChild(sig);
+
     // Actions
     var actions = el('div', { className: 'arc-dossier-actions' });
 
