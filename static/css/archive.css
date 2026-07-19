@@ -69,7 +69,7 @@
   z-index: 100;
   height: var(--arc-status-h);
   background: var(--arc-ink);
-  border-bottom: 1px solid rgba(184,146,58,0.1);
+  border-bottom: 1px solid rgba(184,132,58,0.18);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -124,6 +124,20 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
+}
+
+/* Floor plane — depth recession below interactive surface */
+.arc-scene::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 38%;
+  background: linear-gradient(to top,
+    rgba(3,5,4,0.78) 0%,
+    rgba(6,8,5,0.44) 40%,
+    transparent 100%);
+  pointer-events: none;
+  z-index: 2;
 }
 
 /* Concrete block course lines — horizontal, very subtle */
@@ -316,33 +330,36 @@
 }
 
 /* ── NARRATIVE PANEL ────────────────────────────────────────── */
-/* Narrative is now at the TOP of each scene — instruction before choices */
+/*
+ * Reads like a handwritten annotation or field note pinned to the scene.
+ * Left amber border = a keeper's mark. Not a web UI element.
+ */
 .arc-narrative {
   position: relative;
   z-index: 10;
-  padding: 1.25rem 1.75rem 1.1rem;
-  background: rgba(8,10,9,0.92);
-  border-bottom: 1px solid rgba(160,168,164,0.08);
+  padding: 1.35rem 2rem 1.2rem 1.75rem;
+  background: rgba(7,9,8,0.97);
+  border-left: 3px solid rgba(184,132,58,0.52);
   flex-shrink: 0;
 }
 
 .arc-narrative-act {
   font-family: var(--arc-mono);
-  font-size: 0.52rem;
-  letter-spacing: 0.24em;
+  font-size: 0.53rem;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: var(--arc-pale);
-  opacity: 0.38;
-  margin-bottom: 0.4rem;
+  color: var(--arc-tungsten);
+  opacity: 0.7;
+  margin-bottom: 0.48rem;
 }
 
 .arc-narrative-text {
   font-family: var(--arc-serif);
-  font-size: 0.95rem;
-  line-height: 1.68;
+  font-size: 1.02rem;
+  line-height: 1.74;
   color: var(--arc-paper);
-  opacity: 0.88;
-  max-width: 640px;
+  opacity: 0.92;
+  max-width: 720px;
 }
 
 /* ── CONSEQUENCE OVERLAY ────────────────────────────────────── */
@@ -350,7 +367,7 @@
   position: fixed;
   inset: 0;
   z-index: 300;
-  background: var(--arc-fog);
+  background: rgba(5,7,6,0.94);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -365,13 +382,14 @@
 .arc-consequence-text {
   font-family: var(--arc-serif);
   font-style: italic;
-  font-size: 1rem;
+  font-size: 1.12rem;
   color: var(--arc-paper);
   text-align: center;
-  max-width: 340px;
-  padding: 2rem;
-  opacity: 0.88;
-  line-height: 1.65;
+  max-width: 380px;
+  padding: 2.5rem 2rem;
+  opacity: 0.92;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
 }
 
 /* ── ENTRANCE SCENE ─────────────────────────────────────────── */
@@ -384,26 +402,24 @@
 .arc-entrance {
   min-height: 100svh;
   background:
-    /* Overhead fluorescent — cool, desaturated, faint */
-    linear-gradient(to bottom,
-      rgba(185,200,195,0.05) 0%,
-      transparent 22%),
-    /* Emergency floor strip — warm tungsten */
-    linear-gradient(to top,
+    /* Primary overhead pendant — single institutional lamp above centre */
+    radial-gradient(ellipse 50% 70% at 50% 12%,
+      rgba(184,132,58,0.45) 0%,
+      rgba(184,132,58,0.22) 30%,
+      rgba(184,132,58,0.06) 55%,
+      transparent 72%),
+    /* Floor-level warm bounce */
+    radial-gradient(ellipse 80% 30% at 50% 100%,
       rgba(184,132,58,0.06) 0%,
-      transparent 16%),
-    /* Left skylight shaft — narrow, high */
-    linear-gradient(168deg,
-      rgba(170,190,185,0.04) 0%,
-      transparent 26%),
-    /* Right skylight shaft */
-    linear-gradient(192deg,
-      rgba(170,190,185,0.03) 0%,
-      transparent 20%),
-    /* Atrium deep void */
-    radial-gradient(ellipse 90% 90% at 50% 40%,
-      #12150f 0%,
-      #0d0f0e 100%);
+      transparent 70%),
+    /* Left skylight — high frosted glass, very cool */
+    linear-gradient(155deg,
+      rgba(165,185,180,0.06) 0%,
+      transparent 28%),
+    /* Base void — natural concrete */
+    linear-gradient(to bottom,
+      #090b08 0%,
+      #0c0e0b 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -428,15 +444,15 @@
   pointer-events: none;
 }
 
-/* Corner shadow vignette — interior depth, not outdoor fog */
+/* Edge vignette — draws eye to lit centre, suggests enclosed space */
 .arc-entrance::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 55% 55% at 50% 50%,
-      transparent 30%,
-      rgba(6,8,7,0.5) 100%);
+    radial-gradient(ellipse 65% 65% at 50% 38%,
+      transparent 22%,
+      rgba(4,6,5,0.72) 100%);
   pointer-events: none;
 }
 
@@ -446,24 +462,86 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: min(520px, 92vw);
+  width: min(580px, 92vw);
   text-align: center;
 }
 
-/* Facility division identifier — small, tracked, muted */
-.arc-entrance-eyebrow {
-  font-family: var(--arc-mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: var(--arc-pale);
-  opacity: 0.38;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(160,168,164,0.08);
-  padding-bottom: 0.7rem;
-  width: min(460px, 88vw);
+/* Architectural panel — frames the institute identity like a building plaque */
+.arc-entrance-panel {
+  position: relative;
+  width: 100%;
+  border: 1px solid rgba(130,115,88,0.14);
+  border-top: 2px solid rgba(130,115,88,0.28);
+  padding: 1.75rem 2.25rem 2rem;
+  margin-bottom: 0;
   text-align: center;
 }
+
+.arc-entrance-panel::before {
+  content: '';
+  position: absolute;
+  top: -2px; left: -2px;
+  width: 22px; height: 22px;
+  border-top: 2px solid rgba(184,132,58,0.55);
+  border-left: 2px solid rgba(184,132,58,0.55);
+}
+
+.arc-entrance-panel::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; right: -1px;
+  width: 22px; height: 22px;
+  border-bottom: 1px solid rgba(184,132,58,0.35);
+  border-right: 1px solid rgba(184,132,58,0.35);
+}
+
+/* Primary institute name — what is mounted on the building */
+.arc-entrance-institute {
+  font-family: var(--arc-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.36em;
+  text-transform: uppercase;
+  color: var(--arc-paper);
+  opacity: 0.55;
+  margin-bottom: 0.3rem;
+}
+
+/* Department and year */
+.arc-entrance-institute-sub {
+  font-family: var(--arc-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--arc-pale);
+  opacity: 0.32;
+  margin-bottom: 1.25rem;
+}
+
+/* Thin rule separating institute identity from operational context */
+.arc-entrance-panel-rule {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent,
+    rgba(160,150,130,0.2) 25%,
+    rgba(160,150,130,0.2) 75%,
+    transparent);
+  margin-bottom: 1.1rem;
+}
+
+/* "CURRENT OPERATION" label — small, classified-file style */
+.arc-entrance-op-label {
+  font-family: var(--arc-mono);
+  font-size: 0.48rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--arc-tungsten);
+  opacity: 0.42;
+  margin-bottom: 0.55rem;
+}
+
+/* Legacy eyebrow — now hidden; replaced by arc-entrance-panel */
+.arc-entrance-eyebrow { display: none; }
 
 /* Facility name — large, weight contrast, institutional */
 .arc-entrance-title {
@@ -476,7 +554,7 @@
 
 .arc-entrance-title-en {
   display: block;
-  font-size: clamp(2.8rem, 9vw, 4.8rem);
+  font-size: clamp(2.2rem, 7vw, 3.8rem);
   letter-spacing: 0.04em;
   color: var(--arc-paper);
   opacity: 0.88;
@@ -588,15 +666,44 @@
 .arc-obj-stage {
   position: relative;
   flex: 1;
-  min-height: 52vh;
-  /* Suggest a horizontal surface — intake table, shelf top */
+  min-height: 68vh;
+  /*
+   * Spatial composition: back wall/ceiling (0-48%), desk surface at ~54%,
+   * under-desk shadow below. Single pendant lamp above centre.
+   */
   background:
+    radial-gradient(ellipse 55% 60% at 50% 8%,
+      rgba(184,132,58,0.34) 0%,
+      rgba(184,132,58,0.14) 36%,
+      rgba(184,132,58,0.04) 58%,
+      transparent 72%),
     linear-gradient(to bottom,
       transparent 0%,
-      transparent 62%,
-      rgba(184,132,58,0.03) 72%,
-      rgba(184,132,58,0.06) 80%,
-      rgba(6,8,7,0.45) 100%);
+      transparent 48%,
+      rgba(184,132,58,0.07) 53%,
+      rgba(184,132,58,0.13) 56%,
+      rgba(8,10,7,0.68) 65%,
+      rgba(3,5,4,0.92) 100%);
+}
+
+/* Desk surface edge — the physical table line */
+.arc-obj-stage::before {
+  content: '';
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: 55%;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent,
+    rgba(184,132,58,0.11) 8%,
+    rgba(184,132,58,0.32) 38%,
+    rgba(184,132,58,0.38) 50%,
+    rgba(184,132,58,0.32) 62%,
+    rgba(184,132,58,0.11) 92%,
+    transparent);
+  pointer-events: none;
+  z-index: 3;
 }
 
 .arc-obj {
@@ -620,19 +727,22 @@
 }
 
 .arc-obj svg {
-  width: 88px;
-  height: 88px;
+  width: 92px;
+  height: 92px;
   color: var(--arc-paper);
-  opacity: 0.72;
+  opacity: 0.78;
   transition: opacity 0.25s ease, filter 0.25s ease;
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.55));
+  /* Primary drop shadow downward = object resting on surface */
+  filter: drop-shadow(0 14px 18px rgba(0,0,0,0.75))
+          drop-shadow(0 4px 6px rgba(0,0,0,0.55));
 }
 
 .arc-obj:hover svg,
 .arc-obj:focus svg {
-  opacity: 0.95;
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,0.55))
-          drop-shadow(0 0 20px rgba(184,132,58,0.42));
+  opacity: 1;
+  filter: drop-shadow(0 14px 18px rgba(0,0,0,0.75))
+          drop-shadow(0 4px 6px rgba(0,0,0,0.55))
+          drop-shadow(0 0 24px rgba(184,132,58,0.48));
 }
 
 /* Labels always visible — this is UI, not a hidden-object game */
@@ -687,9 +797,9 @@
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
   gap: 1px;
-  background: rgba(184,146,58,0.06);
+  background: rgba(184,146,58,0.07);
   flex: 1;
-  min-height: 50vh;
+  min-height: 55vh;
 }
 
 .arc-binary-zone {
@@ -697,19 +807,31 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1.75rem 1.25rem;
+  padding: 2.5rem 1.75rem;
   background: var(--arc-void);
   cursor: pointer;
   border: none;
   color: inherit;
-  transition: background 0.2s ease;
-  gap: 0.8rem;
+  transition: background 0.22s ease;
+  gap: 1rem;
   text-align: center;
+  position: relative;
+}
+
+/* Corner registration mark — specimen case framing */
+.arc-binary-zone::before {
+  content: '';
+  position: absolute;
+  top: 0.55rem; left: 0.55rem;
+  width: 10px; height: 10px;
+  border-top: 1px solid rgba(184,132,58,0.18);
+  border-left: 1px solid rgba(184,132,58,0.18);
+  pointer-events: none;
 }
 
 .arc-binary-zone:hover,
 .arc-binary-zone:focus-visible {
-  background: var(--arc-surface);
+  background: rgba(18,22,18,0.96);
   outline: none;
 }
 
@@ -718,26 +840,26 @@
 }
 
 .arc-binary-zone--faded {
-  opacity: 0.12;
+  opacity: 0.08;
   pointer-events: none;
 }
 
 .arc-binary-icon {
-  width: 44px;
-  height: 44px;
+  width: 72px;
+  height: 72px;
   color: var(--arc-paper);
-  opacity: 0.45;
+  opacity: 0.55;
   transition: opacity 0.2s;
 }
 
 .arc-binary-zone:hover .arc-binary-icon,
 .arc-binary-zone--selected .arc-binary-icon {
-  opacity: 0.82;
+  opacity: 0.9;
 }
 
 .arc-binary-key {
   font-family: var(--arc-mono);
-  font-size: 0.55rem;
+  font-size: 0.52rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--arc-amber);
@@ -745,12 +867,12 @@
 }
 
 .arc-binary-label {
-  font-family: var(--arc-sans);
-  font-size: 0.85rem;
+  font-family: var(--arc-serif);
+  font-size: 0.98rem;
   color: var(--arc-paper);
-  opacity: 0.8;
-  line-height: 1.45;
-  max-width: 180px;
+  opacity: 0.82;
+  line-height: 1.55;
+  max-width: 220px;
 }
 
 /* ── DOCUMENT SCENE ─────────────────────────────────────────── */
@@ -767,8 +889,8 @@
 .arc-document {
   background: #cfc9ba;
   color: var(--arc-ink);
-  width: min(540px, 100%);
-  padding: 1.75rem 2rem;
+  width: min(720px, 98vw);
+  padding: 2rem 2.75rem;
   position: relative;
   box-shadow: 0 10px 48px rgba(0,0,0,0.55), inset 0 0 0 1px rgba(0,0,0,0.08);
   border-top: 3px solid #8a6b42;
@@ -821,19 +943,30 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--arc-rust);
-  border: 1px solid rgba(107,72,50,0.55);
-  background: rgba(18,16,12,0.65);
+  border: 1.5px solid rgba(107,72,50,0.48);
+  background: rgba(10,8,6,0.82);
   cursor: pointer;
-  border-radius: 1px;
-  min-height: 84px;
-  min-width: 94px;
+  border-radius: 0;
+  min-height: 98px;
+  min-width: 106px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.28rem;
-  padding: 0.75rem 0.7rem 0.65rem;
+  gap: 0.3rem;
+  padding: 0.9rem 0.8rem 0.75rem;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
+  position: relative;
+}
+
+.arc-stamp::before {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 8px; height: 8px;
+  border-top: 1px solid rgba(107,72,50,0.28);
+  border-left: 1px solid rgba(107,72,50,0.28);
+  pointer-events: none;
 }
 
 .arc-stamp:hover,
@@ -1382,15 +1515,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 1.1rem 1rem;
+  gap: 0.6rem;
+  padding: 1.5rem 1.25rem;
   background: var(--arc-surface);
-  border: 1px solid rgba(184,146,58,0.1);
+  border: 1px solid rgba(184,146,58,0.12);
   cursor: pointer;
   color: inherit;
-  min-width: 130px;
-  min-height: 110px;
+  min-width: 148px;
+  min-height: 130px;
   transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+
+.arc-core-control::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px;
+  width: 8px; height: 8px;
+  border-top: 1px solid rgba(184,132,58,0.2);
+  border-left: 1px solid rgba(184,132,58,0.2);
+  pointer-events: none;
 }
 
 .arc-core-control:hover,
@@ -1411,10 +1555,10 @@
 }
 
 .arc-core-ctrl-icon {
-  width: 34px;
-  height: 34px;
+  width: 48px;
+  height: 48px;
   color: var(--arc-paper);
-  opacity: 0.45;
+  opacity: 0.52;
   transition: opacity 0.2s;
 }
 
@@ -1425,13 +1569,13 @@
 
 .arc-core-ctrl-label {
   font-family: var(--arc-mono);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--arc-pale);
   text-align: center;
   line-height: 1.4;
-  max-width: 110px;
+  max-width: 128px;
 }
 
 /* ── PROCESSING SCENE ───────────────────────────────────────── */

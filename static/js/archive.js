@@ -1204,51 +1204,63 @@
   function renderEntranceScene(root) {
     var li = state.lang === 'zh' ? 1 : 0;
     var div = el('div', { className: 'arc-entrance' });
-
     var inner = el('div', { className: 'arc-entrance-inner' });
 
-    var eyebrow = el('div', { className: 'arc-entrance-eyebrow' });
-    eyebrow.textContent = li === 1
-      ? 'RESEARCH & PRESERVATION DIVISION  ·  KEEPER VACANCY'
-      : 'RESEARCH & PRESERVATION DIVISION  ·  KEEPER VACANCY';
-    inner.appendChild(eyebrow);
+    // ── Architectural panel: the building's mounted identity plate
+    var panel = el('div', { className: 'arc-entrance-panel' });
+
+    var inst = el('div', { className: 'arc-entrance-institute' });
+    inst.textContent = 'BOTANICAL MEMORY RESEARCH INSTITUTE';
+    panel.appendChild(inst);
+
+    var instSub = el('div', { className: 'arc-entrance-institute-sub' });
+    instSub.textContent = 'DEPT. OF COGNITIVE BOTANY  ·  EST. 1971';
+    panel.appendChild(instSub);
+
+    var panelRule = el('div', { className: 'arc-entrance-panel-rule' });
+    panel.appendChild(panelRule);
+
+    var opLabel = el('div', { className: 'arc-entrance-op-label' });
+    opLabel.textContent = li === 1 ? '当前任务' : 'CURRENT OPERATION';
+    panel.appendChild(opLabel);
 
     var titleBlock = el('div', { className: 'arc-entrance-title' });
     var titleEn = el('span', { className: 'arc-entrance-title-en' });
     titleEn.textContent = 'THE LAST ARCHIVE';
     titleBlock.appendChild(titleEn);
     var titleZh = el('span', { className: 'arc-entrance-title-zh' });
-    titleZh.textContent = '\u6700\u540e\u7684\u6863\u6848\u9986';
+    titleZh.textContent = '最后的档案馆';
     titleBlock.appendChild(titleZh);
-    inner.appendChild(titleBlock);
+    panel.appendChild(titleBlock);
+
+    inner.appendChild(panel);
 
     var divider = el('div', { className: 'arc-entrance-divider' });
     inner.appendChild(divider);
 
     var subtitle = el('p', { className: 'arc-entrance-subtitle' });
     subtitle.textContent = li === 1
-      ? '\u4e16\u754c\u6b63\u5728\u9010\u6e10\u5fd8\u8bb0\u81ea\u5df1\uff0c\u800c\u4f60\uff0c\u88ab\u4efb\u547d\u4e3a\u6700\u540e\u7684\u4fdd\u7ba1\u8005\u3002'
-      : 'The world is slowly forgetting itself. You have been appointed its last keeper.';
+      ? '世界正在逐渐忘记自己。所有曾被记录的，正在消散。你已被任命为最后的保管者。'
+      : 'The institute has been sealed. Everything once recorded is dissolving. You have been appointed its last keeper.';
     inner.appendChild(subtitle);
 
     var btn = el('button', { className: 'arc-enter-btn' });
     btn.setAttribute('type', 'button');
     btn.textContent = li === 1
-      ? '\u63a5\u53d7\u6307\u6d3e  \u2014  \u8fdb\u5165\u8bbe\u65bd'
-      : 'ACCEPT APPOINTMENT \u2014 ENTER FACILITY';
+      ? '接受指派  —  进入设施'
+      : 'ACCEPT APPOINTMENT — ENTER FACILITY';
     btn.addEventListener('click', function () { goToStep(0); });
     inner.appendChild(btn);
 
     var meta = el('div', { className: 'arc-entrance-meta' });
     meta.textContent = li === 1
-      ? '12 \u4e2a\u51b3\u5b9a \u00b7 4 \u5e55 \u00b7 \u7ea6 10 \u5206\u949f'
-      : '12 DECISIONS  \u00b7  4 ACTS  \u00b7  ~10 MIN';
+      ? '12 个决定  ·  4 幕  ·  约 10 分钟'
+      : '12 DECISIONS  ·  4 ACTS  ·  ~10 MIN';
     inner.appendChild(meta);
 
     div.appendChild(inner);
     root.appendChild(div);
   }
-
 
   /* ──────────────────────────────────────────────────────────
      OBJECT SCENE (Q0, Q9)
@@ -1256,16 +1268,16 @@
 
   var OBJ_CONFIG = {
     0: [
-      { icon: 'diary',     pos: ['10%', '16%'] },
-      { icon: 'map',       pos: ['58%', '10%'] },
-      { icon: 'seeds',     pos: ['15%', '56%'] },
-      { icon: 'recording', pos: ['60%', '52%'] }
+      { icon: 'diary',     pos: ['6%',  '28%'] },
+      { icon: 'map',       pos: ['52%', '20%'] },
+      { icon: 'seeds',     pos: ['8%',  '52%'] },
+      { icon: 'recording', pos: ['55%', '48%'] }
     ],
     9: [
-      { icon: 'fragment',  pos: ['12%', '14%'] },
-      { icon: 'duplicate', pos: ['58%', '12%'] },
-      { icon: 'personal',  pos: ['15%', '54%'] },
-      { icon: 'refuse',    pos: ['60%', '50%'] }
+      { icon: 'fragment',  pos: ['8%',  '22%'] },
+      { icon: 'duplicate', pos: ['54%', '16%'] },
+      { icon: 'personal',  pos: ['10%', '50%'] },
+      { icon: 'refuse',    pos: ['57%', '46%'] }
     ]
   };
 
