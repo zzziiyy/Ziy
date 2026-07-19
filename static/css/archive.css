@@ -5,20 +5,39 @@
 
 /* ── VARIABLES ─────────────────────────────────────────────── */
 :root {
-  --arc-void:       #0c0e0b;
-  --arc-surface:    #171b14;
-  --arc-lift:       #1f2419;
+  /* Interior depths */
+  --arc-void:       #0d0f0e;
+  --arc-surface:    #161a18;
+  --arc-lift:       #1d2220;
+  --arc-concrete:   #2b2f2d;
+
+  /* Document tones */
   --arc-paper:      #d4cfc2;
+  --arc-paper-2:    #c8c3b6;
   --arc-ink:        #10120f;
-  --arc-mold:       #2e4a38;
-  --arc-mold-light: #4a7a5c;
-  --arc-amber:      #b8923a;
-  --arc-amber-dim:  #7a5f25;
-  --arc-rust:       #6b4832;
-  --arc-pale:       #7a766e;
-  --arc-fog:        rgba(10,12,9,0.82);
-  --arc-scan:       rgba(180,210,160,0.025);
-  --arc-status-h:   2.4rem;
+
+  /* Light sources */
+  --arc-tungsten:   #b8843a;   /* warm institutional lamp */
+  --arc-tungsten-d: #7a5525;
+  --arc-lichen:     #3d5240;   /* moss/lichen intrusion */
+  --arc-lichen-l:   #576c58;
+
+  /* Secondary tones */
+  --arc-oxide:      #6b5240;   /* oxidised metal, rust */
+  --arc-pale:       #7a776f;
+  --arc-fog:        rgba(8,10,9,0.87);
+
+  /* Kept for backwards compat in JS */
+  --arc-amber:      var(--arc-tungsten);
+  --arc-amber-dim:  var(--arc-tungsten-d);
+  --arc-rust:       var(--arc-oxide);
+  --arc-mold:       var(--arc-lichen);
+  --arc-mold-light: var(--arc-lichen-l);
+
+  /* Subtle ambient — concrete grain, not CRT */
+  --arc-scan:       rgba(160,168,164,0.016);
+
+  --arc-status-h:   2.6rem;
   --arc-serif:      Georgia, 'Times New Roman', serif;
   --arc-mono:       'Courier New', Courier, monospace;
   --arc-sans:       system-ui, -apple-system, sans-serif;
@@ -107,7 +126,7 @@
   flex-direction: column;
 }
 
-/* Scanline ambient */
+/* Concrete block course lines — horizontal, very subtle */
 .arc-scene::after {
   content: '';
   position: absolute;
@@ -115,9 +134,9 @@
   background: repeating-linear-gradient(
     to bottom,
     transparent,
-    transparent 3px,
-    var(--arc-scan) 3px,
-    var(--arc-scan) 4px
+    transparent 59px,
+    var(--arc-scan) 59px,
+    var(--arc-scan) 60px
   );
   pointer-events: none;
   z-index: 1;
@@ -145,6 +164,139 @@
   z-index: 10;
 }
 
+/* ── PER-ROOM ENVIRONMENT BACKGROUNDS ──────────────────────── */
+/*
+ * Each env-* class layers environmental light over the base
+ * void. All light is from institutional sources — no sky,
+ * no sun, no outdoor atmosphere.
+ *
+ * Warm = tungsten fixtures, emergency strips
+ * Cool = filtered daylight through high frosted skylights,
+ *        botanical infiltration
+ */
+
+/* SECTOR 01 — INTAKE HALL: reception desk, tungsten over wood */
+.arc-scene.env-intake {
+  background:
+    radial-gradient(ellipse 55% 70% at 22% 35%,
+      rgba(184,132,58,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 55% at 70% 65%,
+      rgba(184,132,58,0.04) 0%, transparent 45%),
+    var(--arc-void);
+}
+
+/* SECTOR 02 — CLASSIFICATION ROOM: cool overhead strip, metal cabinets */
+.arc-scene.env-classify {
+  background:
+    linear-gradient(to bottom,
+      rgba(170,190,185,0.045) 0%, transparent 24%),
+    radial-gradient(ellipse 90% 25% at 50% 0%,
+      rgba(170,190,185,0.03) 0%, transparent 100%),
+    var(--arc-void);
+}
+
+/* SECTOR 03 — SEALED CORRESPONDENCE: warm, enclosed, low ceiling */
+.arc-scene.env-sealed {
+  background:
+    radial-gradient(ellipse 65% 75% at 30% 42%,
+      rgba(184,132,58,0.065) 0%, transparent 58%),
+    linear-gradient(to bottom,
+      var(--arc-surface) 0%, var(--arc-void) 70%);
+}
+
+/* SECTOR 04 — RESTRICTED DOCUMENTS: access-controlled, cooler tone */
+.arc-scene.env-restricted {
+  background:
+    linear-gradient(to bottom,
+      rgba(80,40,30,0.12) 0%, transparent 28%),
+    radial-gradient(ellipse 50% 40% at 50% 10%,
+      rgba(100,50,35,0.06) 0%, transparent 100%),
+    var(--arc-void);
+}
+
+/* SECTOR 05 — MAP ARCHIVE: long horizontal table, single lamp above */
+.arc-scene.env-maps {
+  background:
+    radial-gradient(ellipse 45% 55% at 50% 75%,
+      rgba(184,132,58,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 30% at 50% 100%,
+      rgba(184,132,58,0.04) 0%, transparent 100%),
+    var(--arc-void);
+}
+
+/* SECTOR 06 — STORAGE CORE: deep shelving, multiple faint sources */
+.arc-scene.env-storage {
+  background:
+    radial-gradient(ellipse 35% 80% at 15% 50%,
+      rgba(184,132,58,0.045) 0%, transparent 45%),
+    radial-gradient(ellipse 35% 80% at 85% 50%,
+      rgba(184,132,58,0.03) 0%, transparent 45%),
+    linear-gradient(to bottom,
+      var(--arc-void) 0%, var(--arc-surface) 45%, var(--arc-void) 100%);
+}
+
+/* SECTOR 07 — MEMORY VAULT: high dome, cooler, botanical seepage */
+.arc-scene.env-memory {
+  background:
+    radial-gradient(ellipse 80% 90% at 50% -5%,
+      rgba(155,185,175,0.05) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 50% 0%,
+      rgba(61,82,64,0.06) 0%, transparent 60%),
+    var(--arc-void);
+}
+
+/* SECTOR 08 — RESTORATION LAB: work light from above, bright patch */
+.arc-scene.env-restore {
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 25%,
+      rgba(184,132,58,0.09) 0%, transparent 52%),
+    linear-gradient(to bottom,
+      rgba(184,132,58,0.03) 0%, transparent 35%),
+    var(--arc-void);
+}
+
+/* SECTOR 09 — KEEPER TERMINAL: emergency lighting, monitor glow */
+.arc-scene.env-terminal {
+  background:
+    radial-gradient(ellipse 45% 45% at 50% 55%,
+      rgba(61,82,64,0.1) 0%, transparent 58%),
+    radial-gradient(ellipse 30% 20% at 50% 100%,
+      rgba(184,132,58,0.05) 0%, transparent 100%),
+    linear-gradient(to bottom,
+      rgba(6,8,7,0.3) 0%, transparent 18%),
+    var(--arc-void);
+}
+
+/* SECTOR 10 — OVERFLOW CHAMBER: chaotic, mixed sources */
+.arc-scene.env-overflow {
+  background:
+    radial-gradient(ellipse 50% 65% at 18% 62%,
+      rgba(184,132,58,0.055) 0%, transparent 48%),
+    radial-gradient(ellipse 45% 45% at 78% 28%,
+      rgba(155,185,175,0.03) 0%, transparent 42%),
+    var(--arc-void);
+}
+
+/* SECTOR 11 — BINDING ROOM: intimate, single overhead lamp */
+.arc-scene.env-binding {
+  background:
+    radial-gradient(ellipse 50% 60% at 42% 40%,
+      rgba(184,132,58,0.07) 0%, transparent 50%),
+    var(--arc-void);
+}
+
+/* SECTOR 12 — ARCHIVE CORE: significant, layered sources */
+.arc-scene.env-core {
+  background:
+    radial-gradient(ellipse 70% 70% at 50% 35%,
+      rgba(155,185,175,0.055) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 35% at 50% 100%,
+      rgba(184,132,58,0.07) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 60% at 50% 50%,
+      rgba(61,82,64,0.04) 0%, transparent 60%),
+    var(--arc-void);
+}
+
 /* ── SCENE TRANSITIONS ──────────────────────────────────────── */
 .arc-scene-exit {
   animation: arcSceneExit 0.28s ease forwards;
@@ -167,28 +319,30 @@
 .arc-narrative {
   position: relative;
   z-index: 10;
-  padding: 1.1rem 1.5rem 1.4rem;
-  background: linear-gradient(to top, rgba(10,12,9,0.95) 0%, rgba(10,12,9,0.8) 100%);
-  border-top: 1px solid rgba(184,146,58,0.08);
+  padding: 1.1rem 1.5rem 1.5rem;
+  background: linear-gradient(to top,
+    rgba(8,10,9,0.96) 0%,
+    rgba(8,10,9,0.82) 100%);
+  border-top: 1px solid rgba(160,168,164,0.07);
 }
 
 .arc-narrative-act {
   font-family: var(--arc-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
+  font-size: 0.54rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--arc-amber);
-  opacity: 0.65;
-  margin-bottom: 0.3rem;
+  color: var(--arc-pale);
+  opacity: 0.42;
+  margin-bottom: 0.35rem;
 }
 
 .arc-narrative-text {
   font-family: var(--arc-serif);
-  font-size: 0.9rem;
-  line-height: 1.7;
+  font-size: 0.88rem;
+  line-height: 1.72;
   color: var(--arc-paper);
-  opacity: 0.85;
-  max-width: 560px;
+  opacity: 0.8;
+  max-width: 580px;
 }
 
 /* ── CONSEQUENCE OVERLAY ────────────────────────────────────── */
@@ -221,12 +375,35 @@
 }
 
 /* ── ENTRANCE SCENE ─────────────────────────────────────────── */
+/*
+ * Interior atrium of a brutalist archival research facility.
+ * Light comes from institutional sources above (overhead strips,
+ * high skylights) and warm emergency strips at floor level.
+ * No outdoor atmosphere, no rain, no blue fog.
+ */
 .arc-entrance {
   min-height: 100svh;
   background:
-    radial-gradient(ellipse 100% 70% at 50% 110%, rgba(10,28,16,0.88) 0%, transparent 65%),
-    radial-gradient(ellipse 60% 50% at 20% 30%, rgba(184,146,58,0.025) 0%, transparent 60%),
-    linear-gradient(172deg, #070a09 0%, #0b1010 35%, #0d1512 55%, #070a09 100%);
+    /* Overhead fluorescent — cool, desaturated, faint */
+    linear-gradient(to bottom,
+      rgba(185,200,195,0.05) 0%,
+      transparent 22%),
+    /* Emergency floor strip — warm tungsten */
+    linear-gradient(to top,
+      rgba(184,132,58,0.06) 0%,
+      transparent 16%),
+    /* Left skylight shaft — narrow, high */
+    linear-gradient(168deg,
+      rgba(170,190,185,0.04) 0%,
+      transparent 26%),
+    /* Right skylight shaft */
+    linear-gradient(192deg,
+      rgba(170,190,185,0.03) 0%,
+      transparent 20%),
+    /* Atrium deep void */
+    radial-gradient(ellipse 90% 90% at 50% 40%,
+      #12150f 0%,
+      #0d0f0e 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -236,27 +413,30 @@
   padding: 2rem 1.5rem;
 }
 
-/* Subtle diagonal rain lines */
+/* Concrete block courses — horizontal registers */
 .arc-entrance::before {
   content: '';
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(
-    108deg,
+    to bottom,
     transparent,
-    transparent 4px,
-    rgba(255,255,255,0.006) 4px,
-    rgba(255,255,255,0.006) 5px
+    transparent 59px,
+    rgba(160,168,164,0.02) 59px,
+    rgba(160,168,164,0.02) 60px
   );
   pointer-events: none;
 }
 
-/* Ambient vignette */
+/* Corner shadow vignette — interior depth, not outdoor fog */
 .arc-entrance::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(0,0,0,0.45) 100%);
+  background:
+    radial-gradient(ellipse 55% 55% at 50% 50%,
+      transparent 30%,
+      rgba(6,8,7,0.5) 100%);
   pointer-events: none;
 }
 
@@ -270,107 +450,123 @@
   text-align: center;
 }
 
+/* Facility division identifier — small, tracked, muted */
 .arc-entrance-eyebrow {
   font-family: var(--arc-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.35em;
+  font-size: 0.56rem;
+  letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: var(--arc-amber);
-  opacity: 0.45;
-  margin-bottom: 1.6rem;
+  color: var(--arc-pale);
+  opacity: 0.38;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid rgba(160,168,164,0.08);
+  padding-bottom: 0.7rem;
+  width: min(460px, 88vw);
+  text-align: center;
 }
 
+/* Facility name — large, weight contrast, institutional */
 .arc-entrance-title {
   font-family: var(--arc-serif);
   font-weight: normal;
-  line-height: 1.05;
-  margin-bottom: 0.75rem;
+  line-height: 1.0;
+  margin-bottom: 0;
+  letter-spacing: 0.02em;
 }
 
 .arc-entrance-title-en {
   display: block;
-  font-size: clamp(2.6rem, 8vw, 4.2rem);
-  letter-spacing: 0.06em;
+  font-size: clamp(2.8rem, 9vw, 4.8rem);
+  letter-spacing: 0.04em;
   color: var(--arc-paper);
-  text-shadow: 0 2px 28px rgba(0,0,0,0.6);
+  opacity: 0.88;
 }
 
 .arc-entrance-title-zh {
   display: block;
-  font-size: clamp(1.2rem, 4vw, 1.9rem);
-  letter-spacing: 0.28em;
-  color: var(--arc-paper);
-  opacity: 0.5;
-  margin-top: 0.35rem;
+  font-size: clamp(1.1rem, 3.5vw, 1.75rem);
+  letter-spacing: 0.32em;
+  color: var(--arc-pale);
+  opacity: 0.45;
+  margin-top: 0.5rem;
 }
 
+/* Horizontal rule — feels like a document separator */
 .arc-entrance-divider {
-  width: 1px;
-  height: 36px;
-  background: linear-gradient(to bottom, transparent, rgba(184,146,58,0.38), transparent);
-  margin: 1.5rem auto;
+  width: min(340px, 70vw);
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent,
+    rgba(160,168,164,0.2) 30%,
+    rgba(160,168,164,0.2) 70%,
+    transparent);
+  margin: 1.75rem auto;
 }
 
 .arc-entrance-subtitle {
-  font-family: var(--arc-serif);
-  font-size: 0.9rem;
-  font-style: italic;
-  line-height: 1.9;
+  font-family: var(--arc-sans);
+  font-size: 0.82rem;
+  line-height: 1.85;
   color: var(--arc-pale);
-  max-width: 340px;
+  max-width: 360px;
   margin-bottom: 2.75rem;
-  opacity: 0.7;
+  opacity: 0.55;
+  letter-spacing: 0.01em;
+  text-align: center;
 }
 
+/* Appointment button — institutional badge feel */
 .arc-enter-btn {
   position: relative;
   font-family: var(--arc-mono);
-  font-size: 0.82rem;
-  letter-spacing: 0.22em;
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--arc-paper);
-  background: transparent;
-  border: 1px solid rgba(184,146,58,0.38);
-  padding: 1.1rem 2.75rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(160,168,164,0.22);
+  padding: 1.1rem 2.5rem;
   cursor: pointer;
-  min-width: 270px;
+  min-width: 280px;
   text-align: center;
-  transition: background 0.25s, border-color 0.25s;
+  transition: background 0.3s, border-color 0.3s;
 }
 
+/* Top-left registration mark */
 .arc-enter-btn::before {
   content: '';
   position: absolute;
   top: -1px; left: -1px;
-  width: 14px; height: 14px;
-  border-top: 2px solid var(--arc-amber);
-  border-left: 2px solid var(--arc-amber);
+  width: 12px; height: 12px;
+  border-top: 1px solid rgba(184,132,58,0.5);
+  border-left: 1px solid rgba(184,132,58,0.5);
 }
 
+/* Bottom-right registration mark */
 .arc-enter-btn::after {
   content: '';
   position: absolute;
   bottom: -1px; right: -1px;
-  width: 14px; height: 14px;
-  border-bottom: 2px solid var(--arc-amber);
-  border-right: 2px solid var(--arc-amber);
+  width: 12px; height: 12px;
+  border-bottom: 1px solid rgba(184,132,58,0.5);
+  border-right: 1px solid rgba(184,132,58,0.5);
 }
 
 .arc-enter-btn:hover,
 .arc-enter-btn:focus-visible {
-  background: rgba(184,146,58,0.07);
-  border-color: rgba(184,146,58,0.65);
+  background: rgba(184,132,58,0.05);
+  border-color: rgba(184,132,58,0.38);
   outline: none;
 }
 
 .arc-entrance-meta {
   font-family: var(--arc-mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.12em;
+  font-size: 0.54rem;
+  letter-spacing: 0.14em;
   color: var(--arc-pale);
-  opacity: 0.28;
+  opacity: 0.22;
   text-align: center;
-  margin-top: 1.4rem;
+  margin-top: 1.5rem;
   text-transform: uppercase;
 }
 
@@ -393,6 +589,14 @@
   position: relative;
   flex: 1;
   min-height: 52vh;
+  /* Suggest a horizontal surface — intake table, shelf top */
+  background:
+    linear-gradient(to bottom,
+      transparent 0%,
+      transparent 62%,
+      rgba(184,132,58,0.03) 72%,
+      rgba(184,132,58,0.06) 80%,
+      rgba(6,8,7,0.45) 100%);
 }
 
 .arc-obj {
@@ -416,17 +620,19 @@
 }
 
 .arc-obj svg {
-  width: 52px;
-  height: 52px;
+  width: 56px;
+  height: 56px;
   color: var(--arc-paper);
-  opacity: 0.55;
-  transition: opacity 0.22s ease, filter 0.22s ease;
+  opacity: 0.42;
+  transition: opacity 0.28s ease, filter 0.28s ease;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
 }
 
 .arc-obj:hover svg,
 .arc-obj:focus svg {
-  opacity: 0.92;
-  filter: drop-shadow(0 0 10px var(--arc-amber));
+  opacity: 0.85;
+  filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5))
+          drop-shadow(0 0 14px rgba(184,132,58,0.3));
 }
 
 .arc-obj-label {

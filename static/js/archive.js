@@ -1208,7 +1208,9 @@
     var inner = el('div', { className: 'arc-entrance-inner' });
 
     var eyebrow = el('div', { className: 'arc-entrance-eyebrow' });
-    eyebrow.textContent = 'ARCHIVE MANAGEMENT SYSTEM';
+    eyebrow.textContent = li === 1
+      ? 'RESEARCH & PRESERVATION DIVISION  ·  KEEPER VACANCY'
+      : 'RESEARCH & PRESERVATION DIVISION  ·  KEEPER VACANCY';
     inner.appendChild(eyebrow);
 
     var titleBlock = el('div', { className: 'arc-entrance-title' });
@@ -1232,8 +1234,8 @@
     var btn = el('button', { className: 'arc-enter-btn' });
     btn.setAttribute('type', 'button');
     btn.textContent = li === 1
-      ? '\u8fdb\u5165\u6863\u6848\u9986  /  ENTER'
-      : 'ENTER THE ARCHIVE';
+      ? '\u63a5\u53d7\u6307\u6d3e  \u2014  \u8fdb\u5165\u8bbe\u65bd'
+      : 'ACCEPT APPOINTMENT \u2014 ENTER FACILITY';
     btn.addEventListener('click', function () { goToStep(0); });
     inner.appendChild(btn);
 
@@ -2382,7 +2384,7 @@
       } else if (typeof step === 'number' && step >= 0 && step <= 11) {
         root.appendChild(buildStatusBar(step));
         var sc = SCENES[step];
-        var container = el('div', { className: 'arc-scene' });
+        var container = el('div', { className: 'arc-scene ' + sc.env });
         switch (sc.type) {
           case 'object':   renderObjectScene(container, step);   break;
           case 'binary':   renderBinaryScene(container, step);   break;
