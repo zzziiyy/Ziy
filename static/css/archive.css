@@ -56,37 +56,46 @@
   justify-content: space-between;
   padding: 0 1.25rem;
   font-family: var(--arc-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
+  font-size: 0.6rem;
+  letter-spacing: 0.07em;
   color: var(--arc-pale);
   text-transform: uppercase;
+  gap: 0.75rem;
 }
 
 .arc-status-sector {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 52%;
+  min-width: 0;
+  flex: 1;
 }
 
-.arc-status-dots {
+.arc-status-right {
   display: flex;
-  gap: 0.3rem;
+  align-items: center;
+  gap: 0.6rem;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
-.arc-dot {
-  font-size: 0.5rem;
-  opacity: 0.25;
-  color: var(--arc-pale);
-  line-height: 1;
-  letter-spacing: 0;
+.arc-status-cap {
+  opacity: 0.45;
 }
 
-.arc-dot--filled {
-  opacity: 0.9;
+.arc-status-sys {
+  opacity: 0.42;
+}
+
+.arc-status-sys--warn {
   color: var(--arc-amber);
+  opacity: 0.8;
 }
+
+/* Legacy dot classes — kept in case referenced */
+.arc-status-dots { display: none; }
+.arc-dot         { display: none; }
+.arc-dot--filled { display: none; }
 
 /* ── SCENE BASE ─────────────────────────────────────────────── */
 .arc-scene {
@@ -213,76 +222,161 @@
 
 /* ── ENTRANCE SCENE ─────────────────────────────────────────── */
 .arc-entrance {
+  min-height: 100svh;
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 110%, rgba(10,28,16,0.88) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 50% at 20% 30%, rgba(184,146,58,0.025) 0%, transparent 60%),
+    linear-gradient(172deg, #070a09 0%, #0b1010 35%, #0d1512 55%, #070a09 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100svh;
-  background: var(--arc-void);
   position: relative;
+  overflow: hidden;
+  padding: 2rem 1.5rem;
 }
 
-.arc-entrance-env {
+/* Subtle diagonal rain lines */
+.arc-entrance::before {
+  content: '';
   position: absolute;
   inset: 0;
-  opacity: 0.07;
+  background: repeating-linear-gradient(
+    108deg,
+    transparent,
+    transparent 4px,
+    rgba(255,255,255,0.006) 4px,
+    rgba(255,255,255,0.006) 5px
+  );
   pointer-events: none;
-  color: var(--arc-paper);
 }
 
-.arc-terminal-gate {
-  width: min(460px, 88vw);
+/* Ambient vignette */
+.arc-entrance::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, transparent 40%, rgba(0,0,0,0.45) 100%);
+  pointer-events: none;
+}
+
+.arc-entrance-inner {
+  position: relative;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(520px, 92vw);
+  text-align: center;
 }
 
-.arc-terminal-gate-header {
+.arc-entrance-eyebrow {
   font-family: var(--arc-mono);
   font-size: 0.6rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--arc-amber);
+  opacity: 0.45;
+  margin-bottom: 1.6rem;
+}
+
+.arc-entrance-title {
+  font-family: var(--arc-serif);
+  font-weight: normal;
+  line-height: 1.05;
+  margin-bottom: 0.75rem;
+}
+
+.arc-entrance-title-en {
+  display: block;
+  font-size: clamp(2.6rem, 8vw, 4.2rem);
+  letter-spacing: 0.06em;
+  color: var(--arc-paper);
+  text-shadow: 0 2px 28px rgba(0,0,0,0.6);
+}
+
+.arc-entrance-title-zh {
+  display: block;
+  font-size: clamp(1.2rem, 4vw, 1.9rem);
+  letter-spacing: 0.28em;
+  color: var(--arc-paper);
+  opacity: 0.5;
+  margin-top: 0.35rem;
+}
+
+.arc-entrance-divider {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, transparent, rgba(184,146,58,0.38), transparent);
+  margin: 1.5rem auto;
+}
+
+.arc-entrance-subtitle {
+  font-family: var(--arc-serif);
+  font-size: 0.9rem;
+  font-style: italic;
+  line-height: 1.9;
+  color: var(--arc-pale);
+  max-width: 340px;
+  margin-bottom: 2.75rem;
+  opacity: 0.7;
+}
+
+.arc-enter-btn {
+  position: relative;
+  font-family: var(--arc-mono);
+  font-size: 0.82rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--arc-pale);
-  opacity: 0.45;
-  margin-bottom: 1.4rem;
-  border-bottom: 1px solid rgba(184,146,58,0.08);
-  padding-bottom: 0.5rem;
-}
-
-.arc-terminal-gate-screen {
-  background: var(--arc-ink);
-  border: 1px solid rgba(184,146,58,0.12);
-  padding: 1.5rem 1.4rem 1.25rem;
-  margin-bottom: 1rem;
-  position: relative;
-}
-
-.arc-terminal-gate-screen::before {
-  content: '● ● ●';
-  position: absolute;
-  top: 0.45rem;
-  left: 0.7rem;
-  font-size: 0.45rem;
-  color: var(--arc-pale);
-  opacity: 0.3;
-  letter-spacing: 0.3em;
-}
-
-.arc-terminal-gate-line {
-  font-family: var(--arc-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  color: var(--arc-pale);
-  padding: 0.18rem 0;
-  opacity: 0.55;
-}
-
-.arc-terminal-gate-line--em {
   color: var(--arc-paper);
-  opacity: 0.88;
+  background: transparent;
+  border: 1px solid rgba(184,146,58,0.38);
+  padding: 1.1rem 2.75rem;
+  cursor: pointer;
+  min-width: 270px;
+  text-align: center;
+  transition: background 0.25s, border-color 0.25s;
 }
 
-.arc-terminal-gate-line--warn {
-  color: var(--arc-amber);
-  opacity: 0.82;
+.arc-enter-btn::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: -1px;
+  width: 14px; height: 14px;
+  border-top: 2px solid var(--arc-amber);
+  border-left: 2px solid var(--arc-amber);
 }
+
+.arc-enter-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; right: -1px;
+  width: 14px; height: 14px;
+  border-bottom: 2px solid var(--arc-amber);
+  border-right: 2px solid var(--arc-amber);
+}
+
+.arc-enter-btn:hover,
+.arc-enter-btn:focus-visible {
+  background: rgba(184,146,58,0.07);
+  border-color: rgba(184,146,58,0.65);
+  outline: none;
+}
+
+.arc-entrance-meta {
+  font-family: var(--arc-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+  color: var(--arc-pale);
+  opacity: 0.28;
+  text-align: center;
+  margin-top: 1.4rem;
+  text-transform: uppercase;
+}
+
+/* Legacy terminal classes — kept so JS doesn't break if called; hidden by default */
+.arc-entrance-env   { display: none; }
+.arc-terminal-gate  { display: none; }
 
 .arc-blink {
   display: inline-block;
@@ -292,39 +386,6 @@
 @keyframes arcBlink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
-}
-
-.arc-terminal-appoint {
-  font-family: var(--arc-mono);
-  font-size: 0.75rem;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--arc-amber);
-  border: 1px solid var(--arc-amber);
-  background: transparent;
-  padding: 0.9rem 1.5rem;
-  cursor: pointer;
-  display: block;
-  width: 100%;
-  text-align: center;
-  min-height: 52px;
-  transition: background 0.2s;
-}
-
-.arc-terminal-appoint:hover,
-.arc-terminal-appoint:focus-visible {
-  background: rgba(184,146,58,0.1);
-  outline: none;
-}
-
-.arc-terminal-meta {
-  font-family: var(--arc-mono);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  color: var(--arc-pale);
-  opacity: 0.3;
-  text-align: center;
-  margin-top: 0.65rem;
 }
 
 /* ── OBJECT SCENE ───────────────────────────────────────────── */
@@ -539,43 +600,75 @@
 .arc-stamps-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.55rem;
   justify-content: center;
-  margin-top: 1.2rem;
+  margin-top: 1.4rem;
   max-width: 540px;
   width: 100%;
 }
 
 .arc-stamp {
   font-family: var(--arc-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--arc-rust);
-  border: 2px solid var(--arc-rust);
-  padding: 0.5rem 1.1rem;
+  border: 1px solid rgba(107,72,50,0.55);
+  background: rgba(18,16,12,0.65);
   cursor: pointer;
-  background: transparent;
   border-radius: 1px;
-  min-height: 44px;
+  min-height: 84px;
+  min-width: 94px;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  padding: 0.75rem 0.7rem 0.65rem;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
 
 .arc-stamp:hover,
 .arc-stamp:focus-visible {
-  background: rgba(107,72,50,0.12);
+  background: rgba(107,72,50,0.18);
   color: var(--arc-amber);
-  border-color: var(--arc-amber);
+  border-color: rgba(184,146,58,0.5);
   outline: none;
 }
 
 .arc-stamp--pressed {
-  background: var(--arc-rust);
+  background: rgba(107,72,50,0.32);
   color: var(--arc-paper);
+  border-color: var(--arc-rust);
   transform: scale(0.95);
   transition: transform 0.1s;
+}
+
+.arc-stamp-icon {
+  width: 26px;
+  height: 26px;
+  color: currentColor;
+  opacity: 0.78;
+  flex-shrink: 0;
+  transition: opacity 0.15s;
+}
+
+.arc-stamp:hover .arc-stamp-icon { opacity: 1; }
+
+.arc-stamp-name {
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  line-height: 1.35;
+  color: currentColor;
+}
+
+.arc-stamp-sub {
+  font-size: 0.49rem;
+  letter-spacing: 0.12em;
+  color: currentColor;
+  opacity: 0.5;
+  text-align: center;
+  line-height: 1.2;
 }
 
 /* ── SHELF SCENE (RANKING) ──────────────────────────────────── */
@@ -1171,183 +1264,261 @@
 }
 
 /* ── KEEPER RECORD (RESULT) ─────────────────────────────────── */
+/* Paper-document aesthetic — light background, ink text */
 .arc-dossier {
-  max-width: 660px;
+  max-width: 680px;
   margin: 0 auto;
-  padding: 0 1.25rem 4rem;
-  background: var(--arc-void);
   min-height: 100svh;
+  background: #c8c2b4;
+  color: #1c1e1a;
+  position: relative;
 }
 
 .arc-dossier-topbar {
-  background: var(--arc-ink);
-  padding: 0.85rem 1.5rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid rgba(184,146,58,0.1);
+  background: rgba(26,28,24,0.09);
+  padding: 0.7rem 1.75rem;
+  border-bottom: 1px solid rgba(26,28,24,0.14);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .arc-dossier-topbar-meta {
   font-family: var(--arc-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
+  font-size: 0.56rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--arc-pale);
-  opacity: 0.42;
+  color: rgba(26,28,24,0.45);
 }
 
 .arc-dossier-fileno {
   font-family: var(--arc-mono);
-  font-size: 0.72rem;
-  color: var(--arc-pale);
-  opacity: 0.5;
+  font-size: 0.62rem;
+  color: rgba(26,28,24,0.4);
   letter-spacing: 0.06em;
-  margin-bottom: 1.75rem;
 }
+
+.arc-dossier-body {
+  padding: 1.5rem 1.75rem 4rem;
+}
+
+/* Two-column head: text left, portrait right */
+.arc-dossier-head {
+  display: grid;
+  grid-template-columns: 1fr 100px;
+  gap: 1.25rem;
+  align-items: start;
+  margin-bottom: 1.25rem;
+}
+
+.arc-dossier-head-text { min-width: 0; }
 
 .arc-dossier-role-label {
   font-family: var(--arc-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.2em;
+  font-size: 0.56rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--arc-amber);
-  opacity: 0.6;
-  margin-bottom: 0.35rem;
+  color: #7a5218;
+  margin-bottom: 0.3rem;
 }
 
 .arc-dossier-title {
   font-family: var(--arc-serif);
-  font-size: 1.65rem;
+  font-size: 1.6rem;
   font-weight: normal;
-  color: var(--arc-paper);
-  margin-bottom: 0.9rem;
+  color: #1c1e1a;
+  margin-bottom: 0.1rem;
+  line-height: 1.15;
+}
+
+.arc-dossier-title-sub {
+  font-family: var(--arc-serif);
+  font-size: 0.95rem;
+  color: rgba(26,28,24,0.52);
+  margin-bottom: 0;
+}
+
+/* Portrait + SEALED stamp column */
+.arc-dossier-portrait-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.arc-dossier-portrait {
+  width: 90px;
+  height: 118px;
+  border: 1px solid rgba(26,28,24,0.22);
+  background: rgba(26,28,24,0.07);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.arc-dossier-portrait::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(26,28,24,0.08);
+}
+
+.arc-dossier-portrait-icon {
+  width: 40px;
+  height: 40px;
+  color: rgba(26,28,24,0.16);
+}
+
+.arc-sealed-stamp {
+  width: 72px;
+  height: 72px;
+  border: 2.5px solid #8b1212;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-14deg);
+  color: #8b1212;
+  opacity: 0.72;
+  flex-shrink: 0;
+}
+
+.arc-sealed-stamp-zh {
+  font-family: var(--arc-sans);
+  font-size: 0.52rem;
+  letter-spacing: 0.04em;
+  font-weight: bold;
   line-height: 1.2;
+}
+
+.arc-sealed-stamp-en {
+  font-family: var(--arc-mono);
+  font-size: 0.44rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.75;
 }
 
 .arc-dossier-quote {
   font-family: var(--arc-serif);
   font-style: italic;
-  font-size: 0.92rem;
-  line-height: 1.72;
-  color: var(--arc-paper);
-  opacity: 0.7;
-  border-left: 2px solid var(--arc-amber-dim);
+  font-size: 0.9rem;
+  line-height: 1.78;
+  color: #1c1e1a;
+  opacity: 0.68;
+  border-left: 2px solid rgba(122,82,24,0.4);
   padding-left: 0.9rem;
-  margin-bottom: 1.6rem;
+  margin-bottom: 1.4rem;
 }
 
 .arc-dossier-desc {
   font-family: var(--arc-serif);
-  font-size: 0.92rem;
-  line-height: 1.8;
-  color: var(--arc-paper);
-  opacity: 0.78;
-  margin-bottom: 1.75rem;
+  font-size: 0.9rem;
+  line-height: 1.82;
+  color: #1c1e1a;
+  opacity: 0.72;
+  margin-bottom: 1.5rem;
 }
 
 .arc-dossier-annotations {
   display: grid;
-  grid-template-columns: 90px 1fr;
-  gap: 0.38rem 1rem;
-  margin-bottom: 1.75rem;
-  border-top: 1px solid rgba(184,146,58,0.1);
-  border-bottom: 1px solid rgba(184,146,58,0.1);
-  padding: 0.9rem 0;
+  grid-template-columns: 84px 1fr;
+  gap: 0.32rem 0.8rem;
+  margin-bottom: 1.5rem;
+  border-top: 1px solid rgba(26,28,24,0.13);
+  border-bottom: 1px solid rgba(26,28,24,0.13);
+  padding: 0.85rem 0;
 }
 
 .arc-ann-key {
   font-family: var(--arc-mono);
-  font-size: 0.58rem;
+  font-size: 0.53rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--arc-pale);
-  opacity: 0.45;
-  padding-top: 0.12em;
+  color: rgba(26,28,24,0.38);
+  padding-top: 0.14em;
   line-height: 1.55;
 }
 
 .arc-ann-val {
   font-family: var(--arc-serif);
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   line-height: 1.55;
-  color: var(--arc-paper);
-  opacity: 0.72;
+  color: rgba(26,28,24,0.72);
 }
 
 .arc-dossier-word {
   font-family: var(--arc-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   letter-spacing: 0.08em;
-  color: var(--arc-pale);
-  opacity: 0.55;
-  margin-bottom: 1.4rem;
+  color: rgba(26,28,24,0.48);
+  margin-bottom: 1.25rem;
 }
 
 .arc-dossier-word em {
   font-style: normal;
-  color: var(--arc-paper);
+  color: #1c1e1a;
   font-size: 0.88rem;
-  opacity: 0.88;
 }
 
 .arc-dossier-section-label {
   font-family: var(--arc-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.18em;
+  font-size: 0.53rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--arc-pale);
-  opacity: 0.4;
-  margin-bottom: 0.4rem;
+  color: rgba(26,28,24,0.36);
+  margin-bottom: 0.38rem;
 }
 
 .arc-cost-box {
-  border: 1px dashed rgba(107,72,50,0.38);
-  padding: 0.8rem 1rem;
+  border: 1px dashed rgba(26,28,24,0.22);
+  padding: 0.75rem 1rem;
   font-family: var(--arc-serif);
   font-style: italic;
-  font-size: 0.9rem;
-  line-height: 1.7;
-  color: var(--arc-paper);
-  opacity: 0.72;
-  margin-bottom: 1.6rem;
+  font-size: 0.88rem;
+  line-height: 1.72;
+  color: rgba(26,28,24,0.65);
+  margin-bottom: 1.5rem;
 }
 
 .arc-ending-text {
   font-family: var(--arc-serif);
-  font-size: 0.92rem;
-  line-height: 1.8;
-  color: var(--arc-paper);
-  opacity: 0.78;
-  margin-bottom: 2rem;
+  font-size: 0.9rem;
+  line-height: 1.82;
+  color: rgba(26,28,24,0.7);
+  margin-bottom: 1.75rem;
 }
 
-/* Signal traces (replaces radar chart) */
+/* Signal traces */
 .arc-traces {
-  margin-bottom: 2.25rem;
-  border-top: 1px solid rgba(184,146,58,0.07);
-  padding-top: 1.1rem;
+  margin-bottom: 2rem;
+  border-top: 1px solid rgba(26,28,24,0.12);
+  padding-top: 1rem;
 }
 
 .arc-trace-row {
   display: grid;
-  grid-template-columns: 80px 1fr;
-  gap: 0.65rem;
+  grid-template-columns: 74px 1fr 38px;
+  gap: 0.55rem;
   align-items: center;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.5rem;
 }
 
 .arc-trace-key {
   font-family: var(--arc-mono);
-  font-size: 0.55rem;
+  font-size: 0.52rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--arc-pale);
-  opacity: 0.4;
+  color: rgba(26,28,24,0.38);
   text-align: right;
 }
 
 .arc-trace-bg {
   height: 3px;
-  background: rgba(184,146,58,0.1);
+  background: rgba(26,28,24,0.1);
   position: relative;
 }
 
@@ -1356,28 +1527,37 @@
   left: 0;
   top: 0;
   height: 100%;
-  background: var(--arc-amber);
-  opacity: 0.55;
+  background: #7a5218;
+  opacity: 0.65;
   transition: width 1s ease;
+}
+
+.arc-trace-pct {
+  font-family: var(--arc-mono);
+  font-size: 0.56rem;
+  color: rgba(26,28,24,0.48);
+  text-align: right;
+  white-space: nowrap;
 }
 
 /* Dossier actions */
 .arc-dossier-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.65rem;
-  border-top: 1px solid rgba(184,146,58,0.1);
-  padding-top: 1.1rem;
+  gap: 0.6rem;
+  border-top: 1px solid rgba(26,28,24,0.13);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .arc-dossier-btn {
   font-family: var(--arc-mono);
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  background: none;
-  border: 1px solid rgba(184,146,58,0.18);
-  color: var(--arc-pale);
+  background: transparent;
+  border: 1px solid rgba(26,28,24,0.2);
+  color: rgba(26,28,24,0.48);
   padding: 0.5rem 0.9rem;
   cursor: pointer;
   min-height: 40px;
@@ -1385,17 +1565,17 @@
 }
 
 .arc-dossier-btn:hover {
-  border-color: var(--arc-amber-dim);
-  color: var(--arc-paper);
+  border-color: rgba(26,28,24,0.4);
+  color: rgba(26,28,24,0.75);
 }
 
 .arc-dossier-btn--primary {
-  border-color: var(--arc-amber-dim);
-  color: var(--arc-amber);
+  border-color: rgba(122,82,24,0.38);
+  color: #7a5218;
 }
 
 .arc-dossier-btn--primary:hover {
-  background: rgba(184,146,58,0.08);
+  background: rgba(122,82,24,0.06);
 }
 
 /* Visual continuity */
@@ -1422,12 +1602,20 @@
     padding: 0.75rem;
   }
   .arc-dossier-annotations { grid-template-columns: 1fr; }
-  .arc-ann-key { margin-top: 0.4rem; opacity: 0.3; }
+  .arc-ann-key { margin-top: 0.4rem; }
   .arc-document,
   .arc-ledger { padding-left: 1rem; padding-right: 1rem; }
-  .arc-status-sector { max-width: 44%; font-size: 0.55rem; }
+  .arc-status-sector { font-size: 0.52rem; }
+  .arc-status-cap { display: none; }
   .arc-obj-stage { min-height: 42vh; }
   .arc-dossier-title { font-size: 1.35rem; }
+  .arc-dossier-head { grid-template-columns: 1fr 80px; gap: 0.85rem; }
+  .arc-dossier-portrait { width: 74px; height: 96px; }
+  .arc-sealed-stamp { width: 56px; height: 56px; }
+  .arc-dossier-body { padding: 1.25rem 1.25rem 3rem; }
+  .arc-entrance-title-en { font-size: 2.2rem; }
+  .arc-entrance-title-zh { font-size: 1.1rem; }
+  .arc-enter-btn { min-width: 0; width: 100%; max-width: 320px; }
 }
 
 /* ── REDUCED MOTION ─────────────────────────────────────────── */

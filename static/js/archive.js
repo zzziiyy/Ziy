@@ -1051,16 +1051,25 @@
     var li = state.lang === 'zh' ? 1 : 0;
     var bar = el('div', { className: 'arc-status-bar' });
     bar.setAttribute('aria-hidden', 'true');
+
     var sector = el('span', { className: 'arc-status-sector' });
-    sector.textContent = scene.sector[li] + ' — ' + scene.room[li];
+    sector.textContent = scene.sector[li] + '  /  ' + scene.room[li];
     bar.appendChild(sector);
-    var dots = el('span', { className: 'arc-status-dots' });
-    for (var i = 0; i < 12; i++) {
-      var dot = el('span', { className: i <= qIdx ? 'arc-dot arc-dot--filled' : 'arc-dot' });
-      dot.textContent = i <= qIdx ? '◈' : '○';
-      dots.appendChild(dot);
-    }
-    bar.appendChild(dots);
+
+    var right = el('div', { className: 'arc-status-right' });
+
+    var cap = el('span', { className: 'arc-status-cap' });
+    cap.textContent = (li === 1 ? '\u5c55\u4f4d ' : 'CAPACITY ') + (qIdx + 1) + ' / 12';
+    right.appendChild(cap);
+
+    var flags = getVisualFlags();
+    var sys = el('span', { className: flags.highSacrifice ? 'arc-status-sys arc-status-sys--warn' : 'arc-status-sys' });
+    sys.textContent = flags.highSacrifice
+      ? (li === 1 ? '\u26a0 \u4e0d\u7a33\u5b9a' : '\u26a0 UNSTABLE')
+      : (li === 1 ? '\u7a33\u5b9a' : 'STABLE');
+    right.appendChild(sys);
+
+    bar.appendChild(right);
     return bar;
   }
 
@@ -1163,7 +1172,16 @@
     lever:       '<line x1="24" y1="38" x2="28" y2="16"/><circle cx="28" cy="14" r="4"/><line x1="20" y1="38" x2="32" y2="38"/>',
     door:        '<rect x="12" y="8" width="24" height="36" rx="1"/><circle cx="32" cy="26" r="2" fill="currentColor"/>',
     toggle:      '<rect x="8" y="20" width="32" height="12" rx="6"/><circle cx="32" cy="26" r="5" fill="currentColor"/>',
-    selfscan:    '<circle cx="24" cy="24" r="12" stroke-dasharray="4 3"/><circle cx="24" cy="20" r="4"/><path d="M16 36c0-5 4-8 8-8s8 3 8 8"/>'
+    selfscan:    '<circle cx="24" cy="24" r="12" stroke-dasharray="4 3"/><circle cx="24" cy="20" r="4"/><path d="M16 36c0-5 4-8 8-8s8 3 8 8"/>',
+    fire:        '<path d="M24 8c0 6-7 10-7 17a7 7 0 0014 0c0-3-1.2-5.5-3-7-0.5 3.5-3 5.5-4 5.5 0-5.5 3.5-9.5 3.5-15.5-1.5 1-3.5 0-3.5 0z"/>',
+    lockicon:    '<rect x="10" y="22" width="28" height="20" rx="2"/><path d="M16 22v-5a8 8 0 0116 0v5"/><circle cx="24" cy="32" r="2.5" fill="currentColor" stroke="none"/>',
+    redact:      '<rect x="6" y="19" width="36" height="10" rx="1" fill="currentColor" stroke="none" opacity="0.75"/><line x1="6" y1="14" x2="42" y2="14"/><line x1="6" y1="34" x2="38" y2="34"/><line x1="6" y1="39" x2="30" y2="39"/>',
+    fwd:         '<line x1="9" y1="24" x2="37" y2="24"/><polyline points="29,16 37,24 29,32"/>',
+    back:        '<line x1="39" y1="24" x2="11" y2="24"/><polyline points="19,16 11,24 19,32"/>',
+    eyeopen:     '<path d="M6 24c6-10 30-10 36 0"/><path d="M6 24c6 10 30 10 36 0"/><circle cx="24" cy="24" r="5"/>',
+    penbook:     '<path d="M8 12h22v28H8z"/><line x1="12" y1="20" x2="26" y2="20"/><line x1="12" y1="26" x2="22" y2="26"/><path d="M30 8l8 8-12 12-4 2 2-4z"/>',
+    checkmark:   '<polyline points="9,26 20,36 41,14"/>',
+    exitdoor:    '<path d="M24 10h14v28H24"/><line x1="8" y1="24" x2="30" y2="24"/><polyline points="22,16 30,24 22,32"/>'
   };
 
   function buildSvgIcon(type) {
@@ -1187,62 +1205,48 @@
     var li = state.lang === 'zh' ? 1 : 0;
     var div = el('div', { className: 'arc-entrance' });
 
-    // Background door SVG
-    var env = el('div', { className: 'arc-entrance-env' });
-    env.setAttribute('aria-hidden', 'true');
-    var doorSvg = svgEl('svg', { viewBox: '0 0 400 500', fill: 'none', stroke: 'currentColor',
-      'stroke-width': '1', preserveAspectRatio: 'xMidYMid meet' });
-    doorSvg.innerHTML = '<rect x="100" y="50" width="200" height="380" rx="2" opacity="0.7"/>' +
-      '<rect x="112" y="62" width="176" height="356" opacity="0.4"/>' +
-      '<circle cx="280" cy="240" r="8" opacity="0.6"/>' +
-      '<line x1="20" y1="50" x2="100" y2="50" opacity="0.3"/>' +
-      '<line x1="300" y1="50" x2="380" y2="50" opacity="0.3"/>' +
-      '<line x1="20" y1="50" x2="20" y2="430" opacity="0.3"/>' +
-      '<line x1="380" y1="50" x2="380" y2="430" opacity="0.3"/>';
-    env.appendChild(doorSvg);
-    div.appendChild(env);
+    var inner = el('div', { className: 'arc-entrance-inner' });
 
-    var gate = el('div', { className: 'arc-terminal-gate' });
+    var eyebrow = el('div', { className: 'arc-entrance-eyebrow' });
+    eyebrow.textContent = 'ARCHIVE MANAGEMENT SYSTEM';
+    inner.appendChild(eyebrow);
 
-    var hdr = el('div', { className: 'arc-terminal-gate-header' });
-    hdr.textContent = li === 1 ? 'ARCHIVE MANAGEMENT SYSTEM / 档案管理系统' : 'ARCHIVE MANAGEMENT SYSTEM';
-    gate.appendChild(hdr);
+    var titleBlock = el('div', { className: 'arc-entrance-title' });
+    var titleEn = el('span', { className: 'arc-entrance-title-en' });
+    titleEn.textContent = 'THE LAST ARCHIVE';
+    titleBlock.appendChild(titleEn);
+    var titleZh = el('span', { className: 'arc-entrance-title-zh' });
+    titleZh.textContent = '\u6700\u540e\u7684\u6863\u6848\u9986';
+    titleBlock.appendChild(titleZh);
+    inner.appendChild(titleBlock);
 
-    var screen = el('div', { className: 'arc-terminal-gate-screen' });
-    var lineData = li === 1 ? [
-      { t: 'SECTOR ACCESS TERMINAL v4.1', cls: '' },
-      { t: '> 未找到身份记录', cls: 'arc-terminal-gate-line--warn' },
-      { t: '> 临时保管者权限可用', cls: 'arc-terminal-gate-line--em' },
-      { t: '> 12 个决定 · 4 幕', cls: '' }
-    ] : [
-      { t: 'SECTOR ACCESS TERMINAL v4.1', cls: '' },
-      { t: '> KEEPER RECORD: NOT FOUND', cls: 'arc-terminal-gate-line--warn' },
-      { t: '> TEMPORARY ACCESS: AVAILABLE', cls: 'arc-terminal-gate-line--em' },
-      { t: '> 12 DECISIONS · 4 ACTS', cls: '' }
-    ];
-    for (var li2 = 0; li2 < lineData.length; li2++) {
-      var ln = el('div', { className: 'arc-terminal-gate-line' + (lineData[li2].cls ? ' ' + lineData[li2].cls : '') });
-      ln.textContent = lineData[li2].t;
-      screen.appendChild(ln);
-    }
-    // Blinking cursor on last line
-    var cur = el('span', { className: 'arc-blink' });
-    cur.textContent = '▌';
-    screen.lastElementChild.appendChild(cur);
-    gate.appendChild(screen);
+    var divider = el('div', { className: 'arc-entrance-divider' });
+    inner.appendChild(divider);
 
-    var btn = el('button', { className: 'arc-terminal-appoint' });
-    btn.textContent = li === 1 ? '接受任命' : 'ACCEPT APPOINTMENT';
+    var subtitle = el('p', { className: 'arc-entrance-subtitle' });
+    subtitle.textContent = li === 1
+      ? '\u4e16\u754c\u6b63\u5728\u9010\u6e10\u5fd8\u8bb0\u81ea\u5df1\uff0c\u800c\u4f60\uff0c\u88ab\u4efb\u547d\u4e3a\u6700\u540e\u7684\u4fdd\u7ba1\u8005\u3002'
+      : 'The world is slowly forgetting itself. You have been appointed its last keeper.';
+    inner.appendChild(subtitle);
+
+    var btn = el('button', { className: 'arc-enter-btn' });
+    btn.setAttribute('type', 'button');
+    btn.textContent = li === 1
+      ? '\u8fdb\u5165\u6863\u6848\u9986  /  ENTER'
+      : 'ENTER THE ARCHIVE';
     btn.addEventListener('click', function () { goToStep(0); });
-    gate.appendChild(btn);
+    inner.appendChild(btn);
 
-    var meta = el('div', { className: 'arc-terminal-meta' });
-    meta.textContent = li === 1 ? '12个决定 · 4幕 · 约10分钟' : '12 DECISIONS · 4 ACTS · ~10 MIN';
-    gate.appendChild(meta);
+    var meta = el('div', { className: 'arc-entrance-meta' });
+    meta.textContent = li === 1
+      ? '12 \u4e2a\u51b3\u5b9a \u00b7 4 \u5e55 \u00b7 \u7ea6 10 \u5206\u949f'
+      : '12 DECISIONS  \u00b7  4 ACTS  \u00b7  ~10 MIN';
+    inner.appendChild(meta);
 
-    div.appendChild(gate);
+    div.appendChild(inner);
     root.appendChild(div);
   }
+
 
   /* ──────────────────────────────────────────────────────────
      OBJECT SCENE (Q0, Q9)
@@ -1400,9 +1404,33 @@
   ────────────────────────────────────────────────────────── */
 
   var DOC_META = {
-    2: { code: 'DOC-0041', hdr: ['CLAIM — PERSONAL PROVENANCE', '申诉 — 个人归属'] },
-    3: { code: 'DOC-0042', hdr: ['EVIDENCE JOURNAL — RESTRICTED', '证据日记 — 受限'] },
-    6: { code: 'REC-0023', hdr: ['AUDIO TRANSFER — EFFECT REPORT', '音频转移 — 影响报告'] }
+    2: {
+      code: 'DOC-0041', hdr: ['CLAIM — PERSONAL PROVENANCE', '申诉 — 个人归属'],
+      stamps: [
+        { icon: 'back',      zh: '归还',    en: 'RETURN'  },
+        { icon: 'lockicon',  zh: '封存待核', en: 'SEAL'    },
+        { icon: 'eyeopen',   zh: '开放查阅', en: 'DISCLOSE'},
+        { icon: 'penbook',   zh: '共同注解', en: 'ANNOTATE'}
+      ]
+    },
+    3: {
+      code: 'DOC-0042', hdr: ['EVIDENCE JOURNAL — RESTRICTED', '证据日记 — 受限'],
+      stamps: [
+        { icon: 'fire',      zh: '销毁',    en: 'DESTROY' },
+        { icon: 'lockicon',  zh: '封存百年', en: 'SEAL·100Y'},
+        { icon: 'redact',    zh: '涂黑',    en: 'REDACT'  },
+        { icon: 'fwd',       zh: '留给下一任',en: 'DEFER'  }
+      ]
+    },
+    6: {
+      code: 'REC-0023', hdr: ['AUDIO TRANSFER — EFFECT REPORT', '音频转移 — 影响报告'],
+      stamps: [
+        { icon: 'checkmark', zh: '留存',    en: 'KEEP'    },
+        { icon: 'exitdoor',  zh: '带走',    en: 'REMOVE'  },
+        { icon: 'lockicon',  zh: '封存',    en: 'SEAL'    },
+        { icon: 'fire',      zh: '销毁',    en: 'DESTROY' }
+      ]
+    }
   };
 
   function renderDocumentScene(container, qIdx) {
@@ -1430,13 +1458,27 @@
     stampsRow.setAttribute('aria-label', li === 1 ? '选择操作' : 'Choose an action');
 
     for (var si = 0; si < q.options.length; si++) {
-      (function (opt) {
+      (function (opt, stampCfg) {
         var label = li === 1 ? opt.zh : opt.en;
-        var shortLabel = label.length > 45 ? label.slice(0, 43) + '…' : label;
         var btn = el('button', { className: 'arc-stamp' });
         btn.setAttribute('aria-label', label);
         btn.setAttribute('type', 'button');
-        btn.textContent = opt.value + ' ' + shortLabel;
+
+        if (stampCfg) {
+          var sIcon = buildSvgIcon(stampCfg.icon);
+          sIcon.classList.add('arc-stamp-icon');
+          sIcon.setAttribute('aria-hidden', 'true');
+          btn.appendChild(sIcon);
+          var sName = el('span', { className: 'arc-stamp-name' });
+          sName.textContent = li === 1 ? stampCfg.zh : stampCfg.en;
+          btn.appendChild(sName);
+          var sSub = el('span', { className: 'arc-stamp-sub' });
+          sSub.textContent = li === 1 ? stampCfg.en : label.split('.')[0];
+          btn.appendChild(sSub);
+        } else {
+          var shortLabel = label.length > 30 ? label.slice(0, 28) + '…' : label;
+          btn.textContent = opt.value + ' ' + shortLabel;
+        }
 
         btn.addEventListener('click', function () {
           btn.classList.add('arc-stamp--pressed');
@@ -1453,7 +1495,7 @@
         });
 
         stampsRow.appendChild(btn);
-      }(q.options[si]));
+      }(q.options[si], meta.stamps ? meta.stamps[si] : null));
     }
 
     stage.appendChild(stampsRow);
@@ -2104,7 +2146,6 @@
     var li      = state.lang === 'zh' ? 1 : 0;
     var langKey = li === 1 ? 'zh' : 'en';
 
-    // Look up objects by ID
     var arch = null;
     ARCHETYPES.forEach(function (a) { if (a.id === res.archetypeId) arch = a; });
     if (!arch) arch = ARCHETYPES[0];
@@ -2126,37 +2167,71 @@
     var ansStr = Object.keys(state.answers).map(function (k) { return '' + state.answers[k]; }).join('');
     var hash = 0;
     for (var ci = 0; ci < ansStr.length; ci++) { hash = (hash * 31 + ansStr.charCodeAt(ci)) & 0x7fffffff; }
-    var fileNo = 'ARC-' + ('0000' + ((hash % 9999) + 1)).slice(-4);
+    var fileNo = 'NO. ' + ('00' + (Math.floor(hash / 10000) % 100)).slice(-2) + '-' + ('000' + ((hash % 9999) + 1)).slice(-3);
 
     var dossier = el('div', { className: 'arc-dossier' });
 
     // Top bar
     var topBar = el('div', { className: 'arc-dossier-topbar' });
     var topMeta = el('div', { className: 'arc-dossier-topbar-meta' });
-    topMeta.textContent = li === 1 ? '最终保管者档案' : 'FINAL KEEPER RECORD';
+    topMeta.textContent = li === 1
+      ? 'FINAL ARCHIVE RECORD / 最终档案记录'
+      : 'FINAL ARCHIVE RECORD';
     topBar.appendChild(topMeta);
+    var topFileNo = el('div', { className: 'arc-dossier-fileno' });
+    topFileNo.textContent = fileNo;
+    topBar.appendChild(topFileNo);
     dossier.appendChild(topBar);
 
-    var fileNoEl = el('div', { className: 'arc-dossier-fileno' });
-    fileNoEl.textContent = fileNo;
-    dossier.appendChild(fileNoEl);
+    var body = el('div', { className: 'arc-dossier-body' });
 
-    // Role
+    // Two-column head: text + portrait
+    var head = el('div', { className: 'arc-dossier-head' });
+    var headText = el('div', { className: 'arc-dossier-head-text' });
+
     var roleLabel = el('div', { className: 'arc-dossier-role-label' });
     roleLabel.textContent = li === 1 ? '分配角色' : 'ASSIGNED ROLE';
-    dossier.appendChild(roleLabel);
+    headText.appendChild(roleLabel);
 
     var title = el('h1', { className: 'arc-dossier-title' });
     title.textContent = archData.title;
-    dossier.appendChild(title);
+    headText.appendChild(title);
+
+    var titleSub = el('div', { className: 'arc-dossier-title-sub' });
+    titleSub.textContent = li === 1 ? arch['en'].title : '';
+    headText.appendChild(titleSub);
+
+    head.appendChild(headText);
+
+    // Portrait column
+    var portraitCol = el('div', { className: 'arc-dossier-portrait-col' });
+    var portrait = el('div', { className: 'arc-dossier-portrait' });
+    portrait.setAttribute('aria-hidden', 'true');
+    var pIcon = buildSvgIcon('door');
+    pIcon.classList.add('arc-dossier-portrait-icon');
+    portrait.appendChild(pIcon);
+    portraitCol.appendChild(portrait);
+
+    var sealDiv = el('div', { className: 'arc-sealed-stamp' });
+    sealDiv.setAttribute('aria-hidden', 'true');
+    var sealZh = el('span', { className: 'arc-sealed-stamp-zh' });
+    sealZh.textContent = '已封存';
+    sealDiv.appendChild(sealZh);
+    var sealEn = el('span', { className: 'arc-sealed-stamp-en' });
+    sealEn.textContent = 'SEALED';
+    sealDiv.appendChild(sealEn);
+    portraitCol.appendChild(sealDiv);
+
+    head.appendChild(portraitCol);
+    body.appendChild(head);
 
     var quote = el('blockquote', { className: 'arc-dossier-quote' });
     quote.textContent = '“' + archData.quote + '”';
-    dossier.appendChild(quote);
+    body.appendChild(quote);
 
     var desc = el('p', { className: 'arc-dossier-desc' });
     desc.textContent = archData.description;
-    dossier.appendChild(desc);
+    body.appendChild(desc);
 
     // Annotations table
     var ann = el('div', { className: 'arc-dossier-annotations' });
@@ -2177,48 +2252,47 @@
       ann.appendChild(key);
       ann.appendChild(val);
     });
-    dossier.appendChild(ann);
+    body.appendChild(ann);
 
-    // Registered word
     if (state.wordInput) {
       var wordDiv = el('div', { className: 'arc-dossier-word' });
       var wordLabel = li === 1 ? '登记词语：' : 'REGISTERED WORD: ';
       wordDiv.innerHTML = wordLabel + '<em>' + state.wordInput.replace(/[<>&"]/g, function (c) {
         return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c];
       }) + '</em>';
-      dossier.appendChild(wordDiv);
+      body.appendChild(wordDiv);
     }
 
-    // Cost
     var costLabel = el('div', { className: 'arc-dossier-section-label' });
     costLabel.textContent = li === 1 ? '承担的代价' : 'COST INCURRED';
-    dossier.appendChild(costLabel);
+    body.appendChild(costLabel);
 
     var costBox = el('div', { className: 'arc-cost-box' });
     costBox.textContent = costText;
-    dossier.appendChild(costBox);
+    body.appendChild(costBox);
 
-    // Ending
     var endLabel = el('div', { className: 'arc-dossier-section-label' });
     endLabel.textContent = li === 1 ? '最终状态' : 'FINAL STATUS';
-    dossier.appendChild(endLabel);
+    body.appendChild(endLabel);
 
     var endTextEl = el('p', { className: 'arc-ending-text' });
     endTextEl.textContent = endText;
-    dossier.appendChild(endTextEl);
+    body.appendChild(endTextEl);
 
     // Signal traces
     var tracesDiv = el('div', { className: 'arc-traces' });
     var tracesLabel = el('div', { className: 'arc-dossier-section-label' });
-    tracesLabel.textContent = li === 1 ? '内部分析 — 机密' : 'INTERNAL ANALYSIS — CONFIDENTIAL';
+    tracesLabel.textContent = li === 1
+      ? '档案偶写  /  ARCHIVE PROFILE'
+      : 'ARCHIVE PROFILE  —  INTERNAL ANALYSIS';
     tracesDiv.appendChild(tracesLabel);
 
     var dimLabels = {
-      preservation:   li === 1 ? '保存' : 'PRESERV',
-      privateMeaning: li === 1 ? '私意' : 'PRIVATE',
-      authenticity:   li === 1 ? '真实' : 'AUTHENT',
-      control:        li === 1 ? '控制' : 'CONTROL',
-      sacrifice:      li === 1 ? '牺牲' : 'SACRIF'
+      preservation:   li === 1 ? '保存倾向' : 'PRESERV',
+      privateMeaning: li === 1 ? '私人意义' : 'PRIVATE',
+      authenticity:   li === 1 ? '真实性' : 'AUTHENT',
+      control:        li === 1 ? '控制感' : 'CONTROL',
+      sacrifice:      li === 1 ? '牺牲倾向' : 'SACRIF'
     };
 
     DIMS.forEach(function (d) {
@@ -2232,12 +2306,17 @@
       fill.style.width = '0%';
       bg.appendChild(fill);
       row.appendChild(bg);
-      tracesDiv.appendChild(row);
 
       var pct = Math.max(0, Math.min(100, (((scores[d] || 0) + 1) / 2) * 100));
+      var pctEl = el('div', { className: 'arc-trace-pct' });
+      pctEl.textContent = Math.round(pct) + '%';
+      row.appendChild(pctEl);
+
+      tracesDiv.appendChild(row);
+
       setTimeout(function () { fill.style.width = pct + '%'; }, 120);
     });
-    dossier.appendChild(tracesDiv);
+    body.appendChild(tracesDiv);
 
     // Actions
     var actions = el('div', { className: 'arc-dossier-actions' });
@@ -2272,10 +2351,12 @@
     actions.appendChild(restartBtn);
     actions.appendChild(copyBtn);
     actions.appendChild(shareBtn);
-    dossier.appendChild(actions);
+    body.appendChild(actions);
 
+    dossier.appendChild(body);
     root.appendChild(dossier);
   }
+
 
   /* ──────────────────────────────────────────────────────────
      MAIN RENDER
