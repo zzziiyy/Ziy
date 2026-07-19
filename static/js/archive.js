@@ -995,836 +995,1015 @@
     return { personal: 25, scientific: 25, art: 25, admin: 25 };
   }
 
+
   /* ──────────────────────────────────────────────────────────
-     DRAG-AND-DROP (ranking question)
+     SCENE METADATA
   ────────────────────────────────────────────────────────── */
 
-  var dragState = {
-    dragIdx: null,
-    overIdx: null
+  var SCENES = [
+    { type: 'object',   sector: ['SECTOR 01', '区域 01'], room: ['INTAKE HALL', '接收大厅'],              env: 'env-intake'    },
+    { type: 'binary',   sector: ['SECTOR 02', '区域 02'], room: ['CLASSIFICATION ROOM', '分类室'],             env: 'env-classify'  },
+    { type: 'document', sector: ['SECTOR 03', '区域 03'], room: ['SEALED CORRESPONDENCE', '密封信件库'], env: 'env-sealed'    },
+    { type: 'document', sector: ['SECTOR 04', '区域 04'], room: ['RESTRICTED DOCUMENTS', '限制文件室'],  env: 'env-restricted'},
+    { type: 'shelf',    sector: ['SECTOR 05', '区域 05'], room: ['MAP ARCHIVE', '地图档案库'],          env: 'env-maps'      },
+    { type: 'storage',  sector: ['SECTOR 06', '区域 06'], room: ['STORAGE CORE', '核心储藏室'],        env: 'env-storage'   },
+    { type: 'document', sector: ['SECTOR 07', '区域 07'], room: ['MEMORY VAULT', '记忆穹顶'],             env: 'env-memory'    },
+    { type: 'binary',   sector: ['SECTOR 08', '区域 08'], room: ['RESTORATION LAB', '修复实验室'],    env: 'env-restore'   },
+    { type: 'terminal', sector: ['SECTOR 09', '区域 09'], room: ['KEEPER TERMINAL', '保管者终端'],    env: 'env-terminal'  },
+    { type: 'object',   sector: ['SECTOR 10', '区域 10'], room: ['OVERFLOW CHAMBER', '溢出仓'],               env: 'env-overflow'  },
+    { type: 'contract', sector: ['SECTOR 11', '区域 11'], room: ['BINDING ROOM', '契约室'],                   env: 'env-binding'   },
+    { type: 'core',     sector: ['SECTOR 12', '区域 12'], room: ['ARCHIVE CORE', '档案核心'],             env: 'env-core'      }
+  ];
+
+  /* ──────────────────────────────────────────────────────────
+     VISUAL FLAGS
+  ────────────────────────────────────────────────────────── */
+
+  function getVisualFlags() {
+    var a = state.answers;
+    var partial = calculateScores(a);
+    return {
+      hasSeed:        a[0] === 'C',
+      destroyedDiary: a[3] === 'A',
+      preservedDiary: a[2] === 'B' || a[3] === 'B',
+      chosePrivate:   (partial.privateMeaning || 0) > 0,
+      highSacrifice:  (partial.sacrifice || 0) > 2
+    };
+  }
+
+  function applyVisualFlags() {
+    var root = document.getElementById('archive-app');
+    if (!root) return;
+    var f = getVisualFlags();
+    root.setAttribute('data-has-seed',        f.hasSeed        ? 'true' : 'false');
+    root.setAttribute('data-destroyed-diary', f.destroyedDiary ? 'true' : 'false');
+    root.setAttribute('data-preserved-diary', f.preservedDiary ? 'true' : 'false');
+    root.setAttribute('data-private',         f.chosePrivate   ? 'true' : 'false');
+    root.setAttribute('data-sacrifice',       f.highSacrifice  ? 'true' : 'false');
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     STATUS BAR
+  ────────────────────────────────────────────────────────── */
+
+  function buildStatusBar(qIdx) {
+    var scene = SCENES[qIdx];
+    var li = state.lang === 'zh' ? 1 : 0;
+    var bar = el('div', { className: 'arc-status-bar' });
+    bar.setAttribute('aria-hidden', 'true');
+    var sector = el('span', { className: 'arc-status-sector' });
+    sector.textContent = scene.sector[li] + ' — ' + scene.room[li];
+    bar.appendChild(sector);
+    var dots = el('span', { className: 'arc-status-dots' });
+    for (var i = 0; i < 12; i++) {
+      var dot = el('span', { className: i <= qIdx ? 'arc-dot arc-dot--filled' : 'arc-dot' });
+      dot.textContent = i <= qIdx ? '◈' : '○';
+      dots.appendChild(dot);
+    }
+    bar.appendChild(dots);
+    return bar;
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     CONSEQUENCE OVERLAY
+  ────────────────────────────────────────────────────────── */
+
+  var CSEQ = {
+    3: {
+      A: ['You close the diary. The fire is small but thorough.', '你合上日记。火苗很小，但很彻底。'],
+      B: ['SEALED — 100 YEARS is pressed over the cover.', '“封存—一百年”印在封面上。'],
+      C: ['The pages return marked with black passages.', '页面带着黑色段落回来。'],
+      D: ['You leave it. Someone else will decide.', '你离开了。由别人决定。']
+    },
+    6: {
+      A: ['The recording stays. Somewhere, a child forgets.', '录音留了下来。某处，一个孩子忘记了。'],
+      B: ['You carry it out. The archive loses it forever.', '你带着它离开。档案馆永远失去了它。'],
+      C: ['Sealed. No one will hear it again.', '封存。再也没人能听到它。'],
+      D: ['Destroyed. Some losses should remain losses.', '消毁。有些失去就应该是失去。']
+    },
+    9: {
+      C: ['Something of yours. The shelf is lighter.', '你自己的某样东西。书架轻了一点。'],
+      D: ['You refuse. The archive holds its breath.', '你拒绝了。档案馆棒住了呀山。']
+    },
+    11: {
+      A: ['The card slot accepts it. Your name begins to fade.', '卡槽接受了它。你的名字开始消退。'],
+      B: ['The lever moves with unexpected ease.', '擬丝移动得出乎意料地顺畅。'],
+      C: ['The door opens. Then closes behind you.', '门开了。然后在你身后关上。'],
+      D: ['Nothing happens. Then everything dims.', '什么都没有发生。然后一切变暗。'],
+      E: ['The machine hums. Something scans you.', '机器嗡嗡作响。某种东西在扫描你。']
+    }
   };
 
-  function attachDragHandlers(list, order, onReorder) {
-    var items = list.querySelectorAll('.arc-rank-item');
-
-    items.forEach(function (item, idx) {
-      // Mouse drag
-      item.addEventListener('dragstart', function (e) {
-        dragState.dragIdx = idx;
-        item.classList.add('arc-dragging');
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/plain', String(idx));
-      });
-
-      item.addEventListener('dragend', function () {
-        item.classList.remove('arc-dragging');
-        if (dragState.overIdx !== null && dragState.overIdx !== dragState.dragIdx) {
-          var newOrder = order.slice();
-          var moved = newOrder.splice(dragState.dragIdx, 1)[0];
-          newOrder.splice(dragState.overIdx, 0, moved);
-          onReorder(newOrder);
-        }
-        dragState.dragIdx = null;
-        dragState.overIdx = null;
-      });
-
-      item.addEventListener('dragover', function (e) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        if (dragState.overIdx !== idx) {
-          list.querySelectorAll('.arc-rank-item').forEach(function (el) {
-            el.classList.remove('arc-drag-over');
-          });
-          item.classList.add('arc-drag-over');
-          dragState.overIdx = idx;
-        }
-      });
-
-      item.addEventListener('dragleave', function () {
-        item.classList.remove('arc-drag-over');
-      });
-
-      item.addEventListener('drop', function (e) {
-        e.preventDefault();
-        item.classList.remove('arc-drag-over');
-      });
-
-      // Touch drag (simple swap via touchmove)
-      var touchStartY = null;
-
-      item.addEventListener('touchstart', function (e) {
-        dragState.dragIdx = idx;
-        touchStartY = e.touches[0].clientY;
-        item.classList.add('arc-dragging');
-      }, { passive: true });
-
-      item.addEventListener('touchmove', function (e) {
-        var touch = e.touches[0];
-        var el = document.elementFromPoint(touch.clientX, touch.clientY);
-        var target = el && el.closest('.arc-rank-item');
-        if (target && target !== item) {
-          var targetItems = Array.from(list.querySelectorAll('.arc-rank-item'));
-          var targetIdx = targetItems.indexOf(target);
-          if (targetIdx !== -1) {
-            list.querySelectorAll('.arc-rank-item').forEach(function (ri) {
-              ri.classList.remove('arc-drag-over');
-            });
-            target.classList.add('arc-drag-over');
-            dragState.overIdx = targetIdx;
-          }
-        }
-      }, { passive: true });
-
-      item.addEventListener('touchend', function () {
-        item.classList.remove('arc-dragging');
-        list.querySelectorAll('.arc-rank-item').forEach(function (ri) {
-          ri.classList.remove('arc-drag-over');
-        });
-        if (dragState.overIdx !== null && dragState.overIdx !== dragState.dragIdx) {
-          var newOrder = order.slice();
-          var moved = newOrder.splice(dragState.dragIdx, 1)[0];
-          newOrder.splice(dragState.overIdx, 0, moved);
-          onReorder(newOrder);
-        }
-        dragState.dragIdx = null;
-        dragState.overIdx = null;
-      });
-    });
-  }
-
-  /* ──────────────────────────────────────────────────────────
-     RADAR CHART (SVG)
-  ────────────────────────────────────────────────────────── */
-
-  function buildRadarChart(scores) {
-    var size   = 200;
-    var cx     = size / 2;
-    var cy     = size / 2;
-    var radius = 72;
-    var padding = 28; // space for labels
-
-    var totalSize = size + padding * 2;
-
-    var svg = svgEl('svg', {
-      viewBox: '0 0 ' + totalSize + ' ' + totalSize,
-      'class': 'arc-radar-svg',
-      role: 'img',
-      'aria-label': t('Radar chart of your archival tendencies', '你档案倾向的雷达图')
-    });
-
-    var dims = [
-      { key: 'preservation',   en: 'PRESERVATION',   zh: '保存' },
-      { key: 'privateMeaning', en: 'PRIVATE',         zh: '私密' },
-      { key: 'authenticity',   en: 'AUTHENTICITY',    zh: '真实' },
-      { key: 'control',        en: 'CONTROL',         zh: '控制' },
-      { key: 'sacrifice',      en: 'SACRIFICE',       zh: '牺牲' }
-    ];
-
-    var n = dims.length;
-    var offset = cx + padding;
-    var coffset = cy + padding;
-
-    // Compute angle for each axis (start at top, go clockwise)
-    function angle(i) {
-      return (Math.PI * 2 * i / n) - Math.PI / 2;
+  function getConsequenceMsg(qIdx, optVal) {
+    var li = state.lang === 'zh' ? 1 : 0;
+    if (CSEQ[qIdx] && CSEQ[qIdx][optVal]) {
+      return CSEQ[qIdx][optVal][li];
     }
-
-    // Grid rings
-    [0.25, 0.5, 0.75, 1].forEach(function (frac) {
-      var pts = dims.map(function (_, i) {
-        var a = angle(i);
-        var r = radius * frac;
-        return (offset + r * Math.cos(a)) + ',' + (coffset + r * Math.sin(a));
-      });
-      var poly = svgEl('polygon', {
-        points: pts.join(' '),
-        'class': 'arc-radar-grid'
-      });
-      svg.appendChild(poly);
-    });
-
-    // Axes
-    dims.forEach(function (_, i) {
-      var a = angle(i);
-      var line = svgEl('line', {
-        x1: offset, y1: coffset,
-        x2: offset + radius * Math.cos(a),
-        y2: coffset + radius * Math.sin(a),
-        'class': 'arc-radar-axis'
-      });
-      svg.appendChild(line);
-    });
-
-    // Data shape — normalize -1..1 to 0..1 for radius
-    var dataPts = dims.map(function (d, i) {
-      var val  = scores[d.key] || 0;
-      var norm = (val + 1) / 2; // map -1..1 → 0..1
-      var r    = radius * norm;
-      var a    = angle(i);
-      return (offset + r * Math.cos(a)) + ',' + (coffset + r * Math.sin(a));
-    });
-
-    var shape = svgEl('polygon', {
-      points: dataPts.join(' '),
-      'class': 'arc-radar-shape'
-    });
-    svg.appendChild(shape);
-
-    // Dots on vertices
-    dims.forEach(function (d, i) {
-      var val  = scores[d.key] || 0;
-      var norm = (val + 1) / 2;
-      var r    = radius * norm;
-      var a    = angle(i);
-      var dot  = svgEl('circle', {
-        cx: offset + r * Math.cos(a),
-        cy: coffset + r * Math.sin(a),
-        r: 3,
-        'class': 'arc-radar-dot'
-      });
-      svg.appendChild(dot);
-    });
-
-    // Labels
-    var labelRadius = radius + 18;
-    dims.forEach(function (d, i) {
-      var a    = angle(i);
-      var lx   = offset + labelRadius * Math.cos(a);
-      var ly   = coffset + labelRadius * Math.sin(a);
-      var text = svgEl('text', {
-        x: lx,
-        y: ly + 3.5,
-        'class': 'arc-radar-label',
-        'text-anchor': 'middle',
-        'dominant-baseline': 'middle'
-      });
-      text.textContent = state.lang === 'zh' ? d.zh : d.en;
-      svg.appendChild(text);
-    });
-
-    return svg;
-  }
-
-  /* ──────────────────────────────────────────────────────────
-     TRANSITION HELPERS
-  ────────────────────────────────────────────────────────── */
-
-  function fadeOut(node, cb) {
-    if (REDUCED_MOTION) { cb(); return; }
-    node.classList.add('arc-fade-out');
-    node.addEventListener('animationend', cb, { once: true });
-  }
-
-  function fadeIn(node) {
-    if (REDUCED_MOTION) return;
-    node.classList.remove('arc-fade-in');
-    // Force reflow
-    void node.offsetWidth;
-    node.classList.add('arc-fade-in');
-  }
-
-  /* ──────────────────────────────────────────────────────────
-     RENDER: INTRO
-  ────────────────────────────────────────────────────────── */
-
-  function renderIntro(container) {
-    var div = el('div', { className: 'arc-intro' });
-
-    var title = el('h1', { className: 'arc-intro-title' }, [
-      t('The Last Archive', '最后的档案馆'),
-      el('span', { className: 'arc-intro-subtitle' }, [
-        t('最后的档案馆', 'The Last Archive')
-      ])
-    ]);
-
-    var body = el('p', { className: 'arc-intro-body' }, [
-      t(
-        'Somewhere, there is an archive. It contains the last copies of things that no longer exist anywhere else. You are its keeper.',
-        '某处，有一座档案馆。它保存着那些在其他任何地方都不再存在的事物的最后副本。你是它的保管者。'
-      )
-    ]);
-
-    var body2 = el('p', { className: 'arc-intro-body' }, [
-      t(
-        'You will be asked twelve questions. There are no correct answers. At the end, you will receive a record of what kind of keeper you have been.',
-        '你将被问及十二个问题。没有正确答案。最后，你将得到一份记录，记录你成为了哪种保管者。'
-      )
-    ]);
-
-    var meta = el('p', { className: 'arc-intro-meta' }, [
-      t('12 QUESTIONS · 4 ACTS · APPROXIMATELY 8–12 MINUTES',
-        '12个问题 · 4幕 · 约8至12分钟')
-    ]);
-
-    var startBtn = el('button', {
-      className: 'arc-btn arc-btn--primary',
-      type: 'button'
-    }, [t('Enter the Archive', '进入档案馆')]);
-
-    startBtn.addEventListener('click', function () {
-      goToStep(0);
-    });
-
-    div.appendChild(title);
-    div.appendChild(body);
-    div.appendChild(body2);
-    div.appendChild(meta);
-    div.appendChild(startBtn);
-
-    container.appendChild(div);
-    fadeIn(div);
-  }
-
-  /* ──────────────────────────────────────────────────────────
-     RENDER: QUESTION
-  ────────────────────────────────────────────────────────── */
-
-  function renderQuestion(container, qIdx) {
     var q = QUESTIONS[qIdx];
-    var lang = state.lang;
-    var qData = q[lang];
-
-    // Progress bar fill
-    var progress = ((qIdx + 1) / 12) * 100;
-
-    var wrap = el('div', { className: 'arc-content' });
-
-    // Progress row
-    var progressWrap = el('div', { className: 'arc-progress-wrap' });
-    var progressBg   = el('div', { className: 'arc-progress-bar-bg' });
-    var progressFill = el('div', {
-      className: 'arc-progress-bar-fill',
-      style: { width: progress + '%' }
-    });
-    progressBg.appendChild(progressFill);
-    progressWrap.appendChild(progressBg);
-    wrap.appendChild(progressWrap);
-
-    // Act announcement (first question of a new act)
-    var firstQsOfAct = { 0: 1, 3: 2, 6: 3, 9: 4 };
-    if (firstQsOfAct[qIdx] !== undefined) {
-      var actNum = firstQsOfAct[qIdx];
-      var actData = ACTS[actNum];
-      var actAnnounce = el('div', { className: 'arc-act-announce' }, [
-        el('div', { className: 'arc-act-announce-number' }, [actData.label]),
-        el('div', { className: 'arc-act-announce-name' }, [t(actData.en, actData.zh)])
-      ]);
-      wrap.appendChild(actAnnounce);
-    }
-
-    // Sequence label
-    var seqLabel = el('div', { className: 'arc-label' }, [
-      q.label[lang] || q.label.en
-    ]);
-    wrap.appendChild(seqLabel);
-
-    // Question text
-    var qText = el('p', { className: 'arc-question-text' }, [qData.text]);
-    wrap.appendChild(qText);
-
-    // Optional note
-    if (qData.note) {
-      var noteEl = el('p', { className: 'arc-question-note' }, [qData.note]);
-      wrap.appendChild(noteEl);
-    }
-
-    // Question-type specific rendering
-    if (q.type === 'choice') {
-      renderChoices(wrap, q, qIdx);
-    } else if (q.type === 'ranking') {
-      renderRanking(wrap, q, qIdx);
-    } else if (q.type === 'capacity') {
-      renderCapacity(wrap, q, qIdx);
-    } else if (q.type === 'text') {
-      renderTextInput(wrap, q, qIdx);
-    }
-
-    // Navigation
-    var nav = el('div', { className: 'arc-nav' });
-
-    if (qIdx > 0) {
-      var backBtn = el('button', { className: 'arc-btn arc-btn--ghost', type: 'button' },
-        [t('← Back', '← 返回')]);
-      backBtn.addEventListener('click', function () {
-        goToStep(qIdx - 1);
-      });
-      nav.appendChild(backBtn);
-    }
-
-    wrap.appendChild(nav);
-
-    container.appendChild(wrap);
-    fadeIn(wrap);
-  }
-
-  /* ── Choice Question ───────────────────────────────────── */
-
-  function renderChoices(wrap, q, qIdx) {
-    var lang = state.lang;
-    var currentAnswer = state.answers[qIdx];
-    var choices = el('div', { className: 'arc-choices', role: 'group' });
-
-    var keys = ['A','B','C','D','E'];
-
-    q.options.forEach(function (opt, i) {
-      var isSelected = currentAnswer === opt.value;
-      var btn = el('button', {
-        className: 'arc-choice' + (isSelected ? ' arc-selected' : ''),
-        type: 'button',
-        'data-value': opt.value
-      }, [
-        el('span', { className: 'arc-choice-key' }, [keys[i]]),
-        el('span', { className: 'arc-choice-text' }, [opt[lang] || opt.en])
-      ]);
-
-      btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
-
-      btn.addEventListener('click', function () {
-        state.answers[qIdx] = opt.value;
-        saveState();
-        // Advance after short delay for visual feedback
-        setTimeout(function () { advanceStep(qIdx); }, 180);
-      });
-
-      choices.appendChild(btn);
-    });
-
-    wrap.appendChild(choices);
-  }
-
-  /* ── Ranking Question ──────────────────────────────────── */
-
-  function renderRanking(wrap, q, qIdx) {
-    var lang = state.lang;
-    var order = state.answers[qIdx] || defaultRankingOrder();
-
-    var listEl = el('ol', { className: 'arc-ranking-list' });
-
-    function rebuildList() {
-      listEl.innerHTML = '';
-      order.forEach(function (itemId, pos) {
-        var item = q.items.find(function (it) { return it.id === itemId; });
-        var row = el('li', {
-          className: 'arc-rank-item',
-          draggable: true,
-          'data-id': itemId
-        }, [
-          el('span', { className: 'arc-rank-handle', 'aria-hidden': 'true' }, ['⠿']),
-          el('span', { className: 'arc-rank-pos' }, [String(pos + 1)]),
-          el('span', { className: 'arc-rank-text' }, [item[lang] || item.en]),
-          el('span', { className: 'arc-rank-arrows' }, [
-            el('button', {
-              className: 'arc-rank-arrow',
-              type: 'button',
-              disabled: pos === 0,
-              title: t('Move up', '上移'),
-              'aria-label': t('Move up', '上移')
-            }, ['↑']),
-            el('button', {
-              className: 'arc-rank-arrow',
-              type: 'button',
-              disabled: pos === order.length - 1,
-              title: t('Move down', '下移'),
-              'aria-label': t('Move down', '下移')
-            }, ['↓'])
-          ])
-        ]);
-
-        // Arrow button handlers
-        var arrows = row.querySelectorAll('.arc-rank-arrow');
-        arrows[0].addEventListener('click', function () {
-          if (pos === 0) return;
-          var newOrder = order.slice();
-          var tmp = newOrder[pos - 1];
-          newOrder[pos - 1] = newOrder[pos];
-          newOrder[pos] = tmp;
-          order = newOrder;
-          state.answers[qIdx] = order;
-          saveState();
-          rebuildList();
-        });
-        arrows[1].addEventListener('click', function () {
-          if (pos === order.length - 1) return;
-          var newOrder = order.slice();
-          var tmp = newOrder[pos + 1];
-          newOrder[pos + 1] = newOrder[pos];
-          newOrder[pos] = tmp;
-          order = newOrder;
-          state.answers[qIdx] = order;
-          saveState();
-          rebuildList();
-        });
-
-        listEl.appendChild(row);
-      });
-
-      // Re-attach drag handlers
-      attachDragHandlers(listEl, order, function (newOrder) {
-        order = newOrder;
-        state.answers[qIdx] = order;
-        saveState();
-        rebuildList();
-      });
-    }
-
-    rebuildList();
-    wrap.appendChild(listEl);
-
-    // Confirm button
-    var confirmBtn = el('button', {
-      className: 'arc-btn arc-btn--primary',
-      type: 'button'
-    }, [t('Confirm Order', '确认顺序')]);
-    confirmBtn.addEventListener('click', function () {
-      state.answers[qIdx] = order;
-      saveState();
-      advanceStep(qIdx);
-    });
-    wrap.appendChild(confirmBtn);
-  }
-
-  /* ── Capacity Question ─────────────────────────────────── */
-
-  function renderCapacity(wrap, q, qIdx) {
-    var lang = state.lang;
-    var alloc = state.answers[qIdx]
-      ? Object.assign({}, state.answers[qIdx])
-      : defaultAllocation();
-
-    var valueEls = {};
-    var sliders  = {};
-    var remainEl = el('div', { className: 'arc-capacity-remaining' });
-
-    function getTotal() {
-      return Object.values(alloc).reduce(function (a, b) { return a + b; }, 0);
-    }
-
-    function updateRemaining() {
-      var total     = getTotal();
-      var remaining = 100 - total;
-      remainEl.textContent = t(
-        remaining + ' units unallocated (reserved)',
-        remaining + ' 单位未分配（封存备用）'
-      );
-      remainEl.className = 'arc-capacity-remaining' + (remaining < 0 ? ' arc-warn' : '');
-    }
-
-    function clampOthers(changedId, newVal) {
-      var delta  = newVal - alloc[changedId];
-      alloc[changedId] = newVal;
-      // Distribute the difference proportionally among other categories
-      var otherIds = q.categories.map(function (c) { return c.id; })
-        .filter(function (id) { return id !== changedId; });
-      var totalOther = otherIds.reduce(function (s, id) { return s + alloc[id]; }, 0);
-      var remaining  = 100 - newVal;
-
-      if (remaining < 0) {
-        // Cap the changed slider itself
-        alloc[changedId] = 100 - (totalOther);
-        if (alloc[changedId] < 0) alloc[changedId] = 0;
-      } else {
-        // Clamp others so total doesn't exceed 100
-        // Scale others proportionally
-        var afterDelta = 100 - newVal;
-        if (totalOther > afterDelta) {
-          var scale = afterDelta / totalOther;
-          otherIds.forEach(function (id) {
-            alloc[id] = Math.round(alloc[id] * scale / 5) * 5;
-          });
-          // Fix rounding drift
-          var s = otherIds.reduce(function (acc, id) { return acc + alloc[id]; }, 0);
-          var diff = afterDelta - s;
-          if (diff !== 0 && otherIds.length > 0) {
-            alloc[otherIds[0]] = Math.max(0, alloc[otherIds[0]] + diff);
-          }
+    if (q && q.options) {
+      for (var oi = 0; oi < q.options.length; oi++) {
+        if (q.options[oi].value === optVal) {
+          var txt = li === 1 ? q.options[oi].zh : q.options[oi].en;
+          var dot = txt.indexOf('.');
+          return dot > 0 ? txt.slice(0, dot + 1) : txt;
         }
       }
-      alloc[changedId] = Math.max(0, Math.min(100, alloc[changedId]));
     }
-
-    function syncUI() {
-      q.categories.forEach(function (cat) {
-        if (sliders[cat.id])   sliders[cat.id].value  = alloc[cat.id];
-        if (valueEls[cat.id])  valueEls[cat.id].textContent = alloc[cat.id];
-      });
-      updateRemaining();
-    }
-
-    var list = el('div', { className: 'arc-capacity-list' });
-
-    q.categories.forEach(function (cat) {
-      var header = el('div', { className: 'arc-capacity-header' }, [
-        el('span', { className: 'arc-capacity-label' }, [cat[lang] || cat.en]),
-        el('span', {
-          className: 'arc-capacity-value',
-          id: 'arc-cap-val-' + cat.id
-        }, [String(alloc[cat.id])])
-      ]);
-
-      var slider = el('input', {
-        type: 'range',
-        className: 'arc-capacity-slider',
-        min: 0, max: 100, step: 5,
-        value: alloc[cat.id],
-        id: 'arc-cap-' + cat.id,
-        'aria-label': cat[lang] || cat.en,
-        'aria-valuemin': '0',
-        'aria-valuemax': '100',
-        'aria-valuenow': String(alloc[cat.id])
-      });
-
-      valueEls[cat.id] = header.querySelector('#arc-cap-val-' + cat.id);
-      sliders[cat.id]  = slider;
-
-      slider.addEventListener('input', function () {
-        var newVal = parseInt(slider.value, 10);
-        clampOthers(cat.id, newVal);
-        syncUI();
-        state.answers[qIdx] = Object.assign({}, alloc);
-        saveState();
-      });
-
-      var item = el('div', { className: 'arc-capacity-item' }, [header, slider]);
-      list.appendChild(item);
-    });
-
-    wrap.appendChild(list);
-    wrap.appendChild(remainEl);
-    updateRemaining();
-
-    var confirmBtn = el('button', {
-      className: 'arc-btn arc-btn--primary',
-      type: 'button'
-    }, [t('Confirm Allocation', '确认分配')]);
-    confirmBtn.addEventListener('click', function () {
-      state.answers[qIdx] = Object.assign({}, alloc);
-      saveState();
-      advanceStep(qIdx);
-    });
-    wrap.appendChild(confirmBtn);
+    return li === 1 ? '已记录。' : 'Logged.';
   }
 
-  /* ── Text Input Question ───────────────────────────────── */
-
-  function renderTextInput(wrap, q, qIdx) {
-    var lang = state.lang;
-    var qData = q[lang];
-
-    var wordWrap = el('div', { className: 'arc-word-wrap' });
-    var input = el('input', {
-      type: 'text',
-      className: 'arc-word-input',
-      placeholder: qData.placeholder,
-      value: state.wordInput || '',
-      maxLength: 80,
-      'aria-label': qData.text
-    });
-
-    input.addEventListener('input', function () {
-      state.wordInput = input.value;
-      saveState();
-    });
-
-    wordWrap.appendChild(input);
-    wrap.appendChild(wordWrap);
-
-    var nav = wrap.querySelector('.arc-nav');
-    var continueBtn = el('button', {
-      className: 'arc-btn arc-btn--primary',
-      type: 'button'
-    }, [t('Continue', '继续')]);
-    continueBtn.addEventListener('click', function () {
-      state.wordInput = input.value;
-      state.answers[qIdx] = input.value;
-      saveState();
-      advanceStep(qIdx);
-    });
-
-    // Insert before the nav div if exists
-    if (nav) {
-      wrap.insertBefore(continueBtn, nav);
-    } else {
-      wrap.appendChild(continueBtn);
+  function showConsequence(msg, then) {
+    var root = document.getElementById('archive-app');
+    var ov = el('div', { className: 'arc-consequence' });
+    var p = el('p', { className: 'arc-consequence-text' });
+    p.textContent = msg;
+    ov.appendChild(p);
+    root.appendChild(ov);
+    if (REDUCED_MOTION) {
+      if (ov.parentNode) ov.parentNode.removeChild(ov);
+      then();
+      return;
     }
-
-    // Focus after render
-    setTimeout(function () { input.focus(); }, 50);
+    setTimeout(function () {
+      ov.classList.add('arc-consequence-exit');
+      setTimeout(function () {
+        if (ov.parentNode) ov.parentNode.removeChild(ov);
+        then();
+      }, 300);
+    }, 1400);
   }
 
   /* ──────────────────────────────────────────────────────────
-     RENDER: PROCESSING (interstitial before result)
+     SVG ICONS
   ────────────────────────────────────────────────────────── */
 
-  function renderProcessing(container) {
-    var lines = [
-      t('The archive is reviewing your decisions…', '档案馆正在回顾你的决定……'),
-      t('Cross-referencing with the catalogue…', '正在与目录进行交叉索引……'),
-      t('Preparing your record…', '正在准备你的记录……')
+  var SVG_ICONS = {
+    diary:       '<rect x="10" y="7" width="22" height="30" rx="1"/><line x1="14" y1="17" x2="28" y2="17"/><line x1="14" y1="23" x2="28" y2="23"/><line x1="14" y1="29" x2="22" y2="29"/>',
+    map:         '<path d="M8 12l10 3 12-4 10 3v22l-10-3-12 4-10-3z"/><line x1="18" y1="15" x2="18" y2="37"/><line x1="30" y1="11" x2="30" y2="33"/>',
+    seeds:       '<ellipse cx="24" cy="30" rx="3" ry="7"/><ellipse cx="17" cy="34" rx="2" ry="5" transform="rotate(-20 17 34)"/><ellipse cx="31" cy="34" rx="2" ry="5" transform="rotate(20 31 34)"/>',
+    recording:   '<rect x="8" y="16" width="32" height="18" rx="2"/><circle cx="17" cy="25" r="4"/><circle cx="31" cy="25" r="4"/><line x1="21" y1="25" x2="27" y2="25"/>',
+    fragment:    '<path d="M10 12h18l8 12-8 12H10l6-12z"/><line x1="22" y1="16" x2="22" y2="22"/><circle cx="22" cy="26" r="1.5" fill="currentColor"/>',
+    duplicate:   '<rect x="8" y="14" width="20" height="26" rx="1"/><rect x="18" y="8" width="20" height="26" rx="1" opacity="0.5"/>',
+    personal:    '<circle cx="24" cy="14" r="6"/><path d="M10 42c0-8 6-14 14-14s14 6 14 14"/>',
+    refuse:      '<circle cx="24" cy="24" r="14"/><line x1="14" y1="14" x2="34" y2="34"/>',
+    origin:      '<circle cx="24" cy="10" r="4"/><line x1="24" y1="14" x2="24" y2="20"/><circle cx="14" cy="30" r="4"/><circle cx="34" cy="30" r="4"/><line x1="24" y1="20" x2="14" y2="26"/><line x1="24" y1="20" x2="34" y2="26"/>',
+    type:        '<rect x="8" y="10" width="14" height="10" rx="1"/><rect x="26" y="10" width="14" height="10" rx="1"/><rect x="8" y="28" width="14" height="10" rx="1"/><rect x="26" y="28" width="14" height="10" rx="1"/>',
+    fragility:   '<path d="M24 8l5 14H19z"/><path d="M16 34c0-6 4-8 8-8s8 2 8 8"/>',
+    nosystem:    '<circle cx="14" cy="15" r="3"/><circle cx="34" cy="22" r="3"/><circle cx="18" cy="34" r="3"/><circle cx="30" cy="12" r="3"/>',
+    'original-f':'<path d="M10 10h20l8 10v22H10z"/><line x1="30" y1="10" x2="30" y2="20"/><line x1="18" y1="22" x2="26" y2="22"/><line x1="18" y1="28" x2="26" y2="28"/>',
+    reconstruct: '<path d="M12 38l6-28 6 16 6-16 6 28"/>',
+    gap:         '<rect x="12" y="10" width="24" height="28" rx="1" stroke-dasharray="3 3"/>',
+    bothver:     '<path d="M10 14h16v22H10z"/><path d="M18 10h16v22H18z"/>',
+    book:        '<path d="M8 10h20c2 0 4 2 4 4v22H8z"/><line x1="28" y1="14" x2="28" y2="36"/><line x1="12" y1="18" x2="24" y2="18"/><line x1="12" y1="24" x2="24" y2="24"/><line x1="12" y1="30" x2="20" y2="30"/>',
+    citymap:     '<rect x="8" y="8" width="32" height="32" rx="1"/><line x1="8" y1="22" x2="40" y2="22"/><line x1="22" y1="8" x2="22" y2="40"/><rect x="12" y="12" width="6" height="6"/><rect x="26" y="26" width="8" height="8"/>',
+    word:        '<line x1="10" y1="14" x2="38" y2="14"/><line x1="10" y1="22" x2="30" y2="22"/><line x1="10" y1="30" x2="34" y2="30"/><line x1="16" y1="14" x2="16" y2="34"/>',
+    nothing:     '<circle cx="24" cy="24" r="14"/><line x1="14" y1="14" x2="34" y2="34"/>',
+    yourself:    '<circle cx="24" cy="24" r="14" opacity="0.35"/><circle cx="24" cy="18" r="5"/><path d="M14 38c0-6 4-10 10-10s10 4 10 10"/>',
+    book2:       '<path d="M8 10h20c2 0 4 2 4 4v22H8z"/><line x1="28" y1="14" x2="28" y2="36"/>',
+    lever:       '<line x1="24" y1="38" x2="28" y2="16"/><circle cx="28" cy="14" r="4"/><line x1="20" y1="38" x2="32" y2="38"/>',
+    door:        '<rect x="12" y="8" width="24" height="36" rx="1"/><circle cx="32" cy="26" r="2" fill="currentColor"/>',
+    toggle:      '<rect x="8" y="20" width="32" height="12" rx="6"/><circle cx="32" cy="26" r="5" fill="currentColor"/>',
+    selfscan:    '<circle cx="24" cy="24" r="12" stroke-dasharray="4 3"/><circle cx="24" cy="20" r="4"/><path d="M16 36c0-5 4-8 8-8s8 3 8 8"/>'
+  };
+
+  function buildSvgIcon(type) {
+    var s = svgEl('svg', {
+      viewBox: '0 0 48 48',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': '1.5',
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round'
+    });
+    s.innerHTML = SVG_ICONS[type] || SVG_ICONS['nothing'];
+    return s;
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     ENTRANCE SCENE
+  ────────────────────────────────────────────────────────── */
+
+  function renderEntranceScene(root) {
+    var li = state.lang === 'zh' ? 1 : 0;
+    var div = el('div', { className: 'arc-entrance' });
+
+    // Background door SVG
+    var env = el('div', { className: 'arc-entrance-env' });
+    env.setAttribute('aria-hidden', 'true');
+    var doorSvg = svgEl('svg', { viewBox: '0 0 400 500', fill: 'none', stroke: 'currentColor',
+      'stroke-width': '1', preserveAspectRatio: 'xMidYMid meet' });
+    doorSvg.innerHTML = '<rect x="100" y="50" width="200" height="380" rx="2" opacity="0.7"/>' +
+      '<rect x="112" y="62" width="176" height="356" opacity="0.4"/>' +
+      '<circle cx="280" cy="240" r="8" opacity="0.6"/>' +
+      '<line x1="20" y1="50" x2="100" y2="50" opacity="0.3"/>' +
+      '<line x1="300" y1="50" x2="380" y2="50" opacity="0.3"/>' +
+      '<line x1="20" y1="50" x2="20" y2="430" opacity="0.3"/>' +
+      '<line x1="380" y1="50" x2="380" y2="430" opacity="0.3"/>';
+    env.appendChild(doorSvg);
+    div.appendChild(env);
+
+    var gate = el('div', { className: 'arc-terminal-gate' });
+
+    var hdr = el('div', { className: 'arc-terminal-gate-header' });
+    hdr.textContent = li === 1 ? 'ARCHIVE MANAGEMENT SYSTEM / 档案管理系统' : 'ARCHIVE MANAGEMENT SYSTEM';
+    gate.appendChild(hdr);
+
+    var screen = el('div', { className: 'arc-terminal-gate-screen' });
+    var lineData = li === 1 ? [
+      { t: 'SECTOR ACCESS TERMINAL v4.1', cls: '' },
+      { t: '> 未找到身份记录', cls: 'arc-terminal-gate-line--warn' },
+      { t: '> 临时保管者权限可用', cls: 'arc-terminal-gate-line--em' },
+      { t: '> 12 个决定 · 4 幕', cls: '' }
+    ] : [
+      { t: 'SECTOR ACCESS TERMINAL v4.1', cls: '' },
+      { t: '> KEEPER RECORD: NOT FOUND', cls: 'arc-terminal-gate-line--warn' },
+      { t: '> TEMPORARY ACCESS: AVAILABLE', cls: 'arc-terminal-gate-line--em' },
+      { t: '> 12 DECISIONS · 4 ACTS', cls: '' }
+    ];
+    for (var li2 = 0; li2 < lineData.length; li2++) {
+      var ln = el('div', { className: 'arc-terminal-gate-line' + (lineData[li2].cls ? ' ' + lineData[li2].cls : '') });
+      ln.textContent = lineData[li2].t;
+      screen.appendChild(ln);
+    }
+    // Blinking cursor on last line
+    var cur = el('span', { className: 'arc-blink' });
+    cur.textContent = '▌';
+    screen.lastElementChild.appendChild(cur);
+    gate.appendChild(screen);
+
+    var btn = el('button', { className: 'arc-terminal-appoint' });
+    btn.textContent = li === 1 ? '接受任命' : 'ACCEPT APPOINTMENT';
+    btn.addEventListener('click', function () { goToStep(0); });
+    gate.appendChild(btn);
+
+    var meta = el('div', { className: 'arc-terminal-meta' });
+    meta.textContent = li === 1 ? '12个决定 · 4幕 · 约10分钟' : '12 DECISIONS · 4 ACTS · ~10 MIN';
+    gate.appendChild(meta);
+
+    div.appendChild(gate);
+    root.appendChild(div);
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     OBJECT SCENE (Q0, Q9)
+  ────────────────────────────────────────────────────────── */
+
+  var OBJ_CONFIG = {
+    0: [
+      { icon: 'diary',     pos: ['10%', '16%'] },
+      { icon: 'map',       pos: ['58%', '10%'] },
+      { icon: 'seeds',     pos: ['15%', '56%'] },
+      { icon: 'recording', pos: ['60%', '52%'] }
+    ],
+    9: [
+      { icon: 'fragment',  pos: ['12%', '14%'] },
+      { icon: 'duplicate', pos: ['58%', '12%'] },
+      { icon: 'personal',  pos: ['15%', '54%'] },
+      { icon: 'refuse',    pos: ['60%', '50%'] }
+    ]
+  };
+
+  function renderObjectScene(container, qIdx) {
+    var q = QUESTIONS[qIdx];
+    var cfg = OBJ_CONFIG[qIdx] || OBJ_CONFIG[0];
+    var li = state.lang === 'zh' ? 1 : 0;
+
+    var stage = el('div', { className: 'arc-obj-stage' });
+
+    for (var oi = 0; oi < q.options.length; oi++) {
+      (function (opt, icfg) {
+        var label = li === 1 ? opt.zh : opt.en;
+        var btn = el('button', { className: 'arc-obj', style: { left: icfg.pos[0], top: icfg.pos[1] } });
+        btn.setAttribute('aria-label', label);
+        btn.setAttribute('type', 'button');
+
+        var keySpan = el('span', { className: 'arc-obj-key' });
+        keySpan.textContent = opt.value;
+        btn.appendChild(keySpan);
+
+        var icon = buildSvgIcon(icfg.icon);
+        icon.setAttribute('aria-hidden', 'true');
+        btn.appendChild(icon);
+
+        var lbl = el('span', { className: 'arc-obj-label' });
+        lbl.textContent = label.length > 40 ? label.slice(0, 38) + '…' : label;
+        btn.appendChild(lbl);
+
+        btn.addEventListener('click', function () {
+          var siblings = stage.querySelectorAll('.arc-obj');
+          for (var si = 0; si < siblings.length; si++) {
+            siblings[si].classList.add('arc-obj--faded');
+            siblings[si].disabled = true;
+          }
+          btn.classList.remove('arc-obj--faded');
+          btn.classList.add('arc-obj--selected');
+
+          state.answers[qIdx] = opt.value;
+          saveState();
+
+          setTimeout(function () {
+            var msg = getConsequenceMsg(qIdx, opt.value);
+            showConsequence(msg, function () { advanceStep(qIdx); });
+          }, 360);
+        });
+
+        stage.appendChild(btn);
+      }(q.options[oi], cfg[oi] || { icon: 'nothing', pos: ['50%', '50%'] }));
+    }
+
+    container.appendChild(stage);
+
+    var act = ACTS[q.act];
+    var narrative = el('div', { className: 'arc-narrative' });
+    var actDiv = el('div', { className: 'arc-narrative-act' });
+    actDiv.textContent = act.label + ' — ' + (li === 1 ? act.zh : act.en);
+    narrative.appendChild(actDiv);
+    var textP = el('p', { className: 'arc-narrative-text' });
+    textP.textContent = li === 1 ? q.zh.text : q.en.text;
+    narrative.appendChild(textP);
+    container.appendChild(narrative);
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     BINARY SCENE (Q1, Q7)
+  ────────────────────────────────────────────────────────── */
+
+  var BINARY_ICONS = {
+    1: ['origin', 'type', 'fragility', 'nosystem'],
+    7: ['original-f', 'reconstruct', 'gap', 'bothver']
+  };
+
+  function renderBinaryScene(container, qIdx) {
+    var q = QUESTIONS[qIdx];
+    var li = state.lang === 'zh' ? 1 : 0;
+    var icons = BINARY_ICONS[qIdx] || ['nothing', 'nothing', 'nothing', 'nothing'];
+
+    var grid = el('div', { className: 'arc-binary-grid' });
+
+    for (var bi = 0; bi < q.options.length; bi++) {
+      (function (opt, iconType) {
+        var label = li === 1 ? opt.zh : opt.en;
+        var btn = el('button', { className: 'arc-binary-zone' });
+        btn.setAttribute('aria-label', label);
+        btn.setAttribute('type', 'button');
+
+        var key = el('span', { className: 'arc-binary-key' });
+        key.textContent = opt.value;
+        btn.appendChild(key);
+
+        var icon = buildSvgIcon(iconType);
+        icon.classList.add('arc-binary-icon');
+        icon.setAttribute('aria-hidden', 'true');
+        btn.appendChild(icon);
+
+        var lbl = el('span', { className: 'arc-binary-label' });
+        lbl.textContent = label;
+        btn.appendChild(lbl);
+
+        btn.addEventListener('click', function () {
+          var all = grid.querySelectorAll('.arc-binary-zone');
+          for (var ai = 0; ai < all.length; ai++) {
+            all[ai].classList.add('arc-binary-zone--faded');
+            all[ai].disabled = true;
+          }
+          btn.classList.remove('arc-binary-zone--faded');
+          btn.classList.add('arc-binary-zone--selected');
+
+          state.answers[qIdx] = opt.value;
+          saveState();
+
+          setTimeout(function () {
+            var msg = getConsequenceMsg(qIdx, opt.value);
+            showConsequence(msg, function () { advanceStep(qIdx); });
+          }, 280);
+        });
+
+        grid.appendChild(btn);
+      }(q.options[bi], icons[bi] || 'nothing'));
+    }
+
+    container.appendChild(grid);
+
+    var act = ACTS[q.act];
+    var narrative = el('div', { className: 'arc-narrative' });
+    var actDiv = el('div', { className: 'arc-narrative-act' });
+    actDiv.textContent = act.label + ' — ' + (li === 1 ? act.zh : act.en);
+    narrative.appendChild(actDiv);
+    var textP = el('p', { className: 'arc-narrative-text' });
+    textP.textContent = li === 1 ? q.zh.text : q.en.text;
+    narrative.appendChild(textP);
+    container.appendChild(narrative);
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     DOCUMENT SCENE (Q2, Q3, Q6)
+  ────────────────────────────────────────────────────────── */
+
+  var DOC_META = {
+    2: { code: 'DOC-0041', hdr: ['CLAIM — PERSONAL PROVENANCE', '申诉 — 个人归属'] },
+    3: { code: 'DOC-0042', hdr: ['EVIDENCE JOURNAL — RESTRICTED', '证据日记 — 受限'] },
+    6: { code: 'REC-0023', hdr: ['AUDIO TRANSFER — EFFECT REPORT', '音频转移 — 影响报告'] }
+  };
+
+  function renderDocumentScene(container, qIdx) {
+    var q = QUESTIONS[qIdx];
+    var li = state.lang === 'zh' ? 1 : 0;
+    var meta = DOC_META[qIdx] || { code: 'DOC-0000', hdr: ['DOCUMENT', '文件'] };
+
+    var stage = el('div', { className: 'arc-doc-stage' });
+
+    var doc = el('div', { className: 'arc-document' });
+    doc.setAttribute('data-code', meta.code);
+
+    var docHdr = el('div', { className: 'arc-doc-header' });
+    docHdr.textContent = meta.hdr[li];
+    doc.appendChild(docHdr);
+
+    var docBody = el('div', { className: 'arc-doc-body' });
+    docBody.textContent = li === 1 ? q.zh.text : q.en.text;
+    doc.appendChild(docBody);
+
+    stage.appendChild(doc);
+
+    var stampsRow = el('div', { className: 'arc-stamps-row' });
+    stampsRow.setAttribute('role', 'group');
+    stampsRow.setAttribute('aria-label', li === 1 ? '选择操作' : 'Choose an action');
+
+    for (var si = 0; si < q.options.length; si++) {
+      (function (opt) {
+        var label = li === 1 ? opt.zh : opt.en;
+        var shortLabel = label.length > 45 ? label.slice(0, 43) + '…' : label;
+        var btn = el('button', { className: 'arc-stamp' });
+        btn.setAttribute('aria-label', label);
+        btn.setAttribute('type', 'button');
+        btn.textContent = opt.value + ' ' + shortLabel;
+
+        btn.addEventListener('click', function () {
+          btn.classList.add('arc-stamp--pressed');
+          var all = stampsRow.querySelectorAll('.arc-stamp');
+          for (var ai = 0; ai < all.length; ai++) all[ai].disabled = true;
+
+          state.answers[qIdx] = opt.value;
+          saveState();
+
+          setTimeout(function () {
+            var msg = getConsequenceMsg(qIdx, opt.value);
+            showConsequence(msg, function () { advanceStep(qIdx); });
+          }, 380);
+        });
+
+        stampsRow.appendChild(btn);
+      }(q.options[si]));
+    }
+
+    stage.appendChild(stampsRow);
+    container.appendChild(stage);
+
+    var act = ACTS[q.act];
+    var narrative = el('div', { className: 'arc-narrative' });
+    var actDiv = el('div', { className: 'arc-narrative-act' });
+    actDiv.textContent = act.label + ' — ' + (li === 1 ? act.zh : act.en);
+    narrative.appendChild(actDiv);
+    container.appendChild(narrative);
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     SHELF SCENE (Q4 — ranking)
+  ────────────────────────────────────────────────────────── */
+
+  function renderShelfScene(container, qIdx) {
+    var q = QUESTIONS[qIdx];
+    var li = state.lang === 'zh' ? 1 : 0;
+
+    var savedRank = state.rankingState;
+    var order = (Array.isArray(savedRank) && savedRank.length === 4)
+      ? savedRank.slice()
+      : defaultRankingOrder();
+
+    var itemMap = {};
+    q.items.forEach(function (item) { itemMap[item.id] = li === 1 ? item.zh : item.en; });
+
+    var rankLabels = [
+      ['优先 1', 'PRIORITY 1'],
+      ['优先 2', 'PRIORITY 2'],
+      ['优先 3', 'PRIORITY 3'],
+      ['优先 4', 'PRIORITY 4']
     ];
 
-    var div = el('div', { className: 'arc-processing-screen' });
-    var rule = el('div', { className: 'arc-processing-rule' });
-    var lineEl = el('p', { className: 'arc-processing-text' }, [lines[0]]);
-    var rule2  = el('div', { className: 'arc-processing-rule' });
+    var shelfWrap = el('div', { className: 'arc-shelf-scene' });
+    var tierEls = [];
 
-    div.appendChild(rule);
-    div.appendChild(lineEl);
-    div.appendChild(rule2);
-    container.appendChild(div);
-    fadeIn(div);
+    function refreshTiers() {
+      for (var ti = 0; ti < 4; ti++) {
+        var tier = tierEls[ti];
+        // Remove old item + arrows, keep rank label
+        var old = tier.querySelectorAll('.arc-shelf-item, .arc-shelf-arrows');
+        for (var oi = 0; oi < old.length; oi++) tier.removeChild(old[oi]);
 
-    // Cycle through atmospheric lines every ~900ms
-    var idx = 0;
-    var interval = setInterval(function () {
-      idx = (idx + 1) % lines.length;
-      lineEl.textContent = lines[idx];
-    }, 900);
+        var itemEl = el('div', { className: 'arc-shelf-item' });
+        itemEl.setAttribute('draggable', 'true');
+        itemEl.setAttribute('data-idx', '' + ti);
+        itemEl.setAttribute('tabIndex', '0');
+        itemEl.setAttribute('aria-label', itemMap[order[ti]]);
+        itemEl.textContent = itemMap[order[ti]];
+        tier.classList.add('arc-shelf-tier--occupied');
 
-    // Clean up interval when this node is removed from the DOM
-    var observer = new MutationObserver(function (mutations) {
-      mutations.forEach(function (m) {
-        m.removedNodes.forEach(function (n) {
-          if (n === div || (n.contains && n.contains(div))) {
-            clearInterval(interval);
-            observer.disconnect();
+        var arrows = el('div', { className: 'arc-shelf-arrows' });
+        var upBtn = el('button', { className: 'arc-shelf-arrow' });
+        upBtn.setAttribute('aria-label', li === 1 ? '上移' : 'Move up');
+        upBtn.setAttribute('type', 'button');
+        upBtn.textContent = '↑';
+        if (ti === 0) upBtn.disabled = true;
+
+        var dnBtn = el('button', { className: 'arc-shelf-arrow' });
+        dnBtn.setAttribute('aria-label', li === 1 ? '下移' : 'Move down');
+        dnBtn.setAttribute('type', 'button');
+        dnBtn.textContent = '↓';
+        if (ti === 3) dnBtn.disabled = true;
+
+        (function (idx) {
+          upBtn.addEventListener('click', function () {
+            if (idx > 0) {
+              var tmp = order[idx]; order[idx] = order[idx - 1]; order[idx - 1] = tmp;
+              refreshTiers();
+            }
+          });
+          dnBtn.addEventListener('click', function () {
+            if (idx < 3) {
+              var tmp = order[idx]; order[idx] = order[idx + 1]; order[idx + 1] = tmp;
+              refreshTiers();
+            }
+          });
+        }(ti));
+
+        arrows.appendChild(upBtn);
+        arrows.appendChild(dnBtn);
+        tier.appendChild(itemEl);
+        tier.appendChild(arrows);
+      }
+      setupShelfDrag();
+    }
+
+    function setupShelfDrag() {
+      var items = shelfWrap.querySelectorAll('.arc-shelf-item');
+      var fromIdx = null;
+
+      items.forEach(function (item) {
+        item.addEventListener('dragstart', function () {
+          fromIdx = parseInt(item.getAttribute('data-idx'), 10);
+          item.classList.add('arc-shelf-dragging');
+        });
+        item.addEventListener('dragend', function () {
+          item.classList.remove('arc-shelf-dragging');
+          var allTiers = shelfWrap.querySelectorAll('.arc-shelf-tier');
+          for (var ai = 0; ai < allTiers.length; ai++) {
+            allTiers[ai].classList.remove('arc-shelf-over');
           }
         });
       });
+
+      for (var di = 0; di < 4; di++) {
+        (function (tier, idx) {
+          tier.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            tier.classList.add('arc-shelf-over');
+          });
+          tier.addEventListener('dragleave', function () {
+            tier.classList.remove('arc-shelf-over');
+          });
+          tier.addEventListener('drop', function (e) {
+            e.preventDefault();
+            tier.classList.remove('arc-shelf-over');
+            if (fromIdx !== null && fromIdx !== idx) {
+              var tmp = order[fromIdx]; order[fromIdx] = order[idx]; order[idx] = tmp;
+              fromIdx = null;
+              refreshTiers();
+            }
+          });
+        }(tierEls[di], di));
+      }
+    }
+
+    for (var ti = 0; ti < 4; ti++) {
+      var tier = el('div', { className: 'arc-shelf-tier' });
+      tier.setAttribute('data-pos', '' + ti);
+      var rankLabel = el('div', { className: 'arc-shelf-tier-rank' });
+      rankLabel.textContent = rankLabels[ti][li === 1 ? 0 : 1];
+      tier.appendChild(rankLabel);
+      tierEls.push(tier);
+      shelfWrap.appendChild(tier);
+    }
+
+    refreshTiers();
+
+    var confirmBtn = el('button', { className: 'arc-shelf-confirm arc-shelf-confirm--visible' });
+    confirmBtn.setAttribute('type', 'button');
+    confirmBtn.textContent = li === 1 ? '确认排序' : 'CONFIRM ARRANGEMENT';
+    confirmBtn.addEventListener('click', function () {
+      state.answers[qIdx] = order.slice();
+      state.rankingState = order.slice();
+      saveState();
+      var msg = li === 1 ? '迁移清单已更新。' : 'Relocation manifest updated.';
+      showConsequence(msg, function () { advanceStep(qIdx); });
     });
-    observer.observe(document.body, { childList: true, subtree: true });
+    shelfWrap.appendChild(confirmBtn);
+    container.appendChild(shelfWrap);
+
+    var act = ACTS[q.act];
+    var narrative = el('div', { className: 'arc-narrative' });
+    var actDiv = el('div', { className: 'arc-narrative-act' });
+    actDiv.textContent = act.label + ' — ' + (li === 1 ? act.zh : act.en);
+    narrative.appendChild(actDiv);
+    var textP = el('p', { className: 'arc-narrative-text' });
+    textP.textContent = li === 1 ? q.zh.text : q.en.text;
+    narrative.appendChild(textP);
+    container.appendChild(narrative);
   }
 
   /* ──────────────────────────────────────────────────────────
-     RENDER: RESULT
+     STORAGE SCENE (Q5 — allocation)
   ────────────────────────────────────────────────────────── */
 
-  function renderResult(container) {
-    var result = state.result;
-    var lang   = state.lang;
+  function renderStorageScene(container, qIdx) {
+    var q = QUESTIONS[qIdx];
+    var li = state.lang === 'zh' ? 1 : 0;
+    var MAX_CELLS = 10;
+    var CELL_VAL  = 10;
 
-    var arch = ARCHETYPES.find(function (a) { return a.id === result.archetypeId; });
-    var cost = COSTS.find(function (c) { return c.id === result.costId; });
-    var end  = ENDINGS.find(function (e) { return e.id === result.endingId; });
-
-    var archData = arch[lang];
-    var div = el('div', { className: 'arc-result' });
-
-    /* ── Header: archetype ── */
-    var header = el('div', { className: 'arc-result-header' });
-    header.appendChild(el('div', { className: 'arc-archetype-label' }, [
-      t('YOUR ARCHETYPE', '你的档案原型')
-    ]));
-    header.appendChild(el('h2', { className: 'arc-archetype-title' }, [archData.title]));
-    header.appendChild(el('blockquote', { className: 'arc-archetype-quote' }, [archData.quote]));
-    div.appendChild(header);
-
-    /* ── Description ── */
-    var descSec = el('div', { className: 'arc-result-section' });
-    descSec.appendChild(el('div', { className: 'arc-result-section-label' }, [
-      t('THE ARCHIVE', '档案馆')
-    ]));
-    descSec.appendChild(el('p', { className: 'arc-result-body' }, [archData.description]));
-    div.appendChild(descSec);
-
-    /* ── Profile grid ── */
-    var profileSec = el('div', { className: 'arc-result-section' });
-    profileSec.appendChild(el('div', { className: 'arc-result-section-label' }, [
-      t('PROFILE', '档案侧写')
-    ]));
-    var grid = el('div', { className: 'arc-result-meta-grid' });
-
-    var profileFields = [
-      { key: 'preserves',     en: 'PRESERVES',     zh: '保存的' },
-      { key: 'desire',        en: 'DESIRE',         zh: '渴望' },
-      { key: 'contradiction', en: 'CONTRADICTION',  zh: '矛盾' },
-      { key: 'archive',       en: 'THE ARCHIVE',    zh: '档案馆' }
-    ];
-
-    profileFields.forEach(function (f) {
-      grid.appendChild(el('span', { className: 'arc-result-meta-key' }, [
-        lang === 'zh' ? f.zh : f.en
-      ]));
-      grid.appendChild(el('span', { className: 'arc-result-meta-val' }, [
-        archData[f.key] || ''
-      ]));
+    var alloc = {};
+    q.categories.forEach(function (c) {
+      var saved = state.allocationState && state.allocationState[c.id];
+      alloc[c.id] = saved != null ? Math.round(saved / CELL_VAL) : 0;
     });
-    profileSec.appendChild(grid);
-    div.appendChild(profileSec);
 
-    /* ── Word input ── */
-    if (state.wordInput && state.wordInput.trim()) {
-      var wordSec = el('div', { className: 'arc-result-section' });
-      wordSec.appendChild(el('p', { className: 'arc-word-recorded' }, [
-        t('You recorded: ', '你记录的词：'),
-        el('span', {}, [state.wordInput.trim()])
-      ]));
-      div.appendChild(wordSec);
+    var scene = el('div', { className: 'arc-storage-scene' });
+    var catEls = {};
+    var remainingEl;
+    var confirmBtn;
+
+    function totalCells() {
+      return q.categories.reduce(function (s, c) { return s + alloc[c.id]; }, 0);
     }
 
-    /* ── Radar chart ── */
-    var chartSec = el('div', { className: 'arc-result-section' });
-    chartSec.appendChild(el('div', { className: 'arc-result-section-label' }, [
-      t('DIMENSIONS', '维度分析')
-    ]));
-    var radarWrap = el('div', { className: 'arc-radar-wrap' });
-    radarWrap.appendChild(buildRadarChart(result.scores));
-    chartSec.appendChild(radarWrap);
-    div.appendChild(chartSec);
+    function refreshCat(catId) {
+      var cells = catEls[catId].cells;
+      var n = alloc[catId];
+      for (var ci = 0; ci < cells.length; ci++) {
+        if (ci < n) { cells[ci].classList.add('arc-storage-cell--filled'); }
+        else { cells[ci].classList.remove('arc-storage-cell--filled'); }
+      }
+      catEls[catId].countEl.textContent = '' + n;
+    }
 
-    /* ── Cost ── */
-    var costSec = el('div', { className: 'arc-result-section' });
-    costSec.appendChild(el('div', { className: 'arc-result-section-label' }, [
-      t('THE COST', '代价')
-    ]));
-    var costBox = el('div', { className: 'arc-cost-box' });
-    costBox.appendChild(el('p', { className: 'arc-cost-text' }, [cost[lang]]));
-    costSec.appendChild(costBox);
-    div.appendChild(costSec);
+    function refreshRemaining() {
+      var rem = MAX_CELLS - totalCells();
+      if (remainingEl) {
+        var label = li === 1 ? '未分配：' : 'UNALLOCATED: ';
+        remainingEl.innerHTML = label + '<em>' + rem + '</em>';
+      }
+      if (confirmBtn) {
+        if (totalCells() > 0) {
+          confirmBtn.classList.add('arc-storage-confirm--ready');
+        } else {
+          confirmBtn.classList.remove('arc-storage-confirm--ready');
+        }
+      }
+    }
 
-    /* ── Ending ── */
-    var endSec = el('div', { className: 'arc-result-section' });
-    endSec.appendChild(el('div', { className: 'arc-result-section-label' }, [
-      t('WHAT REMAINS', '留存之物')
-    ]));
-    endSec.appendChild(el('p', { className: 'arc-ending-text' }, [end[lang]]));
-    div.appendChild(endSec);
+    q.categories.forEach(function (cat) {
+      var div = el('div', { className: 'arc-storage-category' });
+      var hdr = el('div', { className: 'arc-storage-header' });
+      var nameEl = el('span', { className: 'arc-storage-name' });
+      nameEl.textContent = li === 1 ? cat.zh : cat.en;
+      var countEl = el('span', { className: 'arc-storage-count' });
+      countEl.textContent = '' + alloc[cat.id];
+      hdr.appendChild(nameEl);
+      hdr.appendChild(countEl);
+      div.appendChild(hdr);
 
-    /* ── Actions ── */
-    var actions = el('div', { className: 'arc-result-actions' });
+      var cellsDiv = el('div', { className: 'arc-storage-cells' });
+      cellsDiv.setAttribute('aria-hidden', 'true');
+      var cells = [];
+      for (var ci2 = 0; ci2 < MAX_CELLS; ci2++) {
+        var cell = el('div', { className: 'arc-storage-cell' + (ci2 < alloc[cat.id] ? ' arc-storage-cell--filled' : '') });
+        cellsDiv.appendChild(cell);
+        cells.push(cell);
+      }
+      div.appendChild(cellsDiv);
 
-    var restartBtn = el('button', {
-      className: 'arc-btn',
-      type: 'button'
-    }, [t('Restart', '重新开始')]);
-    restartBtn.addEventListener('click', function () {
-      clearState();
-      resetState();
-      render();
+      catEls[cat.id] = { cells: cells, countEl: countEl };
+
+      var controls = el('div', { className: 'arc-storage-controls' });
+      var minusBtn = el('button', { className: 'arc-storage-btn' });
+      minusBtn.setAttribute('aria-label', li === 1 ? '减少' : 'Decrease');
+      minusBtn.setAttribute('type', 'button');
+      minusBtn.textContent = '−';
+      var plusBtn = el('button', { className: 'arc-storage-btn' });
+      plusBtn.setAttribute('aria-label', li === 1 ? '增加' : 'Increase');
+      plusBtn.setAttribute('type', 'button');
+      plusBtn.textContent = '+';
+
+      (function (catId) {
+        minusBtn.addEventListener('click', function () {
+          if (alloc[catId] > 0) { alloc[catId]--; refreshCat(catId); refreshRemaining(); }
+        });
+        plusBtn.addEventListener('click', function () {
+          if (totalCells() < MAX_CELLS) { alloc[catId]++; refreshCat(catId); refreshRemaining(); }
+        });
+      }(cat.id));
+
+      controls.appendChild(minusBtn);
+      controls.appendChild(plusBtn);
+      div.appendChild(controls);
+      scene.appendChild(div);
     });
 
-    var copyBtn = el('button', {
-      className: 'arc-btn',
-      type: 'button'
-    }, [t('Copy Summary', '复制结果摘要')]);
-    copyBtn.addEventListener('click', function () {
-      copyResult(arch, lang);
+    remainingEl = el('div', { className: 'arc-storage-remaining' });
+    scene.appendChild(remainingEl);
+    refreshRemaining();
+
+    confirmBtn = el('button', { className: 'arc-storage-confirm' });
+    confirmBtn.setAttribute('type', 'button');
+    confirmBtn.textContent = li === 1 ? '封存分配' : 'SEAL ALLOCATION';
+    confirmBtn.addEventListener('click', function () {
+      var result = {};
+      q.categories.forEach(function (c) { result[c.id] = alloc[c.id] * CELL_VAL; });
+      state.answers[qIdx] = result;
+      state.allocationState = result;
+      saveState();
+      var msg = li === 1 ? '分配已封存。' : 'Allocation sealed.';
+      showConsequence(msg, function () { advanceStep(qIdx); });
     });
+    scene.appendChild(confirmBtn);
+    container.appendChild(scene);
 
-    var shareBtn = el('button', {
-      className: 'arc-btn arc-btn--primary',
-      type: 'button'
-    }, [t('Share', '分享')]);
-    shareBtn.addEventListener('click', function () {
-      shareResult(arch, lang, copyResult.bind(null, arch, lang));
+    var act = ACTS[q.act];
+    var narrative = el('div', { className: 'arc-narrative' });
+    var actDiv = el('div', { className: 'arc-narrative-act' });
+    actDiv.textContent = act.label + ' — ' + (li === 1 ? act.zh : act.en);
+    narrative.appendChild(actDiv);
+    var textP = el('p', { className: 'arc-narrative-text' });
+    textP.textContent = li === 1 ? q.zh.text : q.en.text;
+    narrative.appendChild(textP);
+    container.appendChild(narrative);
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     TERMINAL SCENE (Q8 — word input)
+  ────────────────────────────────────────────────────────── */
+
+  function renderTerminalScene(container, qIdx) {
+    var q = QUESTIONS[qIdx];
+    var li = state.lang === 'zh' ? 1 : 0;
+
+    var wrap = el('div', { className: 'arc-terminal-wrap' });
+    var frame = el('div', { className: 'arc-terminal-frame' });
+    var body = el('div', { className: 'arc-terminal-body' });
+
+    var termLines = li === 1 ? [
+      'KEEPER TERMINAL — 区域 09',
+      '> 请求登记条目',
+      '> 类别：非物质类',
+      '> 限制：不得为姓名、日期或地名'
+    ] : [
+      'KEEPER TERMINAL — SECTOR 09',
+      '> REGISTER ENTRY REQUESTED',
+      '> CATEGORY: INTANGIBLE',
+      '> CONSTRAINT: NOT A NAME, DATE, OR PLACE'
+    ];
+
+    for (var tli = 0; tli < termLines.length; tli++) {
+      var ln = el('div', { className: 'arc-terminal-line' + (tli === termLines.length - 1 ? ' arc-terminal-line--active' : '') });
+      ln.textContent = termLines[tli];
+      body.appendChild(ln);
+    }
+
+    var sep = el('hr', { className: 'arc-terminal-sep' });
+    body.appendChild(sep);
+
+    var inputRow = el('div', { className: 'arc-terminal-input-row' });
+    var prompt = el('span', { className: 'arc-terminal-prompt' });
+    prompt.textContent = '>';
+
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'arc-terminal-input';
+    input.placeholder = li === 1 ? q.zh.placeholder : q.en.placeholder;
+    input.maxLength = 32;
+    input.autocomplete = 'off';
+    input.spellcheck = false;
+    input.setAttribute('aria-label', li === 1 ? q.zh.note : q.en.note);
+    input.value = state.wordInput || '';
+
+    var submitBtn = el('button', { className: 'arc-terminal-submit' });
+    submitBtn.setAttribute('type', 'button');
+    submitBtn.textContent = li === 1 ? '登记' : 'LOG';
+
+    function doSubmit() {
+      var word = input.value.trim();
+      state.wordInput = word;
+      state.answers[qIdx] = word || '';
+      saveState();
+      var msg = word
+        ? (li === 1 ? ('“' + word + '” 已登记。') : '"' + word + '" has been registered.')
+        : (li === 1 ? '条目留空。' : 'Entry left blank.');
+      showConsequence(msg, function () { advanceStep(qIdx); });
+    }
+
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); doSubmit(); }
     });
+    submitBtn.addEventListener('click', doSubmit);
 
-    actions.appendChild(restartBtn);
-    actions.appendChild(copyBtn);
-    actions.appendChild(shareBtn);
-    div.appendChild(actions);
+    inputRow.appendChild(prompt);
+    inputRow.appendChild(input);
+    inputRow.appendChild(submitBtn);
+    body.appendChild(inputRow);
+    frame.appendChild(body);
+    wrap.appendChild(frame);
+    container.appendChild(wrap);
 
-    container.appendChild(div);
-    fadeIn(div);
+    setTimeout(function () { input.focus(); }, 100);
+
+    var act = ACTS[q.act];
+    var narrative = el('div', { className: 'arc-narrative' });
+    var actDiv = el('div', { className: 'arc-narrative-act' });
+    actDiv.textContent = act.label + ' — ' + (li === 1 ? act.zh : act.en);
+    narrative.appendChild(actDiv);
+    var noteP = el('p', { className: 'arc-narrative-text' });
+    noteP.textContent = li === 1 ? q.zh.note : q.en.note;
+    narrative.appendChild(noteP);
+    container.appendChild(narrative);
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     CONTRACT SCENE (Q10 — ledger)
+  ────────────────────────────────────────────────────────── */
+
+  function renderContractScene(container, qIdx) {
+    var q = QUESTIONS[qIdx];
+    var li = state.lang === 'zh' ? 1 : 0;
+
+    var stage = el('div', { className: 'arc-contract-stage' });
+    var ledger = el('div', { className: 'arc-ledger' });
+
+    var hdr = el('div', { className: 'arc-ledger-header' });
+    hdr.textContent = li === 1 ? '保管者协议 — 具有约束力' : 'KEEPER AGREEMENT — BINDING';
+    ledger.appendChild(hdr);
+
+    var body = el('div', { className: 'arc-ledger-body' });
+    body.textContent = li === 1 ? q.zh.text : q.en.text;
+    ledger.appendChild(body);
+
+    for (var ci = 0; ci < q.options.length; ci++) {
+      (function (opt) {
+        var label = li === 1 ? opt.zh : opt.en;
+        var entry = el('button', { className: 'arc-ledger-entry' });
+        entry.setAttribute('aria-label', label);
+        entry.setAttribute('type', 'button');
+
+        var check = el('span', { className: 'arc-ledger-check' });
+        check.setAttribute('aria-hidden', 'true');
+        check.textContent = '';
+        entry.appendChild(check);
+
+        var keySpan = el('span', { className: 'arc-ledger-entry-key' });
+        keySpan.textContent = opt.value + '.';
+        entry.appendChild(keySpan);
+
+        var text = el('span', { className: 'arc-ledger-entry-text' });
+        text.textContent = label;
+        entry.appendChild(text);
+
+        entry.addEventListener('click', function () {
+          var all = ledger.querySelectorAll('.arc-ledger-entry');
+          for (var ai = 0; ai < all.length; ai++) {
+            all[ai].classList.remove('arc-ledger-entry--selected');
+            all[ai].querySelector('.arc-ledger-check').textContent = '';
+            all[ai].disabled = true;
+          }
+          entry.classList.add('arc-ledger-entry--selected');
+          check.textContent = '✓';
+
+          state.answers[qIdx] = opt.value;
+          saveState();
+
+          setTimeout(function () {
+            var msg = getConsequenceMsg(qIdx, opt.value);
+            showConsequence(msg, function () { advanceStep(qIdx); });
+          }, 380);
+        });
+
+        ledger.appendChild(entry);
+      }(q.options[ci]));
+    }
+
+    stage.appendChild(ledger);
+    container.appendChild(stage);
+
+    var act = ACTS[q.act];
+    var narrative = el('div', { className: 'arc-narrative' });
+    var actDiv = el('div', { className: 'arc-narrative-act' });
+    actDiv.textContent = act.label + ' — ' + (li === 1 ? act.zh : act.en);
+    narrative.appendChild(actDiv);
+    container.appendChild(narrative);
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     CORE SCENE (Q11 — five controls)
+  ────────────────────────────────────────────────────────── */
+
+  var CORE_CFG = [
+    { icon: 'book',     label: ['THE DIARY',    '私人日记'] },
+    { icon: 'citymap',  label: ['THE CITY MAP', '城市地图'] },
+    { icon: 'word',     label: ['THE WORD',     '那个词']       },
+    { icon: 'nothing',  label: ['NOTHING',      '一无所保'] },
+    { icon: 'yourself', label: ['YOURSELF',     '你自己']       }
+  ];
+
+  function renderCoreScene(container, qIdx) {
+    var q = QUESTIONS[qIdx];
+    var li = state.lang === 'zh' ? 1 : 0;
+
+    var stage = el('div', { className: 'arc-core-stage' });
+    var coreLabel = el('div', { className: 'arc-core-label' });
+    coreLabel.textContent = li === 1 ? '档案核心机器 — 最终操作' : 'ARCHIVE CORE MACHINE — FINAL OPERATION';
+    stage.appendChild(coreLabel);
+
+    var controls = el('div', { className: 'arc-core-controls' });
+
+    for (var coi = 0; coi < q.options.length; coi++) {
+      (function (opt, cfg) {
+        var label = li === 1 ? opt.zh : opt.en;
+        var ctrl = el('button', { className: 'arc-core-control' });
+        ctrl.setAttribute('aria-label', label);
+        ctrl.setAttribute('type', 'button');
+
+        var icon = buildSvgIcon(cfg.icon);
+        icon.classList.add('arc-core-ctrl-icon');
+        icon.setAttribute('aria-hidden', 'true');
+        ctrl.appendChild(icon);
+
+        var lbl = el('span', { className: 'arc-core-ctrl-label' });
+        lbl.textContent = cfg.label[li];
+        ctrl.appendChild(lbl);
+
+        ctrl.addEventListener('click', function () {
+          var all = controls.querySelectorAll('.arc-core-control');
+          for (var ai = 0; ai < all.length; ai++) {
+            all[ai].classList.add('arc-core-control--faded');
+            all[ai].disabled = true;
+          }
+          ctrl.classList.remove('arc-core-control--faded');
+          ctrl.classList.add('arc-core-control--selected');
+
+          state.answers[qIdx] = opt.value;
+          saveState();
+
+          setTimeout(function () {
+            var msg = getConsequenceMsg(qIdx, opt.value);
+            showConsequence(msg, function () { advanceStep(qIdx); });
+          }, 450);
+        });
+
+        controls.appendChild(ctrl);
+      }(q.options[coi], CORE_CFG[coi] || { icon: 'nothing', label: ['', ''] }));
+    }
+
+    stage.appendChild(controls);
+    container.appendChild(stage);
+
+    var act = ACTS[q.act];
+    var narrative = el('div', { className: 'arc-narrative' });
+    var actDiv = el('div', { className: 'arc-narrative-act' });
+    actDiv.textContent = act.label + ' — ' + (li === 1 ? act.zh : act.en);
+    narrative.appendChild(actDiv);
+    var textP = el('p', { className: 'arc-narrative-text' });
+    textP.textContent = li === 1 ? q.zh.text : q.en.text;
+    narrative.appendChild(textP);
+    container.appendChild(narrative);
+  }
+
+  /* ──────────────────────────────────────────────────────────
+     PROCESSING SCENE
+  ────────────────────────────────────────────────────────── */
+
+  function renderProcessingScene(root) {
+    var li = state.lang === 'zh' ? 1 : 0;
+    var div = el('div', { className: 'arc-processing' });
+
+    var scan = el('div', { className: 'arc-processing-scan' });
+    scan.setAttribute('aria-hidden', 'true');
+    div.appendChild(scan);
+
+    var lines = li === 1
+      ? ['档案交叉参考中', '扫描 12 个决定…', '编译保管者档案…']
+      : ['ARCHIVE CROSS-REFERENCE IN PROGRESS', 'SCANNING 12 DECISIONS…', 'COMPILING KEEPER RECORD…'];
+    var txt = el('div', { className: 'arc-processing-text' });
+    txt.textContent = lines.join('\n');
+    div.appendChild(txt);
+
+    root.appendChild(div);
   }
 
   /* ──────────────────────────────────────────────────────────
@@ -1915,6 +2094,190 @@
   }
 
   /* ──────────────────────────────────────────────────────────
+     KEEPER RECORD (RESULT)
+  ────────────────────────────────────────────────────────── */
+
+  function renderKeeperRecord(root) {
+    var res = state.result;
+    if (!res) { goToStep('intro'); return; }
+
+    var li      = state.lang === 'zh' ? 1 : 0;
+    var langKey = li === 1 ? 'zh' : 'en';
+
+    // Look up objects by ID
+    var arch = null;
+    ARCHETYPES.forEach(function (a) { if (a.id === res.archetypeId) arch = a; });
+    if (!arch) arch = ARCHETYPES[0];
+
+    var cost = null;
+    COSTS.forEach(function (c) { if (c.id === res.costId) cost = c; });
+    if (!cost) cost = COSTS[0];
+
+    var ending = null;
+    ENDINGS.forEach(function (e) { if (e.id === res.endingId) ending = e; });
+    if (!ending) ending = ENDINGS[0];
+
+    var scores  = res.scores;
+    var archData = arch[langKey];
+    var costText = cost[langKey] || '';
+    var endText  = ending[langKey] || '';
+
+    // File number hash
+    var ansStr = Object.keys(state.answers).map(function (k) { return '' + state.answers[k]; }).join('');
+    var hash = 0;
+    for (var ci = 0; ci < ansStr.length; ci++) { hash = (hash * 31 + ansStr.charCodeAt(ci)) & 0x7fffffff; }
+    var fileNo = 'ARC-' + ('0000' + ((hash % 9999) + 1)).slice(-4);
+
+    var dossier = el('div', { className: 'arc-dossier' });
+
+    // Top bar
+    var topBar = el('div', { className: 'arc-dossier-topbar' });
+    var topMeta = el('div', { className: 'arc-dossier-topbar-meta' });
+    topMeta.textContent = li === 1 ? '最终保管者档案' : 'FINAL KEEPER RECORD';
+    topBar.appendChild(topMeta);
+    dossier.appendChild(topBar);
+
+    var fileNoEl = el('div', { className: 'arc-dossier-fileno' });
+    fileNoEl.textContent = fileNo;
+    dossier.appendChild(fileNoEl);
+
+    // Role
+    var roleLabel = el('div', { className: 'arc-dossier-role-label' });
+    roleLabel.textContent = li === 1 ? '分配角色' : 'ASSIGNED ROLE';
+    dossier.appendChild(roleLabel);
+
+    var title = el('h1', { className: 'arc-dossier-title' });
+    title.textContent = archData.title;
+    dossier.appendChild(title);
+
+    var quote = el('blockquote', { className: 'arc-dossier-quote' });
+    quote.textContent = '“' + archData.quote + '”';
+    dossier.appendChild(quote);
+
+    var desc = el('p', { className: 'arc-dossier-desc' });
+    desc.textContent = archData.description;
+    dossier.appendChild(desc);
+
+    // Annotations table
+    var ann = el('div', { className: 'arc-dossier-annotations' });
+    ann.setAttribute('role', 'table');
+    var annRows = [
+      [li === 1 ? '保存内容' : 'PRESERVES',     archData.preserves     || ''],
+      [li === 1 ? '欲望'     : 'DESIRE',         archData.desire        || ''],
+      [li === 1 ? '矛盾'     : 'CONTRADICTION',  archData.contradiction || ''],
+      [li === 1 ? '档案馆'   : 'THE ARCHIVE',    archData.archive       || '']
+    ];
+    annRows.forEach(function (row) {
+      var key = el('div', { className: 'arc-ann-key' });
+      key.setAttribute('role', 'rowheader');
+      key.textContent = row[0];
+      var val = el('div', { className: 'arc-ann-val' });
+      val.setAttribute('role', 'cell');
+      val.textContent = row[1];
+      ann.appendChild(key);
+      ann.appendChild(val);
+    });
+    dossier.appendChild(ann);
+
+    // Registered word
+    if (state.wordInput) {
+      var wordDiv = el('div', { className: 'arc-dossier-word' });
+      var wordLabel = li === 1 ? '登记词语：' : 'REGISTERED WORD: ';
+      wordDiv.innerHTML = wordLabel + '<em>' + state.wordInput.replace(/[<>&"]/g, function (c) {
+        return { '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c];
+      }) + '</em>';
+      dossier.appendChild(wordDiv);
+    }
+
+    // Cost
+    var costLabel = el('div', { className: 'arc-dossier-section-label' });
+    costLabel.textContent = li === 1 ? '承担的代价' : 'COST INCURRED';
+    dossier.appendChild(costLabel);
+
+    var costBox = el('div', { className: 'arc-cost-box' });
+    costBox.textContent = costText;
+    dossier.appendChild(costBox);
+
+    // Ending
+    var endLabel = el('div', { className: 'arc-dossier-section-label' });
+    endLabel.textContent = li === 1 ? '最终状态' : 'FINAL STATUS';
+    dossier.appendChild(endLabel);
+
+    var endTextEl = el('p', { className: 'arc-ending-text' });
+    endTextEl.textContent = endText;
+    dossier.appendChild(endTextEl);
+
+    // Signal traces
+    var tracesDiv = el('div', { className: 'arc-traces' });
+    var tracesLabel = el('div', { className: 'arc-dossier-section-label' });
+    tracesLabel.textContent = li === 1 ? '内部分析 — 机密' : 'INTERNAL ANALYSIS — CONFIDENTIAL';
+    tracesDiv.appendChild(tracesLabel);
+
+    var dimLabels = {
+      preservation:   li === 1 ? '保存' : 'PRESERV',
+      privateMeaning: li === 1 ? '私意' : 'PRIVATE',
+      authenticity:   li === 1 ? '真实' : 'AUTHENT',
+      control:        li === 1 ? '控制' : 'CONTROL',
+      sacrifice:      li === 1 ? '牺牲' : 'SACRIF'
+    };
+
+    DIMS.forEach(function (d) {
+      var row = el('div', { className: 'arc-trace-row' });
+      var key = el('div', { className: 'arc-trace-key' });
+      key.textContent = dimLabels[d] || d;
+      row.appendChild(key);
+
+      var bg = el('div', { className: 'arc-trace-bg' });
+      var fill = el('div', { className: 'arc-trace-fill' });
+      fill.style.width = '0%';
+      bg.appendChild(fill);
+      row.appendChild(bg);
+      tracesDiv.appendChild(row);
+
+      var pct = Math.max(0, Math.min(100, (((scores[d] || 0) + 1) / 2) * 100));
+      setTimeout(function () { fill.style.width = pct + '%'; }, 120);
+    });
+    dossier.appendChild(tracesDiv);
+
+    // Actions
+    var actions = el('div', { className: 'arc-dossier-actions' });
+
+    var restartBtn = el('button', { className: 'arc-dossier-btn' });
+    restartBtn.setAttribute('type', 'button');
+    restartBtn.textContent = li === 1 ? '离开档案馆' : 'LEAVE ARCHIVE';
+    restartBtn.addEventListener('click', function () {
+      clearState();
+      resetState();
+      render();
+    });
+
+    var copyBtn = el('button', { className: 'arc-dossier-btn arc-dossier-btn--primary' });
+    copyBtn.setAttribute('type', 'button');
+    copyBtn.textContent = li === 1 ? '复制档案' : 'COPY RECORD';
+    copyBtn.addEventListener('click', function () {
+      copyResult(arch, langKey);
+      copyBtn.textContent = li === 1 ? '已复制' : 'COPIED';
+      setTimeout(function () {
+        copyBtn.textContent = li === 1 ? '复制档案' : 'COPY RECORD';
+      }, 2000);
+    });
+
+    var shareBtn = el('button', { className: 'arc-dossier-btn' });
+    shareBtn.setAttribute('type', 'button');
+    shareBtn.textContent = li === 1 ? '传输' : 'TRANSMIT';
+    shareBtn.addEventListener('click', function () {
+      shareResult(arch, langKey, function () { copyResult(arch, langKey); });
+    });
+
+    actions.appendChild(restartBtn);
+    actions.appendChild(copyBtn);
+    actions.appendChild(shareBtn);
+    dossier.appendChild(actions);
+
+    root.appendChild(dossier);
+  }
+
+  /* ──────────────────────────────────────────────────────────
      MAIN RENDER
   ────────────────────────────────────────────────────────── */
 
@@ -1922,76 +2285,69 @@
     var root = document.getElementById('archive-app');
     if (!root) return;
 
+    applyVisualFlags();
     var step = state.step;
-
-    // Dark mode is handled via CSS inheritance from html.theme--dark set by Anatole's theme switcher.
-    // No JS manipulation needed here.
-
-    var oldContent = root.querySelector('.arc-shell');
+    var old = root.firstElementChild;
 
     function doRender() {
-      root.innerHTML = '';
-      var shell = el('div', { className: 'arc-shell' });
-      var content = el('div', { className: 'arc-content' });
+      while (root.firstChild) root.removeChild(root.firstChild);
 
       if (step === 'intro') {
-        renderIntro(content);
+        renderEntranceScene(root);
       } else if (step === 'processing') {
-        renderProcessing(content);
+        renderProcessingScene(root);
       } else if (step === 'result') {
-        renderResult(content);
+        renderKeeperRecord(root);
       } else if (typeof step === 'number' && step >= 0 && step <= 11) {
-        renderQuestion(content, step);
+        root.appendChild(buildStatusBar(step));
+        var sc = SCENES[step];
+        var container = el('div', { className: 'arc-scene' });
+        switch (sc.type) {
+          case 'object':   renderObjectScene(container, step);   break;
+          case 'binary':   renderBinaryScene(container, step);   break;
+          case 'document': renderDocumentScene(container, step); break;
+          case 'shelf':    renderShelfScene(container, step);    break;
+          case 'storage':  renderStorageScene(container, step);  break;
+          case 'terminal': renderTerminalScene(container, step); break;
+          case 'contract': renderContractScene(container, step); break;
+          case 'core':     renderCoreScene(container, step);     break;
+        }
+        root.appendChild(container);
       }
 
-      shell.appendChild(content);
-      root.appendChild(shell);
-
-      // Scroll to top smoothly
-      if (!REDUCED_MOTION) {
-        root.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        root.scrollTop = 0;
+      window.scrollTo(0, 0);
+      if (!REDUCED_MOTION && root.firstElementChild) {
+        root.firstElementChild.classList.add('arc-fade-in');
       }
     }
 
-    if (oldContent && !REDUCED_MOTION) {
-      fadeOut(oldContent, doRender);
+    if (old && !REDUCED_MOTION) {
+      old.classList.add('arc-scene-exit');
+      setTimeout(doRender, 260);
     } else {
       doRender();
     }
   }
 
-  /* ──────────────────────────────────────────────────────────
-     INIT
-  ────────────────────────────────────────────────────────── */
-
   function init() {
-    // Apply language from Hugo injection (normalize 'zh-cn', 'zh-tw', etc. → 'zh')
     state.lang = normalizeLang(window.ARCHIVE_LANG);
-
-    // Attempt to restore saved state
     var saved = loadState();
     if (saved) {
-      // Validate step is in range; 'processing' is transient — restore as last question
-      var validStep = saved.step === 'intro' || saved.step === 'result' ||
+      var valid = saved.step === 'intro' || saved.step === 'result' ||
         (typeof saved.step === 'number' && saved.step >= 0 && saved.step <= 11);
-      if (saved.step === 'processing') { saved.step = 11; validStep = true; }
-      if (validStep && saved.answers && saved.lang && saved.wordInput !== undefined) {
-        state.step      = saved.step;
-        state.answers   = saved.answers;
-        state.lang      = saved.lang;
-        state.wordInput = saved.wordInput;
-        state.result    = saved.result || null;
+      if (saved.step === 'processing') { saved.step = 11; valid = true; }
+      if (valid && saved.answers && saved.lang && saved.wordInput !== undefined) {
+        state.step            = saved.step;
+        state.answers         = saved.answers;
+        state.lang            = saved.lang;
+        state.wordInput       = saved.wordInput;
+        state.rankingState    = saved.rankingState    || [];
+        state.allocationState = saved.allocationState || {};
+        state.result          = saved.result          || null;
       }
     }
+    if (window.ARCHIVE_LANG) state.lang = normalizeLang(window.ARCHIVE_LANG);
 
-    // Override language from Hugo if explicitly set (takes precedence over saved)
-    if (window.ARCHIVE_LANG) {
-      state.lang = normalizeLang(window.ARCHIVE_LANG);
-    }
-
-    // Wait for DOM ready
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', render);
     } else {
