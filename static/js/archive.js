@@ -2228,10 +2228,6 @@
 
     var dossier = el('div', { className: 'arc-dossier' });
 
-    var botTop = el('div', { className: 'arc-dossier-botanical-top' });
-    botTop.setAttribute('aria-hidden', 'true');
-    botTop.innerHTML = SCENE_BGS['letter-top'];
-    dossier.appendChild(botTop);
 
     // Top bar
     var topBar = el('div', { className: 'arc-dossier-topbar' });
@@ -2426,11 +2422,6 @@
     body.appendChild(actions);
 
     dossier.appendChild(body);
-
-    var botBot = el('div', { className: 'arc-dossier-botanical-bottom' });
-    botBot.setAttribute('aria-hidden', 'true');
-    botBot.innerHTML = SCENE_BGS['letter-bottom'];
-    dossier.appendChild(botBot);
 
     var wrapper = el('div', { className: 'arc-result-wrapper' });
     wrapper.appendChild(dossier);

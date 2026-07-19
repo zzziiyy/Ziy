@@ -1706,15 +1706,6 @@
   position: relative;
 }
 
-/* Botanical letter illustrations */
-.arc-dossier-botanical-top,
-.arc-dossier-botanical-bottom {
-  display: block;
-  width: 100%;
-  line-height: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
 
 .arc-dossier-topbar {
   background: transparent;
