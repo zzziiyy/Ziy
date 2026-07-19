@@ -1701,19 +1701,9 @@
   width: min(680px, 100%);
   margin: 0;
   min-height: auto;
-  background:
-    repeating-linear-gradient(91deg, transparent, transparent 3px, rgba(110,85,45,0.012) 4px),
-    repeating-linear-gradient(179deg, transparent, transparent 5px, rgba(110,85,45,0.009) 6px),
-    radial-gradient(ellipse 55% 35% at 22% 28%, rgba(160,120,60,0.06) 0%, transparent 100%),
-    radial-gradient(ellipse 45% 30% at 78% 72%, rgba(140,105,50,0.05) 0%, transparent 100%),
-    #ece7db;
-  color: #2a1e10;
+  background: transparent;
+  color: #c8d4e0;
   position: relative;
-  overflow: hidden;
-  box-shadow:
-    0 0 0 1px rgba(140,110,70,0.16),
-    0 4px 18px rgba(0,0,0,0.10),
-    0 18px 55px rgba(0,0,0,0.30);
 }
 
 /* Botanical letter illustrations */
@@ -1729,7 +1719,7 @@
 .arc-dossier-topbar {
   background: transparent;
   padding: 1.2rem 2.5rem 1rem;
-  border-bottom: 1px solid rgba(100,70,30,0.15);
+  border-bottom: 1px solid rgba(140,175,215,0.18);
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -1741,14 +1731,14 @@
   font-size: 0.82rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(80,50,15,0.6);
+  color: rgba(160,192,220,0.65);
   line-height: 1.5;
 }
 
 .arc-dossier-fileno {
   font-family: var(--arc-mono);
   font-size: 0.92rem;
-  color: rgba(80,50,15,0.45);
+  color: rgba(140,170,205,0.55);
   letter-spacing: 0.06em;
   text-align: right;
 }
@@ -1773,24 +1763,24 @@
   font-size: 0.82rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #6a4010;
+  color: rgba(160,195,225,0.72);
   margin-bottom: 0.4rem;
-  opacity: 0.85;
 }
 
 .arc-dossier-title {
   font-family: var(--arc-serif);
   font-size: 2.2rem;
   font-weight: normal;
-  color: #12080a;
+  color: #e8edf4;
   margin-bottom: 0.15rem;
   line-height: 1.12;
+  text-shadow: 0 0 22px rgba(200,222,248,0.7), 0 0 45px rgba(180,208,240,0.32);
 }
 
 .arc-dossier-title-sub {
   font-family: var(--arc-serif);
   font-size: 1.1rem;
-  color: rgba(30,15,5,0.5);
+  color: rgba(160,192,220,0.55);
   margin-bottom: 0;
   font-style: italic;
 }
@@ -1806,8 +1796,8 @@
 .arc-dossier-portrait {
   width: 90px;
   height: 118px;
-  border: 1px solid rgba(90,50,10,0.28);
-  background: rgba(90,50,10,0.06);
+  border: 1px solid rgba(140,175,215,0.28);
+  background: rgba(140,175,215,0.04);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1819,27 +1809,27 @@
   content: '';
   position: absolute;
   inset: 4px;
-  border: 1px solid rgba(26,28,24,0.08);
+  border: 1px solid rgba(140,175,215,0.1);
 }
 
 .arc-dossier-portrait-icon {
   width: 40px;
   height: 40px;
-  color: rgba(26,28,24,0.16);
+  color: rgba(140,175,215,0.22);
 }
 
 .arc-sealed-stamp {
   width: 72px;
   height: 72px;
-  border: 2.5px solid #8b1212;
+  border: 2.5px solid rgba(155,195,230,0.5);
   border-radius: 50%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   transform: rotate(-14deg);
-  color: #8b1212;
-  opacity: 0.72;
+  color: rgba(160,200,235,0.62);
+  opacity: 1;
   flex-shrink: 0;
 }
 
@@ -1864,9 +1854,10 @@
   font-style: italic;
   font-size: 1.25rem;
   line-height: 1.78;
-  color: #1a0e05;
-  opacity: 0.75;
-  border-left: 3px solid rgba(122,70,18,0.45);
+  color: #b8cede;
+  opacity: 0.9;
+  border-left: 3px solid rgba(140,180,220,0.35);
+  text-shadow: 0 0 14px rgba(185,215,242,0.35);
   padding-left: 1.25rem;
   margin-bottom: 1.6rem;
 }
@@ -1875,9 +1866,10 @@
   font-family: var(--arc-serif);
   font-size: 1.2rem;
   line-height: 1.85;
-  color: #1a0e05;
-  opacity: 0.82;
+  color: #adc0d2;
+  opacity: 0.9;
   margin-bottom: 1.75rem;
+  text-shadow: 0 0 10px rgba(180,210,238,0.28);
 }
 
 .arc-dossier-annotations {
@@ -1885,8 +1877,8 @@
   grid-template-columns: 84px 1fr;
   gap: 0.32rem 0.8rem;
   margin-bottom: 1.5rem;
-  border-top: 1px solid rgba(100,70,30,0.18);
-  border-bottom: 1px solid rgba(100,70,30,0.18);
+  border-top: 1px solid rgba(140,175,215,0.2);
+  border-bottom: 1px solid rgba(140,175,215,0.2);
   padding: 0.85rem 0;
 }
 
@@ -1895,7 +1887,7 @@
   font-size: 0.78rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(30,12,5,0.5);
+  color: rgba(130,165,202,0.62);
   padding-top: 0.14em;
   line-height: 1.55;
 }
@@ -1904,20 +1896,20 @@
   font-family: var(--arc-serif);
   font-size: 1.05rem;
   line-height: 1.6;
-  color: rgba(30,12,5,0.85);
+  color: rgba(188,212,232,0.88);
 }
 
 .arc-dossier-word {
   font-family: var(--arc-mono);
   font-size: 0.88rem;
   letter-spacing: 0.06em;
-  color: rgba(26,28,24,0.6);
+  color: rgba(145,175,205,0.68);
   margin-bottom: 1.25rem;
 }
 
 .arc-dossier-word em {
   font-style: normal;
-  color: #1c1e1a;
+  color: #c8d8e8;
   font-size: 0.88rem;
 }
 
@@ -1926,34 +1918,35 @@
   font-size: 0.8rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(30,12,5,0.52);
+  color: rgba(128,162,200,0.6);
   margin-bottom: 0.45rem;
 }
 
 .arc-cost-box {
-  border: 1px dashed rgba(90,50,10,0.3);
+  border: 1px dashed rgba(140,180,220,0.28);
   padding: 1rem 1.25rem;
   font-family: var(--arc-serif);
   font-style: italic;
   font-size: 1.15rem;
   line-height: 1.75;
-  color: rgba(30,12,5,0.7);
+  color: rgba(175,205,228,0.8);
   margin-bottom: 1.75rem;
-  background: rgba(90,50,10,0.04);
+  background: rgba(140,180,220,0.04);
 }
 
 .arc-ending-text {
   font-family: var(--arc-serif);
   font-size: 1.2rem;
   line-height: 1.85;
-  color: rgba(30,12,5,0.78);
+  color: rgba(172,200,222,0.85);
   margin-bottom: 2rem;
+  text-shadow: 0 0 10px rgba(178,210,238,0.28);
 }
 
 /* Signal traces */
 .arc-traces {
   margin-bottom: 2rem;
-  border-top: 1px solid rgba(100,70,30,0.15);
+  border-top: 1px solid rgba(140,175,215,0.18);
   padding-top: 1rem;
 }
 
@@ -1970,13 +1963,13 @@
   font-size: 0.82rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(30,12,5,0.45);
+  color: rgba(128,162,200,0.58);
   text-align: right;
 }
 
 .arc-trace-bg {
   height: 3px;
-  background: rgba(26,28,24,0.1);
+  background: rgba(140,175,215,0.15);
   position: relative;
 }
 
@@ -1985,15 +1978,15 @@
   left: 0;
   top: 0;
   height: 100%;
-  background: #7a5218;
-  opacity: 0.65;
+  background: #8aaac4;
+  opacity: 0.75;
   transition: width 1s ease;
 }
 
 .arc-trace-pct {
   font-family: var(--arc-mono);
   font-size: 0.56rem;
-  color: rgba(26,28,24,0.48);
+  color: rgba(130,165,200,0.58);
   text-align: right;
   white-space: nowrap;
 }
@@ -2003,7 +1996,7 @@
 .arc-dossier-signature {
   margin: 2.5rem 0 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid rgba(90,50,10,0.22);
+  border-top: 1px solid rgba(140,175,215,0.2);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -2014,8 +2007,9 @@
   font-family: var(--arc-serif);
   font-style: italic;
   font-size: 1.35rem;
-  color: rgba(30,12,5,0.7);
+  color: rgba(190,215,235,0.82);
   letter-spacing: 0.02em;
+  text-shadow: 0 0 14px rgba(190,218,244,0.42);
 }
 
 .arc-dossier-sig-title {
@@ -2023,7 +2017,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: rgba(30,12,5,0.42);
+  color: rgba(128,162,200,0.55);
 }
 
 /* Dossier actions */
@@ -2031,7 +2025,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  border-top: 1px solid rgba(100,70,30,0.18);
+  border-top: 1px solid rgba(140,175,215,0.2);
   padding-top: 1rem;
   margin-top: 0.5rem;
 }
@@ -2042,8 +2036,8 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   background: transparent;
-  border: 1px solid rgba(80,55,18,0.22);
-  color: rgba(60,38,12,0.52);
+  border: 1px solid rgba(140,178,215,0.25);
+  color: rgba(152,185,218,0.62);
   padding: 0.5rem 0.9rem;
   cursor: pointer;
   min-height: 40px;
@@ -2051,17 +2045,17 @@
 }
 
 .arc-dossier-btn:hover {
-  border-color: rgba(80,55,18,0.42);
-  color: rgba(60,38,12,0.78);
+  border-color: rgba(170,205,238,0.48);
+  color: rgba(200,225,248,0.88);
 }
 
 .arc-dossier-btn--primary {
-  border-color: rgba(122,82,24,0.38);
-  color: #7a5218;
+  border-color: rgba(155,198,235,0.42);
+  color: #9ec0dc;
 }
 
 .arc-dossier-btn--primary:hover {
-  background: rgba(122,82,24,0.06);
+  background: rgba(140,180,220,0.08);
 }
 
 /* Visual continuity */
