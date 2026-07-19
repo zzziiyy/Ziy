@@ -155,6 +155,24 @@
   display: block;
 }
 
+
+/* ── BOTANICAL VEIL (foreground plant overlay, all scenes) ──── */
+.arc-botanical-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.arc-botanical-veil svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 /* Floor plane — depth recession below interactive surface */
 .arc-scene::before {
   content: '';
@@ -374,20 +392,20 @@
 
 .arc-narrative-act {
   font-family: var(--arc-mono);
-  font-size: 0.53rem;
-  letter-spacing: 0.34em;
+  font-size: 0.8rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--arc-tungsten);
-  opacity: 0.7;
+  opacity: 0.88;
   margin-bottom: 0.48rem;
 }
 
 .arc-narrative-text {
   font-family: var(--arc-serif);
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   line-height: 1.72;
   color: var(--arc-paper);
-  opacity: 0.94;
+  opacity: 1;
   max-width: 720px;
 }
 
@@ -626,8 +644,8 @@
 .arc-enter-btn {
   position: relative;
   font-family: var(--arc-mono);
-  font-size: 0.76rem;
-  letter-spacing: 0.18em;
+  font-size: 1.2rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--arc-paper);
   background: rgba(255,255,255,0.02);
@@ -778,11 +796,11 @@
 /* Labels always visible — this is UI, not a hidden-object game */
 .arc-obj-label {
   font-family: var(--arc-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--arc-pale);
-  opacity: 0.72;
+  color: var(--arc-paper);
+  opacity: 0.88;
   transition: opacity 0.2s ease, color 0.2s ease;
   text-align: center;
   max-width: 130px;
@@ -792,7 +810,7 @@
 .arc-obj:hover .arc-obj-label,
 .arc-obj:focus .arc-obj-label {
   opacity: 1;
-  color: var(--arc-paper);
+  color: #fff;
 }
 
 .arc-obj-key {
@@ -889,20 +907,20 @@
 
 .arc-binary-key {
   font-family: var(--arc-mono);
-  font-size: 0.52rem;
+  font-size: 0.85rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--arc-amber);
-  opacity: 0.55;
+  opacity: 0.85;
 }
 
 .arc-binary-label {
   font-family: var(--arc-serif);
-  font-size: 0.98rem;
+  font-size: 1.35rem;
   color: var(--arc-paper);
-  opacity: 0.82;
-  line-height: 1.55;
-  max-width: 220px;
+  opacity: 1;
+  line-height: 1.6;
+  max-width: 260px;
 }
 
 /* ── DOCUMENT SCENE ─────────────────────────────────────────── */
@@ -970,9 +988,9 @@
 
 .arc-doc-body {
   font-family: var(--arc-serif);
-  font-size: 1.2rem;
+  font-size: 1.375rem;
   line-height: 1.78;
-  color: #1a1208;
+  color: #1a1008;
 }
 
 .arc-stamps-row {
@@ -1044,18 +1062,18 @@
 .arc-stamp:hover .arc-stamp-icon { opacity: 1; }
 
 .arc-stamp-name {
-  font-size: 0.64rem;
-  letter-spacing: 0.08em;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
   text-align: center;
   line-height: 1.35;
   color: currentColor;
 }
 
 .arc-stamp-sub {
-  font-size: 0.49rem;
-  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
   color: currentColor;
-  opacity: 0.5;
+  opacity: 0.78;
   text-align: center;
   line-height: 1.2;
 }
@@ -1129,10 +1147,10 @@
   border: 1px solid rgba(184,146,58,0.12);
   cursor: grab;
   font-family: var(--arc-sans);
-  font-size: 0.85rem;
+  font-size: 1.2rem;
   color: var(--arc-paper);
   flex: 1;
-  min-height: 44px;
+  min-height: 52px;
   border-radius: 1px;
   transition: opacity 0.2s, box-shadow 0.2s;
   user-select: none;
@@ -1180,11 +1198,11 @@
 
 .arc-shelf-staging-label {
   font-family: var(--arc-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.12em;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--arc-pale);
-  opacity: 0.4;
+  color: var(--arc-paper);
+  opacity: 0.7;
   margin-bottom: 0.4rem;
 }
 
@@ -1196,18 +1214,18 @@
 
 .arc-shelf-confirm {
   font-family: var(--arc-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
+  font-size: 0.92rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--arc-amber);
   border: 1px solid var(--arc-amber-dim);
   background: transparent;
-  padding: 0.65rem 1.5rem;
+  padding: 0.75rem 2rem;
   cursor: pointer;
   margin: 1rem auto 0;
   display: none;
   transition: background 0.15s;
-  min-height: 44px;
+  min-height: 52px;
 }
 
 .arc-shelf-confirm:hover { background: rgba(184,146,58,0.1); }
@@ -1240,15 +1258,15 @@
 
 .arc-storage-name {
   font-family: var(--arc-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--arc-pale);
+  color: var(--arc-paper);
 }
 
 .arc-storage-count {
   font-family: var(--arc-mono);
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   color: var(--arc-amber);
 }
 
@@ -1279,19 +1297,19 @@
 }
 
 .arc-storage-btn {
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   border: 1px solid rgba(184,146,58,0.25);
   background: transparent;
   color: var(--arc-paper);
-  font-size: 1rem;
+  font-size: 1.25rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 1px;
   font-family: var(--arc-mono);
-  min-height: 30px;
+  min-height: 40px;
   transition: border-color 0.15s, color 0.15s;
 }
 
@@ -1300,7 +1318,7 @@
 
 .arc-storage-remaining {
   font-family: var(--arc-mono);
-  font-size: 0.65rem;
+  font-size: 0.92rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--arc-pale);
@@ -1317,8 +1335,8 @@
 
 .arc-storage-confirm {
   font-family: var(--arc-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
+  font-size: 0.92rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--arc-pale);
   border: 1px solid rgba(184,146,58,0.2);
@@ -1616,10 +1634,10 @@
 
 .arc-core-ctrl-label {
   font-family: var(--arc-mono);
-  font-size: 0.62rem;
+  font-size: 0.92rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--arc-pale);
+  color: var(--arc-paper);
   text-align: center;
   line-height: 1.4;
   max-width: 128px;
@@ -1835,26 +1853,26 @@
 
 .arc-ann-key {
   font-family: var(--arc-mono);
-  font-size: 0.53rem;
-  letter-spacing: 0.1em;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(26,28,24,0.38);
+  color: rgba(26,28,24,0.52);
   padding-top: 0.14em;
   line-height: 1.55;
 }
 
 .arc-ann-val {
   font-family: var(--arc-serif);
-  font-size: 0.83rem;
-  line-height: 1.55;
-  color: rgba(26,28,24,0.72);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(26,28,24,0.82);
 }
 
 .arc-dossier-word {
   font-family: var(--arc-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  color: rgba(26,28,24,0.48);
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  color: rgba(26,28,24,0.6);
   margin-bottom: 1.25rem;
 }
 
@@ -1866,11 +1884,11 @@
 
 .arc-dossier-section-label {
   font-family: var(--arc-mono);
-  font-size: 0.53rem;
-  letter-spacing: 0.2em;
+  font-size: 0.8rem;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(26,28,24,0.36);
-  margin-bottom: 0.38rem;
+  color: rgba(26,28,24,0.52);
+  margin-bottom: 0.45rem;
 }
 
 .arc-cost-box {
