@@ -1690,33 +1690,38 @@
 /* ── KEEPER RECORD (RESULT) ─────────────────────────────────── */
 /* Paper-document aesthetic — light background, ink text */
 .arc-dossier {
-  max-width: 720px;
-  margin: 0 auto;
-  min-height: 100svh;
+  width: min(680px, calc(100% - 2rem));
+  margin: 2.5rem auto 5rem;
+  min-height: auto;
   background:
-    repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 8px,
-      rgba(60,32,5,0.025) 9px
-    ),
-    repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 10px,
-      rgba(60,32,5,0.018) 11px
-    ),
-    radial-gradient(ellipse 95% 95% at 50% 50%,
-      #caa872 0%, #be9858 55%, #ae8844 100%);
-  color: #1a0e05;
+    repeating-linear-gradient(91deg, transparent, transparent 3px, rgba(110,85,45,0.012) 4px),
+    repeating-linear-gradient(179deg, transparent, transparent 5px, rgba(110,85,45,0.009) 6px),
+    radial-gradient(ellipse 55% 35% at 22% 28%, rgba(160,120,60,0.06) 0%, transparent 100%),
+    radial-gradient(ellipse 45% 30% at 78% 72%, rgba(140,105,50,0.05) 0%, transparent 100%),
+    #ece7db;
+  color: #2a1e10;
   position: relative;
-  box-shadow: 0 0 0 1px rgba(90,55,10,0.2), 0 24px 80px rgba(0,0,0,0.7);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(140,110,70,0.16),
+    0 4px 18px rgba(0,0,0,0.10),
+    0 18px 55px rgba(0,0,0,0.30);
+}
+
+/* Botanical letter illustrations */
+.arc-dossier-botanical-top,
+.arc-dossier-botanical-bottom {
+  display: block;
+  width: 100%;
+  line-height: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .arc-dossier-topbar {
-  background: rgba(60,32,5,0.08);
-  padding: 1.5rem 2.5rem 1.2rem;
-  border-bottom: 2px solid rgba(90,55,10,0.25);
+  background: transparent;
+  padding: 1.2rem 2.5rem 1rem;
+  border-bottom: 1px solid rgba(100,70,30,0.15);
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
@@ -1728,14 +1733,14 @@
   font-size: 0.82rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: rgba(60,32,5,0.6);
+  color: rgba(80,50,15,0.6);
   line-height: 1.5;
 }
 
 .arc-dossier-fileno {
   font-family: var(--arc-mono);
   font-size: 0.92rem;
-  color: rgba(60,32,5,0.5);
+  color: rgba(80,50,15,0.45);
   letter-spacing: 0.06em;
   text-align: right;
 }
@@ -1760,7 +1765,7 @@
   font-size: 0.82rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: #7a4e18;
+  color: #6a4010;
   margin-bottom: 0.4rem;
   opacity: 0.85;
 }
@@ -1872,8 +1877,8 @@
   grid-template-columns: 84px 1fr;
   gap: 0.32rem 0.8rem;
   margin-bottom: 1.5rem;
-  border-top: 1px solid rgba(26,28,24,0.13);
-  border-bottom: 1px solid rgba(26,28,24,0.13);
+  border-top: 1px solid rgba(100,70,30,0.18);
+  border-bottom: 1px solid rgba(100,70,30,0.18);
   padding: 0.85rem 0;
 }
 
@@ -1940,7 +1945,7 @@
 /* Signal traces */
 .arc-traces {
   margin-bottom: 2rem;
-  border-top: 1px solid rgba(26,28,24,0.12);
+  border-top: 1px solid rgba(100,70,30,0.15);
   padding-top: 1rem;
 }
 
@@ -2018,7 +2023,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  border-top: 1px solid rgba(26,28,24,0.13);
+  border-top: 1px solid rgba(100,70,30,0.18);
   padding-top: 1rem;
   margin-top: 0.5rem;
 }
@@ -2029,8 +2034,8 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   background: transparent;
-  border: 1px solid rgba(26,28,24,0.2);
-  color: rgba(26,28,24,0.48);
+  border: 1px solid rgba(80,55,18,0.22);
+  color: rgba(60,38,12,0.52);
   padding: 0.5rem 0.9rem;
   cursor: pointer;
   min-height: 40px;
@@ -2038,8 +2043,8 @@
 }
 
 .arc-dossier-btn:hover {
-  border-color: rgba(26,28,24,0.4);
-  color: rgba(26,28,24,0.75);
+  border-color: rgba(80,55,18,0.42);
+  color: rgba(60,38,12,0.78);
 }
 
 .arc-dossier-btn--primary {
